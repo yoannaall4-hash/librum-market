@@ -72,14 +72,18 @@ export default function EditableText({
     if (!isAdmin) return
 
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    const scrollY = window.scrollY || document.documentElement.scrollTop
-    const scrollX = window.scrollX || document.documentElement.scrollLeft
 
     const popoverWidth = Math.max(rect.width, 280)
-    const topOffset = rect.bottom + scrollY + 6
-    let leftOffset = rect.left + scrollX
+    // Use viewport coordinates (fixed positioning — no scroll offset needed)
+    let topOffset = rect.bottom + 6
+    let leftOffset = rect.left
+    // Keep within right edge
     if (leftOffset + popoverWidth > window.innerWidth - 16) {
       leftOffset = window.innerWidth - popoverWidth - 16
+    }
+    // If too close to bottom, flip above the element
+    if (topOffset + 180 > window.innerHeight) {
+      topOffset = rect.top - 180
     }
     setPopoverPos({ top: topOffset, left: leftOffset, width: popoverWidth })
 
