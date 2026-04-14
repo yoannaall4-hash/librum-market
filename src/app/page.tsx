@@ -42,9 +42,9 @@ async function getStats() {
 
 export default async function HomePage() {
   const [featured, recent, stats] = await Promise.all([
-    getFeaturedBooks(),
-    getRecentBooks(),
-    getStats(),
+    getFeaturedBooks().catch(() => []),
+    getRecentBooks().catch(() => []),
+    getStats().catch(() => ({ books: 0, users: 0 })),
   ])
 
   const categories = [
