@@ -1,10 +1,11 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { getT } from '@/lib/getT'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-
-export const dynamic = 'force-dynamic'
+import EditableText from '@/components/EditableText'
 
 async function getSiteContent(locale: string) {
   try {
@@ -15,9 +16,7 @@ async function getSiteContent(locale: string) {
       if (val) map[row.key] = val
     }
     return map
-  } catch {
-    return {}
-  }
+  } catch { return {} }
 }
 
 export default async function AboutPage() {
@@ -27,7 +26,7 @@ export default async function AboutPage() {
   const db = await getSiteContent(locale)
 
   function ct(key: string) {
-    return db[key] || t(key as Parameters<typeof t>[0])
+    return db[key] || (t as (k: string) => string)(key)
   }
 
   return (
@@ -37,45 +36,53 @@ export default async function AboutPage() {
         <div className="text-4xl mb-4">✝</div>
         <h1 className="text-4xl font-bold text-stone-800 mb-4">{t('about.title')}</h1>
         <p className="text-lg text-stone-500 max-w-xl mx-auto">
-          {ct('about.subtitle')}
+          <EditableText contentKey="about.subtitle" defaultValue={ct('about.subtitle')} multiline />
         </p>
       </div>
 
       {/* Story */}
       <div className="prose prose-stone max-w-none space-y-8 mb-16">
-        <div className="bg-amber-50 border-l-4 border-amber-600 rounded-r-xl p-6">
+        <div className="bg-stone-50 border-l-4 border-stone-300 rounded-r-xl p-6">
           <p className="text-stone-700 text-lg leading-relaxed italic">
-            &ldquo;{ct('about.quote')}&rdquo;
+            &ldquo;<EditableText contentKey="about.quote" defaultValue={ct('about.quote')} multiline />&rdquo;
           </p>
-          <p className="text-stone-500 text-sm mt-2">— {ct('about.quote_source')}</p>
+          <p className="text-stone-500 text-sm mt-2">— <EditableText contentKey="about.quote_source" defaultValue={ct('about.quote_source')} /></p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h2 className="text-xl font-semibold text-stone-800 mb-3">{ct('about.our_idea_title')}</h2>
+            <h2 className="text-xl font-semibold text-stone-800 mb-3">
+              <EditableText contentKey="about.our_idea_title" defaultValue={ct('about.our_idea_title')} />
+            </h2>
             <p className="text-stone-600 leading-relaxed">
-              {ct('about.our_idea_text')}
+              <EditableText contentKey="about.our_idea_text" defaultValue={ct('about.our_idea_text')} multiline />
             </p>
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-stone-800 mb-3">{ct('about.mission_title')}</h2>
+            <h2 className="text-xl font-semibold text-stone-800 mb-3">
+              <EditableText contentKey="about.mission_title" defaultValue={ct('about.mission_title')} />
+            </h2>
             <p className="text-stone-600 leading-relaxed">
-              {ct('about.mission_text')}
+              <EditableText contentKey="about.mission_text" defaultValue={ct('about.mission_text')} multiline />
             </p>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-stone-800 mb-4">{ct('about.values_title')}</h2>
+          <h2 className="text-xl font-semibold text-stone-800 mb-4">
+            <EditableText contentKey="about.values_title" defaultValue={ct('about.values_title')} />
+          </h2>
           <div className="space-y-3">
             {[
-              { icon: '✅', text: ct('about.value1') },
-              { icon: '🛡️', text: ct('about.value2') },
-              { icon: '❤️', text: ct('about.value3') },
+              { icon: '✅', key: 'about.value1' },
+              { icon: '🛡️', key: 'about.value2' },
+              { icon: '❤️', key: 'about.value3' },
             ].map((v) => (
-              <div key={v.icon} className="flex gap-4 items-start">
+              <div key={v.key} className="flex gap-4 items-start">
                 <span className="text-2xl mt-0.5">{v.icon}</span>
-                <p className="font-medium text-stone-800 mt-1">{v.text}</p>
+                <p className="font-medium text-stone-800 mt-1">
+                  <EditableText contentKey={v.key} defaultValue={ct(v.key)} />
+                </p>
               </div>
             ))}
           </div>
@@ -84,13 +91,15 @@ export default async function AboutPage() {
 
       {/* Contact */}
       <div className="bg-stone-800 text-white rounded-2xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">{ct('about.contact_title')}</h2>
+        <h2 className="text-2xl font-bold mb-2">
+          <EditableText contentKey="about.contact_title" defaultValue={ct('about.contact_title')} className="text-white" />
+        </h2>
         <p className="text-stone-400 mb-6">
-          {ct('about.contact_text')}
+          <EditableText contentKey="about.contact_text" defaultValue={ct('about.contact_text')} multiline className="text-stone-300" />
         </p>
         <a
           href="mailto:librum.bookstore@gmail.com"
-          className="inline-block bg-amber-700 hover:bg-amber-600 text-white font-medium px-6 py-3 rounded-xl transition-colors"
+          className="inline-block bg-stone-600 hover:bg-stone-500 text-white font-medium px-6 py-3 rounded-xl transition-colors"
         >
           librum.bookstore@gmail.com
         </a>
