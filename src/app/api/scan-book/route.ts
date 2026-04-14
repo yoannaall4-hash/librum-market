@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
 import { getSession } from '@/lib/auth'
 
 export const maxDuration = 30
@@ -12,7 +11,7 @@ export async function POST(request: NextRequest) {
 
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
-    return NextResponse.json({ error: 'Липсва GEMINI_API_KEY в настройките на сървъра' }, { status: 500 })
+    return NextResponse.json({ error: 'Липсва GEMINI_API_KEY' }, { status: 500 })
   }
 
   try {
@@ -23,14 +22,11 @@ export async function POST(request: NextRequest) {
 
     const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
     const mediaTypeMatch = image.match(/^data:(image\/\w+);base64,/)
-    const mimeType = (mediaTypeMatch?.[1] ?? 'image/jpeg') as string
-
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' })
+    const mimeType = mediaTypeMatch?.[1] ?? 'image/jpeg'
 
     const prompt = `This is a book cover photo. Identify the book and return ALL available information.
 
-Return ONLY a valid JSON object (no markdown, no code blocks, no explanation) with these exact fields:
+Return ONLY a valid JSON object (no markdown, no code blocks) with these exact fields:
 {
   "title": "exact book title",
   "authors": ["Author Name"],
@@ -43,19 +39,33 @@ Return ONLY a valid JSON object (no markdown, no code blocks, no explanation) wi
   "language": "bg"
 }
 
-Rules: description MUST be in Bulgarian. Use null for unknown fields. Numbers must be integers not strings.`
+Description MUST be in Bulgarian. Use null for unknown fields. Numbers must be integers.`
 
-    const result = await model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { inlineData: { data: base64Data, mimeType } },
-          { text: prompt },
-        ],
-      }],
-    })
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { inline_data: { mime_type: mimeType, data: base64Data } },
+              { text: prompt },
+            ],
+          }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 1024 },
+        }),
+      }
+    )
 
-    const text = result.response.text()
+    if (!res.ok) {
+      const errBody = await res.text()
+      console.error('Gemini API error:', res.status, errBody)
+      return NextResponse.json({ error: `Gemini грешка ${res.status}: ${errBody.slice(0, 200)}` }, { status: 500 })
+    }
+
+    const data = await res.json()
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
     console.log('Gemini response:', text.slice(0, 300))
 
     const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -66,14 +76,8 @@ Rules: description MUST be in Bulgarian. Use null for unknown fields. Numbers mu
     const bookData = JSON.parse(jsonMatch[0])
     return NextResponse.json({ book: bookData })
   } catch (err: unknown) {
-    console.error('scan-book full error:', err)
+    console.error('scan-book error:', err)
     const message = err instanceof Error ? err.message : String(err)
-    if (message.includes('API_KEY') || message.includes('API key') || message.includes('403')) {
-      return NextResponse.json({ error: 'Невалиден GEMINI_API_KEY' }, { status: 500 })
-    }
-    if (message.includes('quota') || message.includes('429')) {
-      return NextResponse.json({ error: 'Достигнат лимит на безплатния план. Опитайте след малко.' }, { status: 429 })
-    }
     return NextResponse.json({ error: `Грешка: ${message}` }, { status: 500 })
   }
 }
