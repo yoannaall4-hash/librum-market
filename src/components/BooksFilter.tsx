@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { CONDITIONS } from '@/lib/utils'
 import Button from './ui/Button'
 import { useLocale } from '@/contexts/LocaleContext'
+import EditableText from './EditableText'
 
 interface Category { id: string; name: string; slug: string }
 interface FilterProps {
@@ -90,7 +91,10 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
                 onClick={() => setAndNavigate('category', params.category === cat.slug ? '' : cat.slug)}
                 className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.category === cat.slug ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
               >
-                {t(`category_names.${cat.slug}`) || cat.name}
+                <EditableText
+                  contentKey={`category.${cat.slug}`}
+                  defaultValue={t(`category_names.${cat.slug}`) || cat.name}
+                />
               </button>
             ))}
           </div>

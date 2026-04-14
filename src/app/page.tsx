@@ -168,7 +168,9 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-8">
               <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-1">{t('home.categories')}</p>
-              <h2 className="text-xl font-bold text-stone-800">Разгледай по категория</h2>
+              <h2 className="text-xl font-bold text-stone-800">
+                <EditableText contentKey="home.categories_title" defaultValue={ct('home.categories_title') || 'Разгледай по категория'} />
+              </h2>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3">
               {categories.map((cat) => {
@@ -183,7 +185,12 @@ export default async function HomePage() {
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 text-2xl transition-all group-hover:scale-110 ${iconColorClass}`}>
                       {CATEGORY_ICONS[cat.slug] || '📚'}
                     </div>
-                    <span className="text-xs font-semibold text-stone-600 group-hover:text-stone-900 text-center leading-tight">{cat.name}</span>
+                    <span className="text-xs font-semibold text-stone-600 group-hover:text-stone-900 text-center leading-tight">
+                      <EditableText
+                        contentKey={`category.${cat.slug}`}
+                        defaultValue={db[`category.${cat.slug}`] || cat.name}
+                      />
+                    </span>
                   </Link>
                 )
               })}

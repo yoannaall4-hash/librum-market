@@ -136,7 +136,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
       {/* Mobile category pills */}
       <div className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
         <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
-          {[{ id: '', name: t('books.all_categories'), slug: '' }, ...categories.map(c => ({ ...c, name: t(`category_names.${c.slug}`) || c.name }))].map((cat) => {
+          {[{ id: '', name: t('books.all_categories'), slug: '' }, ...categories].map((cat) => {
             const sp = new URLSearchParams()
             if (params.q) sp.set('q', params.q)
             if (params.sort) sp.set('sort', params.sort)
@@ -144,6 +144,9 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
             if (cat.slug) sp.set('category', cat.slug)
             const href = `/books${sp.toString() ? `?${sp.toString()}` : ''}`
             const active = cat.slug ? params.category === cat.slug : !params.category
+            const displayName = cat.slug
+              ? (db[`category.${cat.slug}`] || (t as (k: string) => string)(`category_names.${cat.slug}`) || cat.name)
+              : cat.name
             return (
               <a
                 key={cat.id || 'all'}
@@ -152,7 +155,10 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
                   active ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-600 border-stone-300'
                 }`}
               >
-                {cat.name}
+                {cat.slug
+                  ? <EditableText contentKey={`category.${cat.slug}`} defaultValue={displayName} />
+                  : displayName
+                }
               </a>
             )
           })}
