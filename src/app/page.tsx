@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma'
 import BookCard from '@/components/BookCard'
 import HeroSlideshow from '@/components/HeroSlideshow'
 import { getT } from '@/lib/getT'
+import EditableText from '@/components/EditableText'
 
 async function getSiteContent(locale: string) {
   try {
@@ -135,7 +136,10 @@ export default async function HomePage() {
       {/* Upload-a-book promo bar */}
       <div className="bg-stone-800 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-6">
-          <p className="text-stone-100 text-sm font-medium">{ct('home.banner_desktop')}<span className="text-stone-400 ml-2 font-normal">{ct('home.banner_desktop_sub')}</span></p>
+          <p className="text-stone-100 text-sm font-medium">
+            <EditableText contentKey="home.banner_desktop" defaultValue={ct('home.banner_desktop')} className="text-stone-100 text-sm font-medium" />
+            <EditableText contentKey="home.banner_desktop_sub" defaultValue={ct('home.banner_desktop_sub')} className="text-stone-400 ml-2 font-normal" />
+          </p>
           <Link href="/books/new" className="shrink-0 px-5 py-1.5 bg-stone-100 text-stone-800 text-sm font-semibold rounded-lg hover:bg-white transition-colors whitespace-nowrap">
             {t('home.banner_upload')}
           </Link>
@@ -145,8 +149,12 @@ export default async function HomePage() {
       <div className="md:hidden bg-stone-800">
         <Link href="/books/new" className="flex items-center gap-3 px-4 py-3">
           <div className="flex-1">
-            <p className="text-stone-100 font-semibold text-sm leading-tight">{ct('home.banner_mobile')}</p>
-            <p className="text-stone-400 text-xs mt-0.5">{ct('home.banner_mobile_sub')}</p>
+            <p className="text-stone-100 font-semibold text-sm leading-tight">
+              <EditableText contentKey="home.banner_mobile" defaultValue={ct('home.banner_mobile')} />
+            </p>
+            <p className="text-stone-400 text-xs mt-0.5">
+              <EditableText contentKey="home.banner_mobile_sub" defaultValue={ct('home.banner_mobile_sub')} />
+            </p>
           </div>
           <svg className="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -244,13 +252,27 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-2">{t('home.how_label')}</p>
-            <h2 className="text-2xl font-bold text-stone-800">{ct('home.how_title')}</h2>
+            <h2 className="text-2xl font-bold text-stone-800">
+              <EditableText contentKey="home.how_title" defaultValue={ct('home.how_title')} tag="span" />
+            </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
-              { title: ct('home.step1_title'), desc: ct('home.step1_desc'), icon: <CameraIcon />, num: '01' },
-              { title: ct('home.step2_title'), desc: ct('home.step2_desc'), icon: <ShieldIcon />, num: '02' },
-              { title: ct('home.step3_title'), desc: ct('home.step3_desc'), icon: <BankNoteIcon />, num: '03' },
+              {
+                title: <EditableText contentKey="home.step1_title" defaultValue={ct('home.step1_title')} />,
+                desc: <EditableText contentKey="home.step1_desc" defaultValue={ct('home.step1_desc')} multiline />,
+                icon: <CameraIcon />, num: '01',
+              },
+              {
+                title: <EditableText contentKey="home.step2_title" defaultValue={ct('home.step2_title')} />,
+                desc: <EditableText contentKey="home.step2_desc" defaultValue={ct('home.step2_desc')} multiline />,
+                icon: <ShieldIcon />, num: '02',
+              },
+              {
+                title: <EditableText contentKey="home.step3_title" defaultValue={ct('home.step3_title')} />,
+                desc: <EditableText contentKey="home.step3_desc" defaultValue={ct('home.step3_desc')} multiline />,
+                icon: <BankNoteIcon />, num: '03',
+              },
             ].map((item) => (
               <div key={item.num} className="flex gap-5">
                 <div className="shrink-0">

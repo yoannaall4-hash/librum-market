@@ -5,12 +5,11 @@ import Navbar from '@/components/layout/Navbar'
 import MobileNav from '@/components/layout/MobileNav'
 import SplashScreen from '@/components/SplashScreen'
 import SupportChat from '@/components/SupportChat'
-import AdminContentPanel from '@/components/AdminContentPanel'
 import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
 import { CartProvider } from '@/contexts/CartContext'
-import { AdminPanelProvider } from '@/contexts/AdminPanelContext'
 import { getT } from '@/lib/getT'
+import EditableText from '@/components/EditableText'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
@@ -45,7 +44,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 antialiased">
         <LocaleProvider>
-        <AdminPanelProvider>
         <CartProvider>
         <SplashScreen />
         <Navbar />
@@ -62,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
                 <p className="text-sm text-stone-500 leading-relaxed mb-5">
-                  {t('footer.tagline')}
+                  <EditableText contentKey="footer.tagline" defaultValue={t('footer.tagline')} multiline />
                 </p>
                 {/* Social */}
                 <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('footer.follow_us')}</p>
@@ -109,7 +107,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 >
                   librum.bookstore@gmail.com
                 </a>
-                <p className="text-xs text-stone-600 mt-3 leading-relaxed">{t('footer.response_time')}</p>
+                <p className="text-xs text-stone-600 mt-3 leading-relaxed">
+                  <EditableText contentKey="footer.response_time" defaultValue={t('footer.response_time')} />
+                </p>
               </div>
             </div>
 
@@ -140,11 +140,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </footer>
 
-        <AdminContentPanel />
         <MobileNav />
         <SupportChat />
         </CartProvider>
-        </AdminPanelProvider>
         </LocaleProvider>
       </body>
     </html>
