@@ -1,10 +1,14 @@
 'use client'
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { formatPrice, COURIER_PRICES, calculateCommission } from '@/lib/utils'
 import { useLocale } from '@/contexts/LocaleContext'
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface Book {
   id: string
@@ -17,6 +21,76 @@ interface Book {
 
 type DeliveryType = 'address' | 'econt_office' | 'speedy_office' | 'international'
 
+// ---- Inner Stripe payment form (needs Elements context) ----
+function StripePaymentForm({ orderId, total, onBack }: { orderId: string; total: number; onBack: () => void }) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const router = useRouter()
+  const { t } = useLocale()
+  const [paying, setPaying] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handlePay(e: React.FormEvent) {
+    e.preventDefault()
+    if (!stripe || !elements) return
+    setPaying(true)
+    setError('')
+
+    const { error: submitError } = await elements.submit()
+    if (submitError) {
+      setError(submitError.message ?? 'Грешка')
+      setPaying(false)
+      return
+    }
+
+    const { error: payError } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/dashboard/orders/${orderId}?paid=1`,
+      },
+      redirect: 'if_required',
+    })
+
+    if (payError) {
+      setError(payError.message ?? 'Грешка при плащане')
+      setPaying(false)
+    } else {
+      // Payment succeeded without redirect (e.g. card)
+      router.push(`/dashboard/orders/${orderId}?paid=1`)
+    }
+  }
+
+  return (
+    <form onSubmit={handlePay} className="space-y-6">
+      <div className="bg-white rounded-2xl border border-stone-200 p-6">
+        <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.payment_title')}</h2>
+
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 text-sm text-amber-800">
+          {t('checkout.protected_payment')}
+        </div>
+
+        <div className="mb-5">
+          <PaymentElement options={{ layout: 'tabs' }} />
+        </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+        )}
+
+        <div className="flex gap-4">
+          <Button type="button" variant="secondary" onClick={onBack} className="flex-1">
+            {t('checkout.back')}
+          </Button>
+          <Button type="submit" loading={paying} disabled={!stripe} className="flex-1">
+            {t('checkout.pay')} {formatPrice(total)}
+          </Button>
+        </div>
+      </div>
+    </form>
+  )
+}
+
+// ---- Main checkout content ----
 function CheckoutContent() {
   const router = useRouter()
   const params = useSearchParams()
@@ -35,6 +109,8 @@ function CheckoutContent() {
   const [error, setError] = useState('')
   const [step, setStep] = useState<'address' | 'payment'>('address')
   const [orderId, setOrderId] = useState('')
+  const [clientSecret, setClientSecret] = useState('')
+  const [orderTotal, setOrderTotal] = useState(0)
 
   useEffect(() => {
     if (!bookId) { router.push('/books'); return }
@@ -43,7 +119,6 @@ function CheckoutContent() {
       .then(data => setBook(data.book))
   }, [bookId, router])
 
-  // Sync courier with delivery type
   useEffect(() => {
     if (deliveryType === 'econt_office') setCourier('econt')
     if (deliveryType === 'speedy_office') setCourier('speedy')
@@ -94,12 +169,14 @@ function CheckoutContent() {
         body: JSON.stringify({
           items: [{ bookId: book.id, quantity: 1 }],
           shippingAddress: buildShippingAddress(),
-          courierService: courier,
+          courierService: deliveryType === 'international' ? null : courier,
         }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error); return }
       setOrderId(data.orderId)
+      setClientSecret(data.clientSecret)
+      setOrderTotal(data.amount)
       setStep('payment')
     } catch {
       setError(t('checkout.error_connection'))
@@ -108,23 +185,14 @@ function CheckoutContent() {
     }
   }
 
-  async function confirmPayment() {
-    setLoading(true)
-    await fetch(`/api/orders/${orderId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'paid' }),
-    })
-    router.push(`/dashboard/orders/${orderId}?paid=1`)
-    setLoading(false)
-  }
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-stone-800 mb-8">{t('shipping.title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
+
+          {/* --- ADDRESS STEP --- */}
           {step === 'address' && (
             <form onSubmit={proceedToPayment} className="space-y-6">
               {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>}
@@ -133,24 +201,18 @@ function CheckoutContent() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
                 <h2 className="font-semibold text-stone-700">{t('shipping.outside_bulgaria')}</h2>
                 <div className="flex gap-3">
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={() => { setOutsideBulgaria(false); setDeliveryType('address') }}
                     className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === false ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
-                  >
-                    {t('shipping.no')} 🇧🇬
-                  </button>
-                  <button
-                    type="button"
+                  >{t('shipping.no')} 🇧🇬</button>
+                  <button type="button"
                     onClick={() => { setOutsideBulgaria(true); setDeliveryType('international') }}
                     className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === true ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
-                  >
-                    {t('shipping.yes')} 🌍
-                  </button>
+                  >{t('shipping.yes')} 🌍</button>
                 </div>
               </div>
 
-              {/* International shipping info */}
+              {/* International info */}
               {outsideBulgaria === true && (
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
                   <h2 className="font-semibold text-stone-700">{t('shipping.choose')}</h2>
@@ -161,37 +223,21 @@ function CheckoutContent() {
                   <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
                     <p className="font-medium text-stone-700 text-sm">🏦 {t('shipping.transfer')}</p>
                     <p className="text-stone-500 text-xs mt-1">{t('shipping.transfer_desc')}</p>
-                    <p className="text-stone-600 text-sm mt-2 font-mono">IBAN: BG00 XXXX 0000 0000 0000 00</p>
-                    <p className="text-stone-500 text-xs mt-1">BIC: XXXXBGSF</p>
                   </div>
                 </div>
               )}
 
-              {/* Domestic delivery options */}
+              {/* Domestic delivery */}
               {outsideBulgaria === false && (
               <>
-              {/* Contact info */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
                 <h2 className="font-semibold text-stone-700">{t('checkout.contact_info')}</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    label={t('checkout.full_name')}
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Иван Петров"
-                    required
-                  />
-                  <Input
-                    label={t('checkout.phone')}
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    placeholder={t('checkout.phone_placeholder')}
-                    required
-                  />
+                  <Input label={t('checkout.full_name')} value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров" required />
+                  <Input label={t('checkout.phone')} value={phone} onChange={e => setPhone(e.target.value)} placeholder={t('checkout.phone_placeholder')} required />
                 </div>
               </div>
 
-              {/* Delivery type */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
                 <h2 className="font-semibold text-stone-700">{t('checkout.delivery_method')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -200,9 +246,7 @@ function CheckoutContent() {
                     { type: 'econt_office' as DeliveryType, label: t('checkout.econt_office'), icon: '📦', price: formatPrice(COURIER_PRICES.econt.price) },
                     { type: 'speedy_office' as DeliveryType, label: t('checkout.speedy_office'), icon: '🚚', price: formatPrice(COURIER_PRICES.speedy.price) },
                   ]).map(opt => (
-                    <button
-                      key={opt.type}
-                      type="button"
+                    <button key={opt.type} type="button"
                       onClick={() => { setDeliveryType(opt.type); setOfficeAddress('') }}
                       className={`p-4 rounded-xl border-2 text-left transition-all ${deliveryType === opt.type ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
@@ -213,7 +257,6 @@ function CheckoutContent() {
                   ))}
                 </div>
 
-                {/* Home address fields */}
                 {deliveryType === 'address' && (
                   <div className="space-y-4 pt-2 border-t border-stone-100">
                     <div className="flex gap-3">
@@ -228,31 +271,13 @@ function CheckoutContent() {
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        label={t('checkout.city')}
-                        value={address.city}
-                        onChange={e => setAddress({ ...address, city: e.target.value })}
-                        placeholder={t('checkout.city_placeholder')}
-                        required
-                      />
-                      <Input
-                        label={t('checkout.postcode')}
-                        value={address.postCode}
-                        onChange={e => setAddress({ ...address, postCode: e.target.value })}
-                        placeholder={t('checkout.postcode_placeholder')}
-                      />
+                      <Input label={t('checkout.city')} value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} placeholder={t('checkout.city_placeholder')} required />
+                      <Input label={t('checkout.postcode')} value={address.postCode} onChange={e => setAddress({ ...address, postCode: e.target.value })} placeholder={t('checkout.postcode_placeholder')} />
                     </div>
-                    <Input
-                      label={t('checkout.street')}
-                      value={address.street}
-                      onChange={e => setAddress({ ...address, street: e.target.value })}
-                      placeholder={t('checkout.street_placeholder')}
-                      required
-                    />
+                    <Input label={t('checkout.street')} value={address.street} onChange={e => setAddress({ ...address, street: e.target.value })} placeholder={t('checkout.street_placeholder')} required />
                   </div>
                 )}
 
-                {/* Manual office address input */}
                 {(deliveryType === 'econt_office' || deliveryType === 'speedy_office') && (
                   <div className="pt-2 border-t border-stone-100">
                     <Input
@@ -272,40 +297,41 @@ function CheckoutContent() {
               <Button type="submit" size="lg" className="w-full" loading={loading}>
                 {t('checkout.proceed')}
               </Button>
-
               </>
               )}
 
-              {/* For international */}
               {outsideBulgaria === true && (
-                <Button type="button" size="lg" className="w-full" onClick={() => setStep('payment')}>
+                <Button type="submit" size="lg" className="w-full" loading={loading}>
                   {t('checkout.proceed')}
                 </Button>
               )}
             </form>
           )}
 
-          {step === 'payment' && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-2xl border border-stone-200 p-6">
-                <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.payment_title')}</h2>
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
-                  {t('checkout.protected_payment')}
-                </div>
-                <div className="border-2 border-dashed border-stone-300 rounded-xl p-8 text-center text-stone-500">
-                  <p className="text-sm mb-2">💳 Stripe форма за плащане</p>
-                  <p className="text-xs text-stone-400">В продукционна среда тук се показват полетата за карта чрез Stripe Elements.</p>
-                </div>
-                <div className="mt-6 flex gap-4">
-                  <Button variant="secondary" onClick={() => setStep('address')} className="flex-1">{t('checkout.back')}</Button>
-                  <Button onClick={confirmPayment} loading={loading} className="flex-1">{t('checkout.pay')} {formatPrice(total)}</Button>
-                </div>
-              </div>
-            </div>
+          {/* --- PAYMENT STEP --- */}
+          {step === 'payment' && clientSecret && (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: 'stripe',
+                  variables: { colorPrimary: '#b45309', borderRadius: '8px' },
+                },
+                locale: 'bg',
+              }}
+            >
+              <StripePaymentForm
+                orderId={orderId}
+                total={orderTotal || total}
+                onBack={() => setStep('address')}
+              />
+            </Elements>
           )}
+
         </div>
 
-        {/* Summary */}
+        {/* Summary sidebar */}
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-stone-200 p-5">
             <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.summary')}</h2>
