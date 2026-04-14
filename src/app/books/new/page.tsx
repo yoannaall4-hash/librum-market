@@ -24,6 +24,30 @@ export default function NewBookPage() {
     authorNames: '',
   })
   const [images, setImages] = useState<string[]>([])
+  const [showNewPublisher, setShowNewPublisher] = useState(false)
+  const [newPublisherName, setNewPublisherName] = useState('')
+  const [addingPublisher, setAddingPublisher] = useState(false)
+
+  async function handleAddPublisher() {
+    if (!newPublisherName.trim()) return
+    setAddingPublisher(true)
+    try {
+      const res = await fetch('/api/publishers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newPublisherName.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setPublishers(prev => [...prev, data.publisher].sort((a, b) => a.name.localeCompare(b.name)))
+        setForm(f => ({ ...f, publisherId: data.publisher.id }))
+        setNewPublisherName('')
+        setShowNewPublisher(false)
+      }
+    } finally {
+      setAddingPublisher(false)
+    }
+  }
 
   useEffect(() => {
     fetch('/api/me').then(r => r.json()).then(data => {
@@ -97,7 +121,50 @@ export default function NewBookPage() {
             placeholder="Напр. Свети Григорий Паламас, Свети Симеон Нови Богослов"
           />
           <Select label="Категория" id="categoryId" value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} options={categoryOptions} />
-          <Select label="Издателство" id="publisherId" value={form.publisherId} onChange={(e) => setForm({ ...form, publisherId: e.target.value })} options={publisherOptions} />
+          {/* Publisher with inline add */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-medium text-stone-700">Издателство</label>
+              <button
+                type="button"
+                onClick={() => { setShowNewPublisher(!showNewPublisher); setNewPublisherName('') }}
+                className="text-xs text-amber-700 hover:text-amber-800 font-medium"
+              >
+                {showNewPublisher ? '✕ Отказ' : '+ Добави ново'}
+              </button>
+            </div>
+
+            {showNewPublisher ? (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newPublisherName}
+                  onChange={(e) => setNewPublisherName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddPublisher())}
+                  placeholder="Название на издателството"
+                  className="flex-1 rounded-lg border border-amber-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  onClick={handleAddPublisher}
+                  disabled={addingPublisher || !newPublisherName.trim()}
+                  className="px-4 py-2 bg-amber-700 text-white text-sm rounded-lg hover:bg-amber-800 disabled:opacity-40 transition-colors"
+                >
+                  {addingPublisher ? '...' : 'Добави'}
+                </button>
+              </div>
+            ) : (
+              <select
+                id="publisherId"
+                value={form.publisherId}
+                onChange={(e) => setForm({ ...form, publisherId: e.target.value })}
+                className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+              >
+                {publisherOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            )}
+          </div>
           <ImageUpload images={images} onChange={setImages} />
         </div>
 
