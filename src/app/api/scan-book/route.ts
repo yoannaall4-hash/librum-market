@@ -71,18 +71,37 @@ export async function POST(request: NextRequest) {
     const data = await res.json()
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 
+    console.log('[scan-book] rawText from Gemini:', rawText.slice(0, 500))
+
+    if (!rawText) {
+      console.log('[scan-book] Empty response from Gemini, full response:', JSON.stringify(data).slice(0, 500))
+      return NextResponse.json({ error: 'Gemini не върна текст. Опитайте с по-ясна снимка.' }, { status: 422 })
+    }
+
     let result: Record<string, unknown> = {}
     try {
-      const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/)
-      const jsonStr = jsonMatch ? jsonMatch[1] : rawText.trim()
+      // Strip markdown fences if present
+      const fenceMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/)
+      const jsonStr = fenceMatch ? fenceMatch[1].trim() : rawText.trim()
       result = JSON.parse(jsonStr)
     } catch {
+      console.log('[scan-book] JSON parse failed, rawText:', rawText.slice(0, 300))
       return NextResponse.json({ error: 'Не успях да разчета текста. Опитайте с по-ясна снимка.' }, { status: 422 })
+    }
+
+    console.log('[scan-book] parsed result:', JSON.stringify(result))
+
+    // Handle authors as either array or string
+    let authors: string[] = []
+    if (Array.isArray(result.authors)) {
+      authors = result.authors.filter(Boolean) as string[]
+    } else if (typeof result.authors === 'string' && result.authors) {
+      authors = [result.authors]
     }
 
     return NextResponse.json({
       title: result.title ?? null,
-      authors: Array.isArray(result.authors) ? result.authors : [],
+      authors,
       description: result.description ?? null,
       isbn: result.isbn ?? null,
       year: result.year ?? null,

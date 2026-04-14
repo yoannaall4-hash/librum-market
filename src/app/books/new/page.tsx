@@ -53,6 +53,8 @@ export default function NewBookPage() {
   const [scanningBack, setScanningBack] = useState(false)
   const [scanFields, setScanFields] = useState<string[]>([])
   const [scanIban, setScanIban] = useState<string | null>(null)
+  const [scanDebug, setScanDebug] = useState<string | null>(null)
+  const [scanNoText, setScanNoText] = useState(false)
   const frontCameraRef = useRef<HTMLInputElement>(null)
   const frontFileRef = useRef<HTMLInputElement>(null)
   const backCameraRef = useRef<HTMLInputElement>(null)
@@ -111,11 +113,12 @@ export default function NewBookPage() {
     if (position === 'front') setScanningFront(true)
     else setScanningBack(true)
     setError('')
+    setScanNoText(false)
 
     try {
       const base64 = await resizeImage(file)
 
-      // Add photo immediately
+      // Add photo immediately to listing
       setImages(prev => prev.includes(base64) ? prev : position === 'front' ? [base64, ...prev] : [...prev, base64])
 
       const res = await fetch('/api/scan-book', {
@@ -125,6 +128,9 @@ export default function NewBookPage() {
       })
 
       const data = await res.json()
+
+      // Always save debug output
+      setScanDebug(JSON.stringify(data, null, 2))
 
       if (!res.ok) {
         setError(data.error || 'Грешка при разчитане на корицата')
@@ -152,6 +158,11 @@ export default function NewBookPage() {
         if (publisherMatch) filled.push('Издателство')
       }
 
+      if (filled.length === 0) {
+        setScanNoText(true)
+        return
+      }
+
       // Apply form updates — only overwrite empty fields
       setForm(prev => {
         const u = { ...prev }
@@ -168,10 +179,7 @@ export default function NewBookPage() {
       })
 
       if (data.iban) setScanIban(String(data.iban))
-
-      if (filled.length) {
-        setScanFields(prev => [...new Set([...prev, ...filled])])
-      }
+      setScanFields(prev => [...new Set([...prev, ...filled])])
     } catch (e) {
       setError('Грешка при обработка на снимката')
       console.error(e)
@@ -251,6 +259,19 @@ export default function NewBookPage() {
               </p>
             )}
           </div>
+        )}
+
+        {scanNoText && (
+          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl text-yellow-800 text-sm">
+            ⚠️ Не беше открит четим текст на корицата. Опитайте с по-ясна снимка или попълнете полетата ръчно.
+          </div>
+        )}
+
+        {scanDebug && (
+          <details className="mb-4">
+            <summary className="text-xs text-stone-400 cursor-pointer select-none">🔍 Отговор от сканирането</summary>
+            <pre className="text-xs bg-stone-900 text-green-300 p-3 rounded-lg mt-1 overflow-auto max-h-48 whitespace-pre-wrap">{scanDebug}</pre>
+          </details>
         )}
 
         <div className="space-y-3">
