@@ -115,12 +115,13 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             </p>
           )}
 
-          <div className="my-6 flex items-center gap-4">
+          <div className="my-6 flex items-baseline gap-3">
             <span className="text-4xl font-bold text-amber-700">{formatPrice(book.price)}</span>
+            <span className="text-xl text-stone-400 font-medium">/ €{(book.price / 1.95583).toFixed(2)}</span>
             {book.originalPrice && book.originalPrice > book.price && (
-              <div>
-                <span className="text-lg text-stone-400 line-through">{formatPrice(book.originalPrice)}</span>
-                <Badge variant="danger" className="ml-2">
+              <div className="flex items-center gap-2">
+                <span className="text-base text-stone-400 line-through">{formatPrice(book.originalPrice)}</span>
+                <Badge variant="danger">
                   -{Math.round((1 - book.price / book.originalPrice) * 100)}%
                 </Badge>
               </div>
