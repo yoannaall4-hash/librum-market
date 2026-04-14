@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
-import { formatPrice, formatDate, PERIODS, SELLER_TYPES } from '@/lib/utils'
+import { formatPrice, formatEur, formatDate, PERIODS, SELLER_TYPES } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 import Stars from '@/components/ui/Stars'
 import BookActions from '@/components/BookActions'
@@ -126,7 +126,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
           <div className="my-6">
             <div className="flex items-baseline gap-3 flex-wrap">
               <span className="text-4xl font-bold text-amber-700">{formatPrice(book.price)}</span>
-              <span className="text-xl text-stone-400 font-medium">/ €{(book.price * 1.15).toFixed(2)}</span>
+              <span className="text-xl text-stone-400 font-medium">/ {formatEur(book.price)}</span>
               {book.originalPrice && book.originalPrice > book.price && (
                 <div className="flex items-center gap-2">
                   <span className="text-base text-stone-400 line-through">{formatPrice(book.originalPrice)}</span>

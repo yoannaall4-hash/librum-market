@@ -13,6 +13,11 @@ export function formatPrice(price: number): string {
   }).format(price)
 }
 
+// Fixed EUR/BGN peg: 1 EUR = 1.95583 BGN
+export function formatEur(priceInBgn: number): string {
+  return `€${(priceInBgn / 1.95583).toFixed(2)}`
+}
+
 export function formatDate(date: Date | string): string {
   return new Intl.DateTimeFormat('bg-BG', {
     year: 'numeric',

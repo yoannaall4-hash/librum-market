@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { formatPrice, SELLER_TYPES } from '@/lib/utils'
+import { formatPrice, formatEur, SELLER_TYPES } from '@/lib/utils'
 import Badge from './ui/Badge'
 import { getT } from '@/lib/getT'
 
@@ -75,7 +75,7 @@ export default async function BookCard({ book }: BookCardProps) {
           <div className="mt-2 flex items-center justify-between">
             <div>
               <span className="text-lg font-bold text-amber-700">{formatPrice(book.price)}</span>
-              <span className="text-xs text-stone-400 ml-1.5">/ €{(book.price * 1.15).toFixed(2)}</span>
+              <span className="text-xs text-stone-400 ml-1.5">/ {formatEur(book.price)}</span>
               {book.originalPrice && book.originalPrice > book.price && (
                 <span className="text-xs text-stone-400 line-through ml-2">{formatPrice(book.originalPrice)}</span>
               )}

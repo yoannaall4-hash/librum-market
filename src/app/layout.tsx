@@ -46,56 +46,93 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Navbar />
         <main className="flex-1 mobile-page-offset">{children}</main>
 
-        <footer className="bg-stone-900 text-stone-400 pt-12 pb-6 mt-16 hidden md:block">
+        {/* Desktop footer */}
+        <footer className="bg-stone-950 text-stone-400 pt-14 pb-8 mt-16 hidden md:block">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-              {/* Brand */}
-              <div>
-                <div className="flex items-center mb-3">
+            <div className="grid grid-cols-4 gap-10 mb-10">
+              {/* Brand + Social */}
+              <div className="col-span-1">
+                <div className="flex items-center mb-4">
                   <span className="text-white font-bold text-lg tracking-widest">LIBRUM</span>
                   <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
-                <p className="text-sm text-stone-500 leading-relaxed">
+                <p className="text-sm text-stone-500 leading-relaxed mb-5">
                   {t('footer.tagline')}
                 </p>
+                {/* Social */}
+                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">{t('footer.follow_us')}</p>
+                <a
+                  href="https://www.facebook.com/Librumbookstore/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-blue-400 transition-colors group"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                  <span className="group-hover:underline">Facebook</span>
+                </a>
               </div>
 
-              {/* Links */}
+              {/* Shop links */}
               <div>
-                <p className="text-stone-300 font-medium text-sm mb-3">{t('footer.navigation')}</p>
-                <div className="space-y-2">
-                  <Link href="/books" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.all_books')}</Link>
-                  <Link href="/books/new" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.sell_book')}</Link>
-                  <Link href="/about" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.about')}</Link>
+                <p className="text-stone-300 font-semibold text-sm mb-4 uppercase tracking-wider">{t('footer.navigation')}</p>
+                <div className="space-y-2.5">
+                  <Link href="/books" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.all_books')}</Link>
+                  <Link href="/books/new" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.sell_book')}</Link>
+                  <Link href="/about" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.about')}</Link>
+                </div>
+              </div>
+
+              {/* Legal */}
+              <div>
+                <p className="text-stone-300 font-semibold text-sm mb-4 uppercase tracking-wider">{t('footer.legal')}</p>
+                <div className="space-y-2.5">
+                  <Link href="/privacy-policy" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.privacy')}</Link>
+                  <Link href="/terms" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.terms')}</Link>
+                  <Link href="/cookies" className="block text-sm text-stone-500 hover:text-stone-200 transition-colors">{t('footer.cookies')}</Link>
                 </div>
               </div>
 
               {/* Contact */}
               <div>
-                <p className="text-stone-300 font-medium text-sm mb-3">{t('footer.contact')}</p>
+                <p className="text-stone-300 font-semibold text-sm mb-4 uppercase tracking-wider">{t('footer.contact')}</p>
                 <p className="text-sm text-stone-500 mb-2">{t('footer.contact_desc')}</p>
                 <a
                   href="mailto:librum.bookstore@gmail.com"
-                  className="text-sm text-amber-400 hover:text-amber-300 transition-colors break-all"
+                  className="text-sm text-amber-400 hover:text-amber-300 transition-colors"
                 >
                   librum.bookstore@gmail.com
                 </a>
-                <p className="text-xs text-stone-600 mt-3">{t('footer.response_time')}</p>
+                <p className="text-xs text-stone-600 mt-3 leading-relaxed">{t('footer.response_time')}</p>
               </div>
             </div>
 
-            <div className="border-t border-stone-800 pt-6 text-center">
+            <div className="border-t border-stone-800 pt-6 flex items-center justify-between">
               <p className="text-xs text-stone-600">© {new Date().getFullYear()} Librum Market. {t('footer.rights')}</p>
+              <div className="flex items-center gap-4">
+                <Link href="/privacy-policy" className="text-xs text-stone-600 hover:text-stone-400 transition-colors">{t('footer.privacy')}</Link>
+                <Link href="/terms" className="text-xs text-stone-600 hover:text-stone-400 transition-colors">{t('footer.terms')}</Link>
+              </div>
             </div>
           </div>
         </footer>
 
         {/* Mobile footer (compact) */}
-        <footer className="md:hidden bg-stone-900 text-stone-500 py-4 px-4 mb-16 mt-8 text-center">
-          <p className="text-xs">© {new Date().getFullYear()} Librum Market</p>
-          <a href="mailto:librum.bookstore@gmail.com" className="text-xs text-amber-600 mt-1 block">
-            librum.bookstore@gmail.com
-          </a>
+        <footer className="md:hidden bg-stone-950 text-stone-500 py-5 px-4 mb-16 mt-8">
+          <div className="text-center mb-3">
+            <span className="text-white font-bold text-sm tracking-widest">LIBRUM</span>
+            <span className="text-stone-500 font-light text-sm ml-1">Market</span>
+          </div>
+          <div className="flex justify-center gap-4 mb-3 text-xs">
+            <Link href="/privacy-policy" className="text-stone-600 hover:text-stone-400">{t('footer.privacy')}</Link>
+            <Link href="/terms" className="text-stone-600 hover:text-stone-400">{t('footer.terms')}</Link>
+            <Link href="/cookies" className="text-stone-600 hover:text-stone-400">{t('footer.cookies')}</Link>
+          </div>
+          <div className="text-center">
+            <a href="mailto:librum.bookstore@gmail.com" className="text-xs text-amber-600 block">librum.bookstore@gmail.com</a>
+            <p className="text-xs text-stone-700 mt-1">© {new Date().getFullYear()} Librum Market</p>
+          </div>
         </footer>
 
         <MobileNav />
