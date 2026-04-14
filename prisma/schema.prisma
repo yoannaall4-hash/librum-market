@@ -19,6 +19,7 @@ model User {
   bio           String?
   bankAccount   String?                           // IBAN for payouts
   stripeAccountId String?
+  country       String?                           // ISO 3166-1 alpha-2: BG, RO, TR, GR, etc.
   isVerified    Boolean   @default(false)
   isBanned      Boolean   @default(false)
   createdAt     DateTime  @default(now())

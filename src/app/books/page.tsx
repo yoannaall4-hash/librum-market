@@ -16,11 +16,12 @@ interface SearchParams {
   maxPrice?: string
   sort?: string
   page?: string
+  lang?: string
   [key: string]: string | undefined
 }
 
 async function getBooks(params: SearchParams) {
-  const { q, category, period, condition, minPrice, maxPrice, sort, page } = params
+  const { q, category, period, condition, minPrice, maxPrice, sort, page, lang } = params
   const pageNum = parseInt(page || '1')
   const limit = 20
 
@@ -40,6 +41,7 @@ async function getBooks(params: SearchParams) {
   if (category) where.category = { slug: category }
   if (period) where.period = period
   if (condition) where.condition = condition
+  if (lang) where.language = lang
 
   const orderBy: Record<string, string> =
     sort === 'price_asc' ? { price: 'asc' }
@@ -111,6 +113,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
             const sp = new URLSearchParams()
             if (params.q) sp.set('q', params.q)
             if (params.sort) sp.set('sort', params.sort)
+            if (params.lang) sp.set('lang', params.lang)
             if (cat.slug) sp.set('category', cat.slug)
             const href = `/books${sp.toString() ? `?${sp.toString()}` : ''}`
             const active = cat.slug ? params.category === cat.slug : !params.category
@@ -176,6 +179,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
                     if (params.period) sp.set('period', params.period)
                     if (params.minPrice) sp.set('minPrice', params.minPrice)
                     if (params.maxPrice) sp.set('maxPrice', params.maxPrice)
+                    if (params.lang) sp.set('lang', params.lang)
                     sp.set('page', p.toString())
                     return (
                       <a

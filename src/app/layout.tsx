@@ -6,6 +6,7 @@ import MobileNav from '@/components/layout/MobileNav'
 import SplashScreen from '@/components/SplashScreen'
 import SupportChat from '@/components/SupportChat'
 import Link from 'next/link'
+import { LocaleProvider } from '@/contexts/LocaleContext'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="Librum Market" />
       </head>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 antialiased">
+        <LocaleProvider>
         <SplashScreen />
         <Navbar />
         <main className="flex-1 mobile-page-offset">{children}</main>
@@ -96,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <MobileNav />
         <SupportChat />
+        </LocaleProvider>
       </body>
     </html>
   )
