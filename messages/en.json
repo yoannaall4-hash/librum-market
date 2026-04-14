@@ -60,7 +60,7 @@
     "clear": "Clear",
     "search_filter": "Search",
     "search_filter_placeholder": "Title or author...",
-    "category": "Category",
+    "category": "Categories",
     "all_categories": "All",
     "condition": "Condition",
     "price": "Price (€)",
@@ -73,7 +73,7 @@
     "all_languages": "All Languages"
   },
   "book": {
-    "featured_badge": "⭐ Featured",
+    "featured_badge": "Featured",
     "author": "Author",
     "publisher": "Publisher",
     "year": "Year",

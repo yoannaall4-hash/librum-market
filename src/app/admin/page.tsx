@@ -8,6 +8,23 @@ import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 import AdminActions from '@/components/AdminActions'
 import AdminBookActions from '@/components/AdminBookActions'
+import type { ReactNode } from 'react'
+
+function UserIcon() {
+  return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+}
+function BookIcon() {
+  return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+}
+function PackageIcon() {
+  return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 0l-8 4M4 7l8 4"/></svg>
+}
+function AlertIcon() {
+  return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.008v.008H12v-.008z"/></svg>
+}
+function CoinIcon() {
+  return <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+}
 
 export default async function AdminPage() {
   const session = await getSession()
@@ -58,15 +75,17 @@ export default async function AdminPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
-        {[
-          { label: 'Потребители', value: totalUsers.toString(), icon: '👤', color: 'text-blue-700' },
-          { label: 'Активни книги', value: totalBooks.toString(), icon: '📚', color: 'text-stone-700' },
-          { label: 'Поръчки', value: totalOrders.toString(), icon: '📦', color: 'text-stone-700' },
-          { label: 'Спорове', value: pendingDisputes.toString(), icon: '⚠️', color: 'text-red-700' },
-          { label: 'Комисионни', value: formatPrice(revenue._sum.commission || 0), icon: '💰', color: 'text-green-700' },
-        ].map((stat) => (
+        {(
+          [
+            { label: 'Потребители', value: totalUsers.toString(), icon: <UserIcon />, color: 'text-blue-700', iconColor: 'text-blue-400' },
+            { label: 'Активни книги', value: totalBooks.toString(), icon: <BookIcon />, color: 'text-stone-700', iconColor: 'text-stone-400' },
+            { label: 'Поръчки', value: totalOrders.toString(), icon: <PackageIcon />, color: 'text-stone-700', iconColor: 'text-stone-400' },
+            { label: 'Спорове', value: pendingDisputes.toString(), icon: <AlertIcon />, color: 'text-red-700', iconColor: 'text-red-400' },
+            { label: 'Комисионни', value: formatPrice(revenue._sum.commission || 0), icon: <CoinIcon />, color: 'text-green-700', iconColor: 'text-green-400' },
+          ] as { label: string; value: string; icon: ReactNode; color: string; iconColor: string }[]
+        ).map((stat) => (
           <div key={stat.label} className="bg-white rounded-xl border border-stone-200 p-5">
-            <div className="text-2xl mb-1">{stat.icon}</div>
+            <div className={`mb-2 ${stat.iconColor}`}>{stat.icon}</div>
             <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
             <div className="text-xs text-stone-500 mt-1">{stat.label}</div>
           </div>

@@ -70,7 +70,11 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
               // eslint-disable-next-line @next/next/no-img-element
               <img src={images[0]} alt={book.title} className="w-full h-full object-contain" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-stone-300 text-8xl">📚</div>
+              <div className="w-full h-full flex items-center justify-center text-stone-200">
+              <svg className="w-24 h-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={0.7}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
             )}
           </div>
           {images.length > 1 && (
@@ -85,7 +89,14 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
         {/* Details */}
         <div>
-          {book.isFeatured && <Badge variant="gold" className="mb-3">{t('book.featured_badge')}</Badge>}
+          {book.isFeatured && (
+            <Badge variant="gold" className="mb-3">
+              <svg className="w-3 h-3 mr-1 inline-block" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              {t('book.featured_badge')}
+            </Badge>
+          )}
 
           <div className="flex flex-wrap gap-2 mb-3">
             <Badge variant={book.condition === 'new' ? 'success' : 'default'}>

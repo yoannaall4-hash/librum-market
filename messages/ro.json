@@ -60,7 +60,7 @@
     "clear": "Șterge",
     "search_filter": "Căutare",
     "search_filter_placeholder": "Titlu sau autor...",
-    "category": "Categorie",
+    "category": "Categorii",
     "all_categories": "Toate",
     "condition": "Stare",
     "price": "Preț (€)",
@@ -73,7 +73,7 @@
     "all_languages": "Toate limbile"
   },
   "book": {
-    "featured_badge": "⭐ Recomandat",
+    "featured_badge": "Recomandat",
     "author": "Autor",
     "publisher": "Editura",
     "year": "An",

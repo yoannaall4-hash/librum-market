@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
@@ -9,7 +8,6 @@ import Button from '@/components/ui/Button'
 import { useLocale } from '@/contexts/LocaleContext'
 
 export default function RegisterPage() {
-  const router = useRouter()
   const { t } = useLocale()
   const [form, setForm] = useState({ name: '', email: '', password: '', sellerType: '' })
   const [error, setError] = useState('')
@@ -22,7 +20,7 @@ export default function RegisterPage() {
     { value: 'antiquarian', label: t('auth.antiquarian') },
   ]
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError('')
     if (form.password.length < 8) { setError(t('auth.error_short_password')); return }
@@ -48,7 +46,6 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-8">
           <div className="text-center mb-8">
-            <span className="text-4xl">✝</span>
             <h1 className="text-2xl font-bold text-stone-800 mt-2">{t('auth.register_title')}</h1>
             <p className="text-stone-500 text-sm mt-1">Librum Market</p>
           </div>

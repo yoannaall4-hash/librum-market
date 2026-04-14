@@ -188,7 +188,9 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
 
           {books.length === 0 ? (
             <div className="text-center py-20 text-stone-400">
-              <p className="text-5xl mb-4">📚</p>
+              <svg className="w-16 h-16 mx-auto mb-4 text-stone-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
               <p className="text-lg font-medium">{t('books.no_results')}</p>
               <p className="text-sm mt-2">{t('books.try_filters')}</p>
             </div>

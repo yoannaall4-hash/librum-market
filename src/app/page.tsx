@@ -61,22 +61,22 @@ async function getCategories() {
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
-  archaeology:      '🏛',
-  theology:         '✞',
+  archaeology:      '🏛️',
+  theology:         '🙏',
   children:         '🎈',
   encyclopedias:    '📖',
   health:           '🌿',
   economics:        '📊',
-  history:          '🗺',
+  history:          '🗺️',
   music:            '🎵',
   pedagogy:         '🏫',
-  law:              '⚖',
+  law:              '⚖️',
   psychology:       '🧠',
   'exact-sciences': '🔬',
-  tourism:          '✈',
+  tourism:          '✈️',
   textbooks:        '📐',
   philosophy:       '💭',
-  fiction:          '✍',
+  fiction:          '✍️',
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -205,8 +205,12 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-baseline justify-between mb-8">
               <div>
-                <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-1">{t('home.featured_label')}</p>
-                <h2 className="text-2xl font-bold text-stone-800">{t('home.featured')}</h2>
+                <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-1">
+                  <EditableText contentKey="home.featured_label" defaultValue={ct('home.featured_label')} className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase" />
+                </p>
+                <h2 className="text-2xl font-bold text-stone-800">
+                  <EditableText contentKey="home.featured" defaultValue={ct('home.featured')} className="text-2xl font-bold text-stone-800" />
+                </h2>
               </div>
               <Link href="/books" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">
                 {t('home.viewAll')}
@@ -301,17 +305,21 @@ export default async function HomePage() {
       {/* CTA strip */}
       <section className="py-14 bg-stone-900">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-white mb-3">{t('home.cta_title')}</h2>
-          <p className="text-stone-400 text-sm mb-7">{t('home.cta_desc')}</p>
+          <h2 className="text-2xl font-bold text-white mb-3">
+            <EditableText contentKey="home.cta_title" defaultValue={ct('home.cta_title')} className="text-2xl font-bold text-white" />
+          </h2>
+          <p className="text-stone-400 text-sm mb-7">
+            <EditableText contentKey="home.cta_desc" defaultValue={ct('home.cta_desc')} className="text-stone-400 text-sm" multiline />
+          </p>
           <div className="flex justify-center gap-3 flex-wrap">
             <Link href="/books">
               <button className="px-7 py-3 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-stone-100 transition-colors">
-                {t('hero.browse')}
+                <EditableText contentKey="hero.browse" defaultValue={ct('hero.browse')} />
               </button>
             </Link>
             <Link href="/register">
               <button className="px-7 py-3 border border-stone-600 text-stone-300 rounded-lg font-semibold text-sm hover:bg-stone-800 transition-colors">
-                {t('hero.become_seller')}
+                <EditableText contentKey="hero.become_seller" defaultValue={ct('hero.become_seller')} />
               </button>
             </Link>
           </div>

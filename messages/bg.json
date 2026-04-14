@@ -25,7 +25,7 @@
     "readers": "ЧИТАТЕЛИ",
     "commission": "КОМИСИОН",
     "categories": "Категории",
-    "featured": "⭐ Препоръчани книги",
+    "featured": "Препоръчани книги",
     "recent": "Нови обяви",
     "viewAll": "Виж всички →",
     "noBooks": "Все още няма обяви",
@@ -61,7 +61,7 @@
     "clear": "Изчисти",
     "search_filter": "Търсене",
     "search_filter_placeholder": "Заглавие или автор...",
-    "category": "Категория",
+    "category": "Категории",
     "all_categories": "Всички",
     "condition": "Състояние",
     "price": "Цена (лв.)",
@@ -74,7 +74,7 @@
     "sort_popular": "Най-популярни"
   },
   "book": {
-    "featured_badge": "⭐ Препоръчана",
+    "featured_badge": "Препоръчана",
     "author": "Автор",
     "publisher": "Издателство",
     "year": "Година",
