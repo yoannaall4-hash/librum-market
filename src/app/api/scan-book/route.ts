@@ -3,6 +3,27 @@ import { getSession } from '@/lib/auth'
 
 export const maxDuration = 30
 
+const PROMPT = `You are analyzing a photo of a book cover or back cover. Extract as much information as possible and return a JSON object with these fields (use null for fields you cannot determine):
+
+{
+  "title": "book title",
+  "authors": ["author 1", "author 2"],
+  "description": "full description text from back cover",
+  "year": 2020,
+  "isbn": "978-xxx",
+  "pages": 350,
+  "publisher": "publisher name",
+  "language": "bg|en|ro|gr|ru|fr|de|other",
+  "categorySlug": one of: theology|history|philosophy|fiction|children|psychology|pedagogy|health|economics|music|law|textbooks|archaeology|encyclopedias|tourism|exact-sciences|null
+}
+
+Rules:
+- Return ONLY the JSON object, no other text
+- For language: detect from text on cover (bg=Bulgarian, en=English, ro=Romanian, gr=Greek, ru=Russian)
+- For categorySlug: pick the best match based on the book content/genre, or null
+- For description: use ALL text from the back cover as-is, preserving paragraphs
+- authors should be an array even if only one author`
+
 export async function POST(request: NextRequest) {
   const session = await getSession()
   if (!session) {
@@ -33,7 +54,7 @@ export async function POST(request: NextRequest) {
           contents: [{
             parts: [
               { inline_data: { mime_type: mimeType, data: base64Data } },
-              { text: 'This is a photo of the back cover of a book. Please read and extract ALL the text visible in this image. Return ONLY the extracted text, nothing else. Preserve paragraphs and line breaks.' },
+              { text: PROMPT },
             ],
           }],
           generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
@@ -48,13 +69,35 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await res.json()
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
 
-    if (!text.trim()) {
+    if (!rawText.trim()) {
       return NextResponse.json({ error: 'Не успях да прочета текста. Опитайте с по-ясна снимка.' }, { status: 422 })
     }
 
-    return NextResponse.json({ description: text.trim() })
+    // Parse JSON from response (strip markdown code fences if present)
+    const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/)
+    const jsonStr = jsonMatch ? jsonMatch[1] : rawText.trim()
+
+    let parsed: Record<string, unknown>
+    try {
+      parsed = JSON.parse(jsonStr)
+    } catch {
+      // Fallback: just return the raw text as description
+      return NextResponse.json({ description: rawText.trim() })
+    }
+
+    return NextResponse.json({
+      title: parsed.title || null,
+      authors: Array.isArray(parsed.authors) ? parsed.authors.filter(Boolean) : [],
+      description: parsed.description || null,
+      year: parsed.year ? String(parsed.year) : null,
+      isbn: parsed.isbn || null,
+      pages: parsed.pages ? String(parsed.pages) : null,
+      publisher: parsed.publisher || null,
+      language: parsed.language || null,
+      categorySlug: parsed.categorySlug || null,
+    })
   } catch (err: unknown) {
     console.error('scan-book error:', err)
     const message = err instanceof Error ? err.message : String(err)

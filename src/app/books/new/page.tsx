@@ -6,6 +6,7 @@ import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 import ImageUpload from '@/components/ImageUpload'
 import { CONDITIONS, PERIODS } from '@/lib/utils'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface Category { id: string; name: string; slug: string }
 interface Publisher { id: string; name: string }
@@ -31,6 +32,7 @@ const CATEGORY_SLUG_MAP: Record<string, string> = {
 
 export default function NewBookPage() {
   const router = useRouter()
+  const { t } = useLocale()
   const [categories, setCategories] = useState<Category[]>([])
   const [publishers, setPublishers] = useState<Publisher[]>([])
   const [loading, setLoading] = useState(false)
@@ -51,6 +53,7 @@ export default function NewBookPage() {
   const [showNewPublisher, setShowNewPublisher] = useState(false)
   const [newPublisherName, setNewPublisherName] = useState('')
   const [addingPublisher, setAddingPublisher] = useState(false)
+  const [scanFields, setScanFields] = useState<string[]>([])
 
   async function handleAddPublisher() {
     if (!newPublisherName.trim()) return
@@ -119,10 +122,35 @@ export default function NewBookPage() {
         return
       }
 
-      if (data.description) {
-        setForm(f => ({ ...f, description: data.description }))
-        setScanSuccess(true)
+      const filled: string[] = []
+      setForm(f => {
+        const updated = { ...f }
+        if (data.title) { updated.title = data.title; filled.push('Заглавие') }
+        if (data.description) { updated.description = data.description; filled.push('Описание') }
+        if (data.year) { updated.year = data.year; filled.push('Година') }
+        if (data.isbn) { updated.isbn = data.isbn; filled.push('ISBN') }
+        if (data.pages) { updated.pages = data.pages; filled.push('Страници') }
+        if (data.language) { updated.language = data.language; filled.push('Език') }
+        if (data.authors?.length) { updated.authorNames = data.authors.join(', '); filled.push('Автори') }
+
+        // Match category by slug
+        if (data.categorySlug && categories.length) {
+          const cat = categories.find(c => c.slug === data.categorySlug)
+          if (cat) { updated.categoryId = cat.id; filled.push('Категория') }
+        }
+
+        return updated
+      })
+
+      // Match publisher by name (fuzzy)
+      if (data.publisher && publishers.length) {
+        const pubLower = data.publisher.toLowerCase()
+        const match = publishers.find(p => p.name.toLowerCase().includes(pubLower) || pubLower.includes(p.name.toLowerCase()))
+        if (match) { setForm(f => ({ ...f, publisherId: match.id })); filled.push('Издателство') }
       }
+
+      setScanFields(filled)
+      setScanSuccess(true)
     } catch {
       setError('Грешка при сканиране')
     } finally {
@@ -173,15 +201,15 @@ export default function NewBookPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-stone-800 mb-2">Нова обява</h1>
-      <p className="text-stone-500 mb-6">Попълнете информацията за книгата</p>
+      <h1 className="text-3xl font-bold text-stone-800 mb-2">{t('new_book.title')}</h1>
+      <p className="text-stone-500 mb-6">{t('new_book.subtitle')}</p>
 
       {/* Desktop banner */}
       <div className="hidden md:flex items-center gap-3 mb-6 bg-gradient-to-r from-amber-700 to-amber-600 text-white rounded-2xl px-5 py-4">
         <span className="text-2xl">📱</span>
         <div>
-          <p className="font-semibold text-sm">Свалете приложението и сканирайте и качете за 1 минута!</p>
-          <p className="text-xs text-amber-100 mt-0.5">Снимайте корицата с телефона → AI попълва цялата информация автоматично</p>
+          <p className="font-semibold text-sm">{t('home.banner_desktop')}</p>
+          <p className="text-xs text-amber-100 mt-0.5">{t('home.banner_desktop_sub')}</p>
         </div>
       </div>
 
@@ -189,15 +217,21 @@ export default function NewBookPage() {
       <div className="bg-gradient-to-br from-stone-50 to-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xl">📷</span>
-          <h2 className="font-semibold text-stone-800">Сканирай задната корица</h2>
+          <h2 className="font-semibold text-stone-800">{t('new_book.scan_title')}</h2>
         </div>
         <p className="text-sm text-stone-600 mb-4">
-          Снимайте задната корица на книгата — текстът от нея ще се добави автоматично в описанието.
+          {t('new_book.scan_desc')}
         </p>
 
         {scanSuccess && (
-          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm flex items-center gap-2">
-            <span>✓</span> Описанието е попълнено! Прегледайте и коригирайте при нужда.
+          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+            <p className="font-medium flex items-center gap-1.5">
+              <span>✓</span> AI попълни {scanFields.length} полета!
+            </p>
+            {scanFields.length > 0 && (
+              <p className="text-xs text-green-600 mt-1">{scanFields.join(' · ')}</p>
+            )}
+            <p className="text-xs text-green-600 mt-1">Прегледайте и коригирайте при нужда.</p>
           </div>
         )}
 
@@ -214,7 +248,7 @@ export default function NewBookPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Чете текст...
+                {t('new_book.reading_text')}
               </>
             ) : (
               <>
@@ -222,7 +256,7 @@ export default function NewBookPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Снимай задна корица
+                {t('new_book.scan_btn')}
               </>
             )}
           </button>
@@ -235,7 +269,7 @@ export default function NewBookPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            Качи снимка
+            {t('new_book.upload_btn')}
           </button>
         </div>
 
