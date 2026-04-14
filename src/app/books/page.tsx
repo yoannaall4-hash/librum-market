@@ -79,9 +79,30 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-stone-800">Православни книги</h1>
+        <h1 className="text-3xl font-bold text-stone-800">Книги</h1>
         <p className="text-stone-500 mt-1">{total} обяви</p>
       </div>
+
+      {/* Top search bar (visible on all screen sizes) */}
+      <form action="/books" method="get" className="mb-6">
+        {params.category && <input type="hidden" name="category" value={params.category} />}
+        {params.sort && <input type="hidden" name="sort" value={params.sort} />}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            name="q"
+            defaultValue={params.q || ''}
+            placeholder="Търси по заглавие, автор или описание…"
+            className="flex-1 rounded-xl border border-stone-300 px-4 py-2.5 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+          />
+          <button
+            type="submit"
+            className="px-5 py-2.5 bg-amber-700 text-white rounded-xl text-sm font-medium hover:bg-amber-800 transition-colors"
+          >
+            Търси
+          </button>
+        </div>
+      </form>
 
       <div className="flex gap-8">
         {/* Sidebar filters */}

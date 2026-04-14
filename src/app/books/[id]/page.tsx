@@ -137,6 +137,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             sellerId={book.sellerId}
             bookTitle={book.title}
             currentUserId={session?.id}
+            currentUserRole={session?.role}
             stock={book.stock}
             status={book.status}
           />

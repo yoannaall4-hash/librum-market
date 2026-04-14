@@ -9,25 +9,27 @@ interface BookActionsProps {
   sellerId: string
   bookTitle: string
   currentUserId?: string
+  currentUserRole?: string
   stock: number
   status: string
 }
 
 export default function BookActions({
-  bookId, sellerId, bookTitle, currentUserId, stock, status
+  bookId, sellerId, bookTitle, currentUserId, currentUserRole, stock, status
 }: BookActionsProps) {
   const router = useRouter()
   const [msgOpen, setMsgOpen] = useState(false)
 
   const isOwner = currentUserId === sellerId
-  const canBuy = !isOwner && status === 'active' && stock > 0
+  const isAdmin = currentUserRole === 'admin'
+  const canBuy = !isOwner && !isAdmin && status === 'active' && stock > 0
 
   function handleBuy() {
     if (!currentUserId) { router.push('/login'); return }
     router.push(`/checkout?bookId=${bookId}`)
   }
 
-  if (isOwner) {
+  if (isOwner || isAdmin) {
     return (
       <div className="flex gap-3">
         <Button variant="secondary" onClick={() => router.push(`/books/${bookId}/edit`)}>
