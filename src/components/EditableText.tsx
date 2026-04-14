@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { useAdminEditMode } from '@/contexts/AdminEditModeContext'
 import { useLocale } from '@/contexts/LocaleContext'
+import { useSiteContent } from '@/contexts/SiteContentContext'
 
 type Lang = 'bg' | 'en' | 'ro'
 
@@ -40,11 +41,23 @@ export default function EditableText({
   const router = useRouter()
   const { editMode, liveContent, refreshContent } = useAdminEditMode()
   const { locale } = useLocale()
+  const { content: siteContent } = useSiteContent()
 
-  // Live display value: use DB content when in edit mode (works for client components too)
-  const liveVal = editMode && liveContent[contentKey]
-    ? (liveContent[contentKey][locale as Lang] || liveContent[contentKey].bg || defaultValue)
-    : defaultValue
+  // Resolution order:
+  // 1. Admin edit mode: use freshly-fetched liveContent (most up-to-date after a save)
+  // 2. SiteContent from server (loaded once at layout level for ALL users)
+  // 3. defaultValue (hardcoded translation / server ct() value)
+  function resolveValue() {
+    const lang = locale as Lang
+    if (editMode && liveContent[contentKey]) {
+      return liveContent[contentKey][lang] || liveContent[contentKey].bg || defaultValue
+    }
+    if (siteContent[contentKey]) {
+      return siteContent[contentKey][lang] || siteContent[contentKey].bg || defaultValue
+    }
+    return defaultValue
+  }
+  const liveVal = resolveValue()
 
   useEffect(() => {
     fetch('/api/me')

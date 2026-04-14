@@ -9,8 +9,11 @@ import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
 import { CartProvider } from '@/contexts/CartContext'
 import { AdminEditModeProvider } from '@/contexts/AdminEditModeContext'
+import { SiteContentProvider } from '@/contexts/SiteContentContext'
 import { getT } from '@/lib/getT'
 import EditableText from '@/components/EditableText'
+import { prisma } from '@/lib/prisma'
+import { cookies } from 'next/headers'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
@@ -33,8 +36,28 @@ export const viewport: Viewport = {
   themeColor: '#1c1917',
 }
 
+async function getAllSiteContent() {
+  try {
+    const rows = await prisma.siteContent.findMany()
+    const map: Record<string, { bg: string; en: string; ro: string }> = {}
+    for (const row of rows) {
+      map[row.key] = { bg: row.valueBg, en: row.valueEn, ro: row.valueRo }
+    }
+    return map
+  } catch { return {} }
+}
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { t } = await getT()
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('locale')?.value || 'bg'
+  const [{ t }, siteContent] = await Promise.all([getT(), getAllSiteContent()])
+
+  function ct(key: string) {
+    const row = siteContent[key]
+    if (!row) return (t as (k: string) => string)(key)
+    return (locale === 'bg' ? row.bg : locale === 'ro' ? row.ro : row.en) || row.bg || (t as (k: string) => string)(key)
+  }
+
   return (
     <html lang="bg" className={`${geist.variable} h-full`}>
       <head>
@@ -45,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 antialiased">
         <LocaleProvider>
+        <SiteContentProvider content={siteContent}>
         <AdminEditModeProvider>
         <CartProvider>
         <SplashScreen />
@@ -146,6 +170,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SupportChat />
         </CartProvider>
         </AdminEditModeProvider>
+        </SiteContentProvider>
         </LocaleProvider>
       </body>
     </html>
