@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 import AdminActions from '@/components/AdminActions'
+import AdminBookActions from '@/components/AdminBookActions'
 
 export default async function AdminPage() {
   const session = await getSession()
@@ -14,12 +15,22 @@ export default async function AdminPage() {
 
   const [
     totalUsers, totalBooks, totalOrders, pendingDisputes,
+    pendingBooks,
     recentOrders, recentUsers, revenue
   ] = await Promise.all([
     prisma.user.count(),
     prisma.book.count({ where: { status: 'active' } }),
     prisma.order.count(),
     prisma.order.count({ where: { status: 'disputed' } }),
+    prisma.book.findMany({
+      where: { status: 'pending_approval' },
+      take: 5,
+      orderBy: { createdAt: 'asc' },
+      include: {
+        seller: { select: { name: true } },
+        category: true,
+      },
+    }),
     prisma.order.findMany({
       take: 10,
       orderBy: { createdAt: 'desc' },
@@ -61,6 +72,37 @@ export default async function AdminPage() {
           </div>
         ))}
       </div>
+
+      {/* Pending book approvals */}
+      {pendingBooks.length > 0 && (
+        <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">📚</span>
+              <div>
+                <h2 className="font-bold text-stone-800">Книги за одобрение</h2>
+                <p className="text-sm text-amber-700">{pendingBooks.length} чакат вашето одобрение</p>
+              </div>
+            </div>
+            <Link href="/admin/books?status=pending_approval" className="text-sm text-amber-700 hover:text-amber-800 font-medium">
+              Виж всички →
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {pendingBooks.map((book) => (
+              <div key={book.id} className="bg-white rounded-xl border border-amber-100 p-4 flex items-center justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-stone-800 truncate">{book.title}</p>
+                  <p className="text-xs text-stone-500">
+                    {book.seller.name} · {book.category?.name || 'Без категория'} · {formatPrice(book.price)}
+                  </p>
+                </div>
+                <AdminBookActions bookId={book.id} currentStatus={book.status} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent orders */}
