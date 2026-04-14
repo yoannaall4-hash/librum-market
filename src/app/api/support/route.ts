@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+let client: Anthropic | null = null
+function getClient() {
+  if (!client) client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  return client
+}
 
 const SYSTEM_PROMPT = `Ти си приятелски асистент на Librum Market — платформа за богословска литература в България. Помагаш на купувачи и продавачи с въпроси за платформата.
 
@@ -26,7 +30,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const response = await client.messages.create({
+    const response = await getClient().messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 400,
       system: SYSTEM_PROMPT,
