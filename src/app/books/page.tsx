@@ -6,6 +6,9 @@ import BookCard from '@/components/BookCard'
 import BooksFilter from '@/components/BooksFilter'
 import SortSelect from '@/components/SortSelect'
 import { getT } from '@/lib/getT'
+import { prisma as prismaDb } from '@/lib/prisma'
+import { cookies } from 'next/headers'
+import EditableText from '@/components/EditableText'
 
 
 interface SearchParams {
@@ -73,18 +76,39 @@ async function getCategories() {
   return prisma.category.findMany({ orderBy: { name: 'asc' } })
 }
 
+async function getSiteContent(locale: string) {
+  try {
+    const rows = await prismaDb.siteContent.findMany()
+    const map: Record<string, string> = {}
+    for (const row of rows) {
+      const val = locale === 'bg' ? row.valueBg : locale === 'ro' ? row.valueRo : row.valueEn
+      if (val) map[row.key] = val
+    }
+    return map
+  } catch { return {} }
+}
+
 export default async function BooksPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams
-  const [{ books, total, totalPages, page }, categories, { t }] = await Promise.all([
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('locale')?.value || 'bg'
+  const [{ books, total, totalPages, page }, categories, { t }, db] = await Promise.all([
     getBooks(params),
     getCategories(),
     getT(),
+    getSiteContent(locale),
   ])
+
+  function ct(key: string) {
+    return db[key] || (t as (k: string) => string)(key)
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-stone-800">{t('books.title')}</h1>
+        <h1 className="text-3xl font-bold text-stone-800">
+          <EditableText contentKey="books.title" defaultValue={ct('books.title')} />
+        </h1>
         <p className="text-stone-500 mt-1">{t('books.listings_count', { count: total })}</p>
       </div>
 

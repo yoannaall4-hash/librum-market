@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import { useLocale, type Locale } from '@/contexts/LocaleContext'
 import { useCart } from '@/contexts/CartContext'
 import { useAdminEditMode } from '@/contexts/AdminEditModeContext'
+import EditableText from '@/components/EditableText'
 
 interface NavUser {
   id: string
@@ -105,7 +106,9 @@ export default function Navbar() {
               <span className="font-bold text-stone-900 text-xl tracking-widest group-hover:text-stone-700 transition-colors">LIBRUM</span>
               <span className="font-light text-stone-400 text-xl tracking-wide ml-1.5 group-hover:text-stone-600 transition-colors">Market</span>
             </div>
-            <span className="hidden md:block text-[10px] text-stone-400 tracking-[0.15em] uppercase -mt-0.5 font-medium">Онлайн книжарница</span>
+            <span className="hidden md:block text-[10px] text-stone-400 tracking-[0.15em] uppercase -mt-0.5 font-medium">
+              <EditableText contentKey="nav.tagline" defaultValue="Онлайн книжарница" />
+            </span>
           </Link>
 
           {/* Desktop nav links */}

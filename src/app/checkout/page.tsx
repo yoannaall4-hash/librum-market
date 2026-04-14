@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, Suspense } from 'react'
+import EditableText from '@/components/EditableText'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -63,10 +64,10 @@ function StripePaymentForm({ orderId, total, onBack }: { orderId: string; total:
   return (
     <form onSubmit={handlePay} className="space-y-6">
       <div className="bg-white rounded-2xl border border-stone-200 p-6">
-        <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.payment_title')}</h2>
+        <h2 className="font-semibold text-stone-700 mb-4">{<EditableText contentKey="checkout.payment_title" defaultValue={t("checkout.payment_title")} />}</h2>
 
         <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-5 text-sm text-stone-700">
-          {t('checkout.protected_payment')}
+          {<EditableText contentKey="checkout.protected_payment" defaultValue={t("checkout.protected_payment")} />}
         </div>
 
         <div className="mb-5">
@@ -79,7 +80,7 @@ function StripePaymentForm({ orderId, total, onBack }: { orderId: string; total:
 
         <div className="flex gap-4">
           <Button type="button" variant="secondary" onClick={onBack} className="flex-1">
-            {t('checkout.back')}
+            {<EditableText contentKey="checkout.back" defaultValue={t("checkout.back")} />}
           </Button>
           <Button type="submit" loading={paying} disabled={!stripe} className="flex-1">
             {t('checkout.pay')} {formatPrice(total)}
@@ -205,7 +206,9 @@ function CheckoutContent() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-stone-800 mb-8">{t('shipping.title')}</h1>
+      <h1 className="text-3xl font-bold text-stone-800 mb-8">
+        <EditableText contentKey="shipping.title" defaultValue={t('shipping.title')} />
+      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
@@ -217,7 +220,7 @@ function CheckoutContent() {
 
               {/* Outside Bulgaria? */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
-                <h2 className="font-semibold text-stone-700">{t('shipping.outside_bulgaria')}</h2>
+                <h2 className="font-semibold text-stone-700"><EditableText contentKey="shipping.outside_bulgaria" defaultValue={t('shipping.outside_bulgaria')} /></h2>
                 <div className="flex gap-3">
                   <button type="button"
                     onClick={() => { setOutsideBulgaria(false); setDeliveryType('address') }}
@@ -234,21 +237,21 @@ function CheckoutContent() {
               {outsideBulgaria === true && (
                 <>
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                  <h2 className="font-semibold text-stone-700">{t('checkout.contact_info')}</h2>
+                  <h2 className="font-semibold text-stone-700">{<EditableText contentKey="checkout.contact_info" defaultValue={t("checkout.contact_info")} />}</h2>
                   <div className="grid grid-cols-2 gap-4">
                     <Input label={t('checkout.full_name')} value={name} onChange={e => setName(e.target.value)} placeholder="John Smith" required />
                     <Input label={t('checkout.phone')} value={phone} onChange={e => setPhone(e.target.value)} placeholder="+49 000 000 0000" required />
                   </div>
                 </div>
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                  <h2 className="font-semibold text-stone-700">{t('shipping.choose')}</h2>
+                  <h2 className="font-semibold text-stone-700">{<EditableText contentKey="shipping.choose" defaultValue={t("shipping.choose")} />}</h2>
                   <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
-                    <p className="font-medium text-stone-800 text-sm">🌍 {t('shipping.international')}</p>
-                    <p className="text-stone-600 text-xs mt-1">{t('shipping.international_desc')}</p>
+                    <p className="font-medium text-stone-800 text-sm">🌍 {<EditableText contentKey="shipping.international" defaultValue={t("shipping.international")} />}</p>
+                    <p className="text-stone-600 text-xs mt-1">{<EditableText contentKey="shipping.international_desc" defaultValue={t("shipping.international_desc")} />}</p>
                   </div>
                   <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
-                    <p className="font-medium text-stone-700 text-sm">🏦 {t('shipping.transfer')}</p>
-                    <p className="text-stone-500 text-xs mt-1">{t('shipping.transfer_desc')}</p>
+                    <p className="font-medium text-stone-700 text-sm">🏦 {<EditableText contentKey="shipping.transfer" defaultValue={t("shipping.transfer")} />}</p>
+                    <p className="text-stone-500 text-xs mt-1">{<EditableText contentKey="shipping.transfer_desc" defaultValue={t("shipping.transfer_desc")} />}</p>
                   </div>
                 </div>
                 </>
@@ -258,7 +261,7 @@ function CheckoutContent() {
               {outsideBulgaria === false && (
               <>
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                <h2 className="font-semibold text-stone-700">{t('checkout.contact_info')}</h2>
+                <h2 className="font-semibold text-stone-700">{<EditableText contentKey="checkout.contact_info" defaultValue={t("checkout.contact_info")} />}</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <Input label={t('checkout.full_name')} value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров" required />
                   <Input label={t('checkout.phone')} value={phone} onChange={e => setPhone(e.target.value)} placeholder={t('checkout.phone_placeholder')} required />
@@ -266,7 +269,7 @@ function CheckoutContent() {
               </div>
 
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                <h2 className="font-semibold text-stone-700">{t('checkout.delivery_method')}</h2>
+                <h2 className="font-semibold text-stone-700">{<EditableText contentKey="checkout.delivery_method" defaultValue={t("checkout.delivery_method")} />}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {([
                     { type: 'address' as DeliveryType, label: t('checkout.to_address'), icon: '🏠' },
@@ -323,23 +326,23 @@ function CheckoutContent() {
 
               {/* Payment method */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
-                <h2 className="font-semibold text-stone-700">{t('checkout.payment_method')}</h2>
+                <h2 className="font-semibold text-stone-700">{<EditableText contentKey="checkout.payment_method" defaultValue={t("checkout.payment_method")} />}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button type="button"
                     onClick={() => setPayMethod('later')}
                     className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                   >
                     <div className="text-2xl mb-1">📩</div>
-                    <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
-                    <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_later_desc')}</p>
+                    <p className="font-medium text-sm text-stone-800">{<EditableText contentKey="checkout.pay_later" defaultValue={t("checkout.pay_later")} />}</p>
+                    <p className="text-xs text-stone-500 mt-0.5">{<EditableText contentKey="checkout.pay_later_desc" defaultValue={t("checkout.pay_later_desc")} />}</p>
                   </button>
                   <button type="button"
                     onClick={() => setPayMethod('stripe')}
                     className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                   >
                     <div className="text-2xl mb-1">💳</div>
-                    <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
-                    <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_online_desc')}</p>
+                    <p className="font-medium text-sm text-stone-800">{<EditableText contentKey="checkout.pay_online" defaultValue={t("checkout.pay_online")} />}</p>
+                    <p className="text-xs text-stone-500 mt-0.5">{<EditableText contentKey="checkout.pay_online_desc" defaultValue={t("checkout.pay_online_desc")} />}</p>
                   </button>
                 </div>
               </div>
@@ -354,23 +357,23 @@ function CheckoutContent() {
                 <>
                 {/* Payment method for international */}
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
-                  <h2 className="font-semibold text-stone-700">{t('checkout.payment_method')}</h2>
+                  <h2 className="font-semibold text-stone-700">{<EditableText contentKey="checkout.payment_method" defaultValue={t("checkout.payment_method")} />}</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button type="button"
                       onClick={() => setPayMethod('later')}
                       className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">📩</div>
-                      <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
-                      <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_later_desc')}</p>
+                      <p className="font-medium text-sm text-stone-800">{<EditableText contentKey="checkout.pay_later" defaultValue={t("checkout.pay_later")} />}</p>
+                      <p className="text-xs text-stone-500 mt-0.5">{<EditableText contentKey="checkout.pay_later_desc" defaultValue={t("checkout.pay_later_desc")} />}</p>
                     </button>
                     <button type="button"
                       onClick={() => setPayMethod('stripe')}
                       className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">💳</div>
-                      <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
-                      <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_online_desc')}</p>
+                      <p className="font-medium text-sm text-stone-800">{<EditableText contentKey="checkout.pay_online" defaultValue={t("checkout.pay_online")} />}</p>
+                      <p className="text-xs text-stone-500 mt-0.5">{<EditableText contentKey="checkout.pay_online_desc" defaultValue={t("checkout.pay_online_desc")} />}</p>
                     </button>
                   </div>
                 </div>
@@ -408,7 +411,7 @@ function CheckoutContent() {
         {/* Summary sidebar */}
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-stone-200 p-5">
-            <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.summary')}</h2>
+            <h2 className="font-semibold text-stone-700 mb-4">{<EditableText contentKey="checkout.summary" defaultValue={t("checkout.summary")} />}</h2>
             <div className="flex gap-3 mb-4 pb-4 border-b border-stone-100">
               <div className="w-14 h-16 bg-stone-100 rounded-lg overflow-hidden shrink-0">
                 {images[0] ? (
@@ -440,7 +443,7 @@ function CheckoutContent() {
             </div>
           </div>
           <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 text-xs text-stone-500 space-y-1">
-            <p>🔒 {t('protected_deal')} — {t('protected_deal_desc')}</p>
+            <p>🔒 {<EditableText contentKey="protected_deal" defaultValue={t("protected_deal")} />} — {<EditableText contentKey="protected_deal_desc" defaultValue={t("protected_deal_desc")} />}</p>
             <p>✓ {t('auth.commission_note')}</p>
           </div>
         </div>

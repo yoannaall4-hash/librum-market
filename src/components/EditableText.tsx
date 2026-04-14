@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { useAdminEditMode } from '@/contexts/AdminEditModeContext'
+import { useLocale } from '@/contexts/LocaleContext'
 
 type Lang = 'bg' | 'en' | 'ro'
 
@@ -37,7 +38,13 @@ export default function EditableText({
   const textRef = useRef<HTMLElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const { editMode } = useAdminEditMode()
+  const { editMode, liveContent, refreshContent } = useAdminEditMode()
+  const { locale } = useLocale()
+
+  // Live display value: use DB content when in edit mode (works for client components too)
+  const liveVal = editMode && liveContent[contentKey]
+    ? (liveContent[contentKey][locale as Lang] || liveContent[contentKey].bg || defaultValue)
+    : defaultValue
 
   useEffect(() => {
     fetch('/api/me')
@@ -112,6 +119,7 @@ export default function EditableText({
         body: JSON.stringify({ [contentKey]: values }),
       })
       setSaved(true)
+      await refreshContent()
       setTimeout(() => {
         setSaved(false)
         setEditing(false)
@@ -135,7 +143,7 @@ export default function EditableText({
   }
 
   if (!isAdmin) {
-    return <Tag className={className}>{defaultValue}</Tag>
+    return <Tag className={className}>{liveVal}</Tag>
   }
 
   return (
@@ -150,7 +158,7 @@ export default function EditableText({
         title="Кликни за редактиране"
         style={{ userSelect: 'none' }}
       >
-        {defaultValue}
+        {liveVal}
         {/* Pencil indicator: always visible in editMode, hover-only otherwise */}
         <span
           className={`inline-flex items-center justify-center w-4 h-4 rounded bg-stone-800 transition-opacity ml-1 relative -top-0.5 align-middle pointer-events-none ${
