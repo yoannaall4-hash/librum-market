@@ -90,7 +90,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
                 onClick={() => setAndNavigate('category', params.category === cat.slug ? '' : cat.slug)}
                 className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.category === cat.slug ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
               >
-                {cat.name}
+                {t(`category_names.${cat.slug}`) || cat.name}
               </button>
             ))}
           </div>

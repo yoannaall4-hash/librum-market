@@ -1,10 +1,9 @@
 'use client'
-import { useState, useEffect, Suspense, useMemo } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { formatPrice, COURIER_PRICES, calculateCommission } from '@/lib/utils'
-import { ECONT_OFFICES, SPEEDY_OFFICES, type CourierOffice } from '@/data/courier-offices'
 import { useLocale } from '@/contexts/LocaleContext'
 
 interface Book {
@@ -31,8 +30,7 @@ function CheckoutContent() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState({ city: '', street: '', postCode: '' })
-  const [officeSearch, setOfficeSearch] = useState('')
-  const [selectedOffice, setSelectedOffice] = useState<CourierOffice | null>(null)
+  const [officeAddress, setOfficeAddress] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'address' | 'payment'>('address')
@@ -51,18 +49,7 @@ function CheckoutContent() {
     if (deliveryType === 'speedy_office') setCourier('speedy')
   }, [deliveryType])
 
-  const offices = deliveryType === 'econt_office' ? ECONT_OFFICES : SPEEDY_OFFICES
-  const internationalShippingCost = 20 // ~20 BGN for international shipping
-
-  const filteredOffices = useMemo(() => {
-    if (!officeSearch.trim()) return offices.slice(0, 30)
-    const q = officeSearch.toLowerCase()
-    return offices.filter(o =>
-      o.city.toLowerCase().includes(q) ||
-      o.name.toLowerCase().includes(q) ||
-      o.address.toLowerCase().includes(q)
-    ).slice(0, 40)
-  }, [officeSearch, offices])
+  const internationalShippingCost = 20
 
   if (!book) {
     return (
@@ -72,7 +59,9 @@ function CheckoutContent() {
     )
   }
 
-  const courierInfo = deliveryType === 'international' ? { name: t('shipping.transfer'), price: internationalShippingCost, days: '7-14 дни' } : COURIER_PRICES[courier]
+  const courierInfo = deliveryType === 'international'
+    ? { name: t('shipping.transfer'), price: internationalShippingCost, days: '' }
+    : COURIER_PRICES[courier]
   const { total } = calculateCommission(book.price, courierInfo.price)
   const images: string[] = JSON.parse(book.images || '[]')
 
@@ -80,26 +69,21 @@ function CheckoutContent() {
     if (deliveryType === 'address') {
       return { name, phone, city: address.city, street: address.street, postCode: address.postCode, type: 'address' }
     }
-    return {
-      name,
-      phone,
-      type: deliveryType,
-      officeId: selectedOffice?.id,
-      officeName: selectedOffice?.name,
-      officeCity: selectedOffice?.city,
-      officeAddress: selectedOffice?.address,
+    if (deliveryType === 'econt_office' || deliveryType === 'speedy_office') {
+      return { name, phone, type: deliveryType, officeAddress, courier }
     }
+    return { name, phone, type: 'international' }
   }
 
   async function proceedToPayment(e: React.FormEvent) {
     e.preventDefault()
     if (!book) return
-    if (!name.trim() || !phone.trim()) { setError('Въведете три имена и телефон'); return }
+    if (!name.trim() || !phone.trim()) { setError(t('checkout.error_name_phone')); return }
     if (deliveryType === 'address' && (!address.city || !address.street)) {
-      setError('Въведете пълен адрес за доставка'); return
+      setError(t('checkout.error_address')); return
     }
-    if ((deliveryType === 'econt_office' || deliveryType === 'speedy_office') && !selectedOffice) {
-      setError('Изберете офис за доставка'); return
+    if ((deliveryType === 'econt_office' || deliveryType === 'speedy_office') && !officeAddress.trim()) {
+      setError(t('checkout.error_office')); return
     }
     setError('')
     setLoading(true)
@@ -118,7 +102,7 @@ function CheckoutContent() {
       setOrderId(data.orderId)
       setStep('payment')
     } catch {
-      setError('Грешка при свързване')
+      setError(t('checkout.error_connection'))
     } finally {
       setLoading(false)
     }
@@ -183,37 +167,48 @@ function CheckoutContent() {
                 </div>
               )}
 
-              {/* Domestic delivery options - only shown if not outside Bulgaria */}
+              {/* Domestic delivery options */}
               {outsideBulgaria === false && (
               <>
-
               {/* Contact info */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                <h2 className="font-semibold text-stone-700">{t('profile.name')}</h2>
+                <h2 className="font-semibold text-stone-700">{t('checkout.contact_info')}</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Три имена *" value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров" required />
-                  <Input label="Мобилен телефон *" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+359 88 000 0000" required />
+                  <Input
+                    label={t('checkout.full_name')}
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Иван Петров"
+                    required
+                  />
+                  <Input
+                    label={t('checkout.phone')}
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    placeholder={t('checkout.phone_placeholder')}
+                    required
+                  />
                 </div>
               </div>
 
               {/* Delivery type */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                <h2 className="font-semibold text-stone-700">Начин на доставка</h2>
+                <h2 className="font-semibold text-stone-700">{t('checkout.delivery_method')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {([
-                    { type: 'address' as DeliveryType, label: 'До адрес', icon: '🏠', sub: '' },
-                    { type: 'econt_office' as DeliveryType, label: 'Офис Еконт', icon: '📦', sub: `${formatPrice(COURIER_PRICES.econt.price)}` },
-                    { type: 'speedy_office' as DeliveryType, label: 'Офис Спиди', icon: '🚚', sub: `${formatPrice(COURIER_PRICES.speedy.price)}` },
+                    { type: 'address' as DeliveryType, label: t('checkout.to_address'), icon: '🏠' },
+                    { type: 'econt_office' as DeliveryType, label: t('checkout.econt_office'), icon: '📦', price: formatPrice(COURIER_PRICES.econt.price) },
+                    { type: 'speedy_office' as DeliveryType, label: t('checkout.speedy_office'), icon: '🚚', price: formatPrice(COURIER_PRICES.speedy.price) },
                   ]).map(opt => (
                     <button
                       key={opt.type}
                       type="button"
-                      onClick={() => { setDeliveryType(opt.type); setSelectedOffice(null); setOfficeSearch('') }}
+                      onClick={() => { setDeliveryType(opt.type); setOfficeAddress('') }}
                       className={`p-4 rounded-xl border-2 text-left transition-all ${deliveryType === opt.type ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">{opt.icon}</div>
                       <p className="font-medium text-sm text-stone-800">{opt.label}</p>
-                      {opt.sub && <p className="text-xs text-stone-500">{opt.sub}</p>}
+                      {'price' in opt && opt.price && <p className="text-xs text-stone-500">{opt.price}</p>}
                     </button>
                   ))}
                 </div>
@@ -221,11 +216,6 @@ function CheckoutContent() {
                 {/* Home address fields */}
                 {deliveryType === 'address' && (
                   <div className="space-y-4 pt-2 border-t border-stone-100">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input label="Куриер" disabled value="" placeholder="" id="courier-label"
-                        onChange={() => {}}
-                      />
-                    </div>
                     <div className="flex gap-3">
                       {(['econt', 'speedy'] as const).map(key => (
                         <label key={key} className={`flex-1 flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer ${courier === key ? 'border-amber-500 bg-amber-50' : 'border-stone-200'}`}>
@@ -238,66 +228,58 @@ function CheckoutContent() {
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <Input label="Град *" value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} placeholder="София" required />
-                      <Input label="Пощенски код" value={address.postCode} onChange={e => setAddress({ ...address, postCode: e.target.value })} placeholder="1000" />
+                      <Input
+                        label={t('checkout.city')}
+                        value={address.city}
+                        onChange={e => setAddress({ ...address, city: e.target.value })}
+                        placeholder={t('checkout.city_placeholder')}
+                        required
+                      />
+                      <Input
+                        label={t('checkout.postcode')}
+                        value={address.postCode}
+                        onChange={e => setAddress({ ...address, postCode: e.target.value })}
+                        placeholder={t('checkout.postcode_placeholder')}
+                      />
                     </div>
-                    <Input label="Улица и номер *" value={address.street} onChange={e => setAddress({ ...address, street: e.target.value })} placeholder="бул. Витоша 15, ет. 3" required />
+                    <Input
+                      label={t('checkout.street')}
+                      value={address.street}
+                      onChange={e => setAddress({ ...address, street: e.target.value })}
+                      placeholder={t('checkout.street_placeholder')}
+                      required
+                    />
                   </div>
                 )}
 
-                {/* Office picker */}
+                {/* Manual office address input */}
                 {(deliveryType === 'econt_office' || deliveryType === 'speedy_office') && (
-                  <div className="pt-2 border-t border-stone-100 space-y-3">
-                    <p className="text-sm font-medium text-stone-600">
-                      Изберете офис на {deliveryType === 'econt_office' ? 'Еконт' : 'Спиди'}
-                    </p>
-                    <input
-                      type="text"
-                      value={officeSearch}
-                      onChange={e => { setOfficeSearch(e.target.value); setSelectedOffice(null) }}
-                      placeholder="Търсете по град или адрес..."
-                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                  <div className="pt-2 border-t border-stone-100">
+                    <Input
+                      label={t('checkout.office_address')}
+                      value={officeAddress}
+                      onChange={e => setOfficeAddress(e.target.value)}
+                      placeholder={t('checkout.office_address_placeholder')}
+                      required
                     />
-                    {selectedOffice ? (
-                      <div className="flex items-center justify-between bg-amber-50 border border-amber-300 rounded-xl px-4 py-3">
-                        <div>
-                          <p className="font-medium text-sm text-stone-800">{selectedOffice.city} — {selectedOffice.name}</p>
-                          <p className="text-xs text-stone-500">{selectedOffice.address}</p>
-                        </div>
-                        <button type="button" onClick={() => setSelectedOffice(null)} className="text-stone-400 hover:text-red-500 text-xs ml-3">Смени</button>
-                      </div>
-                    ) : (
-                      <div className="max-h-56 overflow-y-auto border border-stone-200 rounded-xl divide-y divide-stone-100">
-                        {filteredOffices.length === 0 ? (
-                          <p className="text-sm text-stone-400 p-4 text-center">Няма намерени офиси</p>
-                        ) : filteredOffices.map(office => (
-                          <button
-                            key={office.id}
-                            type="button"
-                            onClick={() => setSelectedOffice(office)}
-                            className="w-full text-left px-4 py-3 hover:bg-amber-50 transition-colors"
-                          >
-                            <p className="text-sm font-medium text-stone-800">{office.city} — {office.name}</p>
-                            <p className="text-xs text-stone-500">{office.address}{office.postCode ? `, ${office.postCode}` : ''}</p>
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                    <p className="text-xs text-stone-400 mt-1">
+                      {deliveryType === 'econt_office' ? 'Econt' : 'Speedy'} — {formatPrice(COURIER_PRICES[courier].price)} · {COURIER_PRICES[courier].days}
+                    </p>
                   </div>
                 )}
               </div>
 
               <Button type="submit" size="lg" className="w-full" loading={loading}>
-                {t('nav.orders')} →
+                {t('checkout.proceed')}
               </Button>
 
-              </> /* end outsideBulgaria === false */
+              </>
               )}
 
-              {/* For international: simple confirm button */}
+              {/* For international */}
               {outsideBulgaria === true && (
                 <Button type="button" size="lg" className="w-full" onClick={() => setStep('payment')}>
-                  {t('nav.orders')} →
+                  {t('checkout.proceed')}
                 </Button>
               )}
             </form>
@@ -306,17 +288,17 @@ function CheckoutContent() {
           {step === 'payment' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
-                <h2 className="font-semibold text-stone-700 mb-4">Плащане</h2>
+                <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.payment_title')}</h2>
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
-                  🔒 <strong>Защитено плащане чрез Stripe.</strong> Парите се задържат в платформата до потвърждение за доставка.
+                  {t('checkout.protected_payment')}
                 </div>
                 <div className="border-2 border-dashed border-stone-300 rounded-xl p-8 text-center text-stone-500">
                   <p className="text-sm mb-2">💳 Stripe форма за плащане</p>
                   <p className="text-xs text-stone-400">В продукционна среда тук се показват полетата за карта чрез Stripe Elements.</p>
                 </div>
                 <div className="mt-6 flex gap-4">
-                  <Button variant="secondary" onClick={() => setStep('address')} className="flex-1">← Назад</Button>
-                  <Button onClick={confirmPayment} loading={loading} className="flex-1">Плати {formatPrice(total)}</Button>
+                  <Button variant="secondary" onClick={() => setStep('address')} className="flex-1">{t('checkout.back')}</Button>
+                  <Button onClick={confirmPayment} loading={loading} className="flex-1">{t('checkout.pay')} {formatPrice(total)}</Button>
                 </div>
               </div>
             </div>
@@ -326,7 +308,7 @@ function CheckoutContent() {
         {/* Summary */}
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-stone-200 p-5">
-            <h2 className="font-semibold text-stone-700 mb-4">Обобщение</h2>
+            <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.summary')}</h2>
             <div className="flex gap-3 mb-4 pb-4 border-b border-stone-100">
               <div className="w-14 h-16 bg-stone-100 rounded-lg overflow-hidden shrink-0">
                 {images[0] ? (

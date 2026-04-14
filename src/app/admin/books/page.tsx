@@ -106,7 +106,15 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
                     <p className="text-xs text-red-600 mt-1 bg-red-50 px-2 py-1 rounded">⚠️ Бележка: {book.adminNote}</p>
                   )}
                 </div>
-                <AdminBookActions bookId={book.id} currentStatus={book.status} />
+                <div className="flex flex-col gap-2 items-end">
+                  <Link
+                    href={`/books/${book.id}/edit`}
+                    className="text-xs px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-lg transition-colors whitespace-nowrap"
+                  >
+                    ✏️ Редактирай
+                  </Link>
+                  <AdminBookActions bookId={book.id} currentStatus={book.status} />
+                </div>
               </div>
             </div>
           ))}

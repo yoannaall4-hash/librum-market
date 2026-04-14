@@ -1,9 +1,34 @@
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { getT } from '@/lib/getT'
+import { prisma } from '@/lib/prisma'
+import { cookies } from 'next/headers'
+
+export const dynamic = 'force-dynamic'
+
+async function getSiteContent(locale: string) {
+  try {
+    const rows = await prisma.siteContent.findMany()
+    const map: Record<string, string> = {}
+    for (const row of rows) {
+      const val = locale === 'bg' ? row.valueBg : locale === 'ro' ? row.valueRo : row.valueEn
+      if (val) map[row.key] = val
+    }
+    return map
+  } catch {
+    return {}
+  }
+}
 
 export default async function AboutPage() {
   const { t } = await getT()
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('locale')?.value || 'bg'
+  const db = await getSiteContent(locale)
+
+  function ct(key: string) {
+    return db[key] || t(key as Parameters<typeof t>[0])
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
@@ -12,7 +37,7 @@ export default async function AboutPage() {
         <div className="text-4xl mb-4">✝</div>
         <h1 className="text-4xl font-bold text-stone-800 mb-4">{t('about.title')}</h1>
         <p className="text-lg text-stone-500 max-w-xl mx-auto">
-          {t('about.subtitle')}
+          {ct('about.subtitle')}
         </p>
       </div>
 
@@ -20,33 +45,33 @@ export default async function AboutPage() {
       <div className="prose prose-stone max-w-none space-y-8 mb-16">
         <div className="bg-amber-50 border-l-4 border-amber-600 rounded-r-xl p-6">
           <p className="text-stone-700 text-lg leading-relaxed italic">
-            &ldquo;{t('about.quote')}&rdquo;
+            &ldquo;{ct('about.quote')}&rdquo;
           </p>
-          <p className="text-stone-500 text-sm mt-2">— {t('about.quote_source')}</p>
+          <p className="text-stone-500 text-sm mt-2">— {ct('about.quote_source')}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h2 className="text-xl font-semibold text-stone-800 mb-3">{t('about.our_idea_title')}</h2>
+            <h2 className="text-xl font-semibold text-stone-800 mb-3">{ct('about.our_idea_title')}</h2>
             <p className="text-stone-600 leading-relaxed">
-              {t('about.our_idea_text')}
+              {ct('about.our_idea_text')}
             </p>
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-stone-800 mb-3">{t('about.mission_title')}</h2>
+            <h2 className="text-xl font-semibold text-stone-800 mb-3">{ct('about.mission_title')}</h2>
             <p className="text-stone-600 leading-relaxed">
-              {t('about.mission_text')}
+              {ct('about.mission_text')}
             </p>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-stone-800 mb-4">{t('about.values_title')}</h2>
+          <h2 className="text-xl font-semibold text-stone-800 mb-4">{ct('about.values_title')}</h2>
           <div className="space-y-3">
             {[
-              { icon: '✅', text: t('about.value1') },
-              { icon: '🛡️', text: t('about.value2') },
-              { icon: '❤️', text: t('about.value3') },
+              { icon: '✅', text: ct('about.value1') },
+              { icon: '🛡️', text: ct('about.value2') },
+              { icon: '❤️', text: ct('about.value3') },
             ].map((v) => (
               <div key={v.icon} className="flex gap-4 items-start">
                 <span className="text-2xl mt-0.5">{v.icon}</span>
@@ -59,9 +84,9 @@ export default async function AboutPage() {
 
       {/* Contact */}
       <div className="bg-stone-800 text-white rounded-2xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-2">{t('about.contact_title')}</h2>
+        <h2 className="text-2xl font-bold mb-2">{ct('about.contact_title')}</h2>
         <p className="text-stone-400 mb-6">
-          {t('about.contact_text')}
+          {ct('about.contact_text')}
         </p>
         <a
           href="mailto:librum.bookstore@gmail.com"

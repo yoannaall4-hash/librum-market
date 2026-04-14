@@ -200,6 +200,14 @@ model FeaturedListing {
   user User @relation(fields: [userId], references: [id])
 }
 
+model SiteContent {
+  key       String   @id
+  valueBg   String   @default("")
+  valueEn   String   @default("")
+  valueRo   String   @default("")
+  updatedAt DateTime @updatedAt
+}
+
 model Subscription {
   id        String   @id @default(cuid())
   userId    String

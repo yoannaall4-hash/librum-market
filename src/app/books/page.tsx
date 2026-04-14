@@ -111,7 +111,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
       {/* Mobile category pills */}
       <div className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
         <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
-          {[{ id: '', name: t('books.all_categories'), slug: '' }, ...categories].map((cat) => {
+          {[{ id: '', name: t('books.all_categories'), slug: '' }, ...categories.map(c => ({ ...c, name: t(`category_names.${c.slug}`) || c.name }))].map((cat) => {
             const sp = new URLSearchParams()
             if (params.q) sp.set('q', params.q)
             if (params.sort) sp.set('sort', params.sort)
