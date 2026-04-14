@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createPortal } from 'react-dom'
+import { useAdminEditMode } from '@/contexts/AdminEditModeContext'
 
 type Lang = 'bg' | 'en' | 'ro'
 
@@ -36,6 +37,7 @@ export default function EditableText({
   const textRef = useRef<HTMLElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { editMode } = useAdminEditMode()
 
   useEffect(() => {
     fetch('/api/me')
@@ -137,15 +139,19 @@ export default function EditableText({
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <Tag
         ref={textRef as any}
-        className={`${className ?? ''} relative cursor-pointer group/editable outline-none`}
+        className={`${className ?? ''} relative cursor-pointer group/editable outline-none transition-all rounded ${
+          editMode ? 'ring-2 ring-blue-400 ring-offset-1 bg-blue-50/60' : ''
+        }`}
         onClick={startEditing}
         title="Кликни за редактиране"
         style={{ userSelect: 'none' }}
       >
         {defaultValue}
-        {/* Pencil indicator on hover */}
+        {/* Pencil indicator: always visible in editMode, hover-only otherwise */}
         <span
-          className="inline-flex items-center justify-center w-4 h-4 rounded bg-stone-800 opacity-0 group-hover/editable:opacity-90 transition-opacity ml-1 relative -top-0.5 align-middle pointer-events-none"
+          className={`inline-flex items-center justify-center w-4 h-4 rounded bg-stone-800 transition-opacity ml-1 relative -top-0.5 align-middle pointer-events-none ${
+            editMode ? 'opacity-80' : 'opacity-0 group-hover/editable:opacity-90'
+          }`}
           aria-hidden
         >
           <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>

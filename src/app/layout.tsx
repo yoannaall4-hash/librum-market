@@ -8,6 +8,7 @@ import SupportChat from '@/components/SupportChat'
 import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
 import { CartProvider } from '@/contexts/CartContext'
+import { AdminEditModeProvider } from '@/contexts/AdminEditModeContext'
 import { getT } from '@/lib/getT'
 import EditableText from '@/components/EditableText'
 
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 antialiased">
         <LocaleProvider>
+        <AdminEditModeProvider>
         <CartProvider>
         <SplashScreen />
         <Navbar />
@@ -143,6 +145,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <MobileNav />
         <SupportChat />
         </CartProvider>
+        </AdminEditModeProvider>
         </LocaleProvider>
       </body>
     </html>

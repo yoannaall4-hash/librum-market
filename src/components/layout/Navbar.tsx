@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Button from '@/components/ui/Button'
 import { useLocale, type Locale } from '@/contexts/LocaleContext'
 import { useCart } from '@/contexts/CartContext'
+import { useAdminEditMode } from '@/contexts/AdminEditModeContext'
 
 interface NavUser {
   id: string
@@ -68,6 +69,7 @@ export default function Navbar() {
   const router = useRouter()
   const { t, locale, setLocale } = useLocale()
   const { count: cartCount } = useCart()
+  const { editMode, toggleEditMode } = useAdminEditMode()
   const [user, setUser] = useState<NavUser | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -118,17 +120,22 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Admin inline edit mode indicator */}
+            {/* Admin edit mode toggle */}
             {user?.role === 'admin' && (
-              <span
-                title="Режим на редактиране — кликни върху текст за да го редактираш"
-                className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-stone-500 border border-dashed border-stone-300 select-none"
+              <button
+                onClick={toggleEditMode}
+                title={editMode ? 'Изключи режим редактор' : 'Включи режим редактор — кликни върху текст за да го редактираш'}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  editMode
+                    ? 'bg-blue-600 text-white border border-blue-600 shadow-sm'
+                    : 'text-stone-500 border border-stone-300 hover:bg-stone-100 hover:text-stone-700'
+                }`}
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
                 </svg>
-                Режим редактор
-              </span>
+                <span className="hidden md:inline">{editMode ? 'Редактор ВКЛ' : 'Редактор'}</span>
+              </button>
             )}
             {/* Cart icon */}
             <Link href="/cart" className="relative flex items-center justify-center w-9 h-9 rounded-lg text-stone-600 hover:bg-stone-50 transition-colors">
