@@ -123,17 +123,32 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             </p>
           )}
 
-          <div className="my-6 flex items-baseline gap-3">
-            <span className="text-4xl font-bold text-amber-700">{formatPrice(book.price)}</span>
-            <span className="text-xl text-stone-400 font-medium">/ €{(book.price * 1.15).toFixed(2)}</span>
-            {book.originalPrice && book.originalPrice > book.price && (
-              <div className="flex items-center gap-2">
-                <span className="text-base text-stone-400 line-through">{formatPrice(book.originalPrice)}</span>
-                <Badge variant="danger">
-                  -{Math.round((1 - book.price / book.originalPrice) * 100)}%
-                </Badge>
-              </div>
-            )}
+          <div className="my-6">
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="text-4xl font-bold text-amber-700">{formatPrice(book.price)}</span>
+              <span className="text-xl text-stone-400 font-medium">/ €{(book.price * 1.15).toFixed(2)}</span>
+              {book.originalPrice && book.originalPrice > book.price && (
+                <div className="flex items-center gap-2">
+                  <span className="text-base text-stone-400 line-through">{formatPrice(book.originalPrice)}</span>
+                  <Badge variant="danger">
+                    -{Math.round((1 - book.price / book.originalPrice) * 100)}%
+                  </Badge>
+                </div>
+              )}
+            </div>
+            <div className="mt-2">
+              {book.stock > 0 ? (
+                <span className="inline-flex items-center gap-1 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-full px-3 py-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+                  {t('book.in_stock')}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-full px-3 py-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" />
+                  {t('book.out_of_stock')}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
@@ -161,11 +176,13 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         <div className="bg-white border border-stone-200 rounded-2xl p-6">
           <h2 className="font-semibold text-stone-700 mb-4">{t('book.seller_title')}</h2>
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-lg">
+            <Link href={`/sellers/${book.sellerId}`} className="w-12 h-12 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-lg hover:bg-amber-800 transition-colors shrink-0">
               {book.seller.name[0].toUpperCase()}
-            </div>
+            </Link>
             <div>
-              <p className="font-semibold text-stone-800">{book.seller.name}</p>
+              <Link href={`/sellers/${book.sellerId}`} className="font-semibold text-stone-800 hover:text-amber-700 transition-colors">
+                {book.seller.name}
+              </Link>
               {book.seller.sellerType && (
                 <p className="text-sm text-stone-500">{SELLER_TYPES[book.seller.sellerType] || book.seller.sellerType}</p>
               )}

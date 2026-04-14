@@ -13,6 +13,8 @@ interface BookCardProps {
     images: string
     isFeatured: boolean
     period?: string | null
+    stock: number
+    status: string
     seller: { id: string; name: string; sellerType?: string | null }
     authors: { author: { name: string } }[]
     category?: { name: string } | null
@@ -79,9 +81,16 @@ export default async function BookCard({ book }: BookCardProps) {
               )}
             </div>
           </div>
-          <p className="text-xs text-stone-400 mt-1 truncate">
-            {book.seller.sellerType ? SELLER_TYPES[book.seller.sellerType] : book.seller.name}
-          </p>
+          <div className="mt-1.5 flex items-center justify-between">
+            <p className="text-xs text-stone-400 truncate">
+              {book.seller.sellerType ? SELLER_TYPES[book.seller.sellerType] : book.seller.name}
+            </p>
+            {book.stock > 0 ? (
+              <span className="text-xs font-medium text-green-600 shrink-0 ml-1">✓ {t('book.in_stock')}</span>
+            ) : (
+              <span className="text-xs font-medium text-red-400 shrink-0 ml-1">{t('book.out_of_stock')}</span>
+            )}
+          </div>
         </div>
       </div>
     </Link>

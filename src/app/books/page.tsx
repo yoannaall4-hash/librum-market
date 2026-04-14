@@ -37,6 +37,7 @@ async function getBooks(params: SearchParams) {
     where.OR = [
       { title: { contains: q } },
       { description: { contains: q } },
+      { authors: { some: { author: { name: { contains: q } } } } },
     ]
   }
   if (category) where.category = { slug: category }

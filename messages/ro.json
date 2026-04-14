@@ -432,7 +432,13 @@
     "error_office": "Introduceți adresa biroului de curierat",
     "error_connection": "Eroare de conexiune",
     "proceed": "Continuare la Plată →",
-    "contact_info": "Date de Contact"
+    "contact_info": "Date de Contact",
+    "payment_method": "Metod\u0103 de Plat\u0103",
+    "pay_later": "Ramburs / Direct",
+    "pay_later_desc": "Aranja\u021bi plata direct cu v\u00e2nz\u0103torul",
+    "pay_online": "Plat\u0103 Online cu Card",
+    "pay_online_desc": "Plat\u0103 sigur\u0103 prin Stripe",
+    "place_order": "Trimite Comanda \u2192"
   },
   "admin": {
     "title": "Administrare",

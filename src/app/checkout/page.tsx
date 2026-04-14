@@ -111,6 +111,7 @@ function CheckoutContent() {
   const [orderId, setOrderId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [orderTotal, setOrderTotal] = useState(0)
+  const [payMethod, setPayMethod] = useState<'stripe' | 'later'>('later')
 
   useEffect(() => {
     if (!bookId) { router.push('/books'); return }
@@ -163,6 +164,23 @@ function CheckoutContent() {
     setError('')
     setLoading(true)
     try {
+      if (payMethod === 'later') {
+        // Create order without payment — buyer contacts seller directly
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: [{ bookId: book.id, quantity: 1 }],
+            shippingAddress: buildShippingAddress(),
+            courierService: deliveryType === 'international' ? null : courier,
+          }),
+        })
+        const data = await res.json()
+        if (!res.ok) { setError(data.error); return }
+        router.push(`/dashboard/orders/${data.order.id}?placed=1`)
+        return
+      }
+      // Stripe payment
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -214,6 +232,14 @@ function CheckoutContent() {
 
               {/* International info */}
               {outsideBulgaria === true && (
+                <>
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
+                  <h2 className="font-semibold text-stone-700">{t('checkout.contact_info')}</h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input label={t('checkout.full_name')} value={name} onChange={e => setName(e.target.value)} placeholder="John Smith" required />
+                    <Input label={t('checkout.phone')} value={phone} onChange={e => setPhone(e.target.value)} placeholder="+49 000 000 0000" required />
+                  </div>
+                </div>
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
                   <h2 className="font-semibold text-stone-700">{t('shipping.choose')}</h2>
                   <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
@@ -225,6 +251,7 @@ function CheckoutContent() {
                     <p className="text-stone-500 text-xs mt-1">{t('shipping.transfer_desc')}</p>
                   </div>
                 </div>
+                </>
               )}
 
               {/* Domestic delivery */}
@@ -294,16 +321,63 @@ function CheckoutContent() {
                 )}
               </div>
 
+              {/* Payment method */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
+                <h2 className="font-semibold text-stone-700">{t('checkout.payment_method')}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button type="button"
+                    onClick={() => setPayMethod('later')}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                  >
+                    <div className="text-2xl mb-1">📩</div>
+                    <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
+                    <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_later_desc')}</p>
+                  </button>
+                  <button type="button"
+                    onClick={() => setPayMethod('stripe')}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                  >
+                    <div className="text-2xl mb-1">💳</div>
+                    <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
+                    <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_online_desc')}</p>
+                  </button>
+                </div>
+              </div>
+
               <Button type="submit" size="lg" className="w-full" loading={loading}>
-                {t('checkout.proceed')}
+                {payMethod === 'later' ? t('checkout.place_order') : t('checkout.proceed')}
               </Button>
               </>
               )}
 
               {outsideBulgaria === true && (
+                <>
+                {/* Payment method for international */}
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
+                  <h2 className="font-semibold text-stone-700">{t('checkout.payment_method')}</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button type="button"
+                      onClick={() => setPayMethod('later')}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                    >
+                      <div className="text-2xl mb-1">📩</div>
+                      <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
+                      <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_later_desc')}</p>
+                    </button>
+                    <button type="button"
+                      onClick={() => setPayMethod('stripe')}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                    >
+                      <div className="text-2xl mb-1">💳</div>
+                      <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
+                      <p className="text-xs text-stone-500 mt-0.5">{t('checkout.pay_online_desc')}</p>
+                    </button>
+                  </div>
+                </div>
                 <Button type="submit" size="lg" className="w-full" loading={loading}>
-                  {t('checkout.proceed')}
+                  {payMethod === 'later' ? t('checkout.place_order') : t('checkout.proceed')}
                 </Button>
+                </>
               )}
             </form>
           )}

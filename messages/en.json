@@ -432,7 +432,13 @@
     "error_office": "Please enter courier office address",
     "error_connection": "Connection error",
     "proceed": "Proceed to Payment →",
-    "contact_info": "Contact Details"
+    "contact_info": "Contact Details",
+    "payment_method": "Payment Method",
+    "pay_later": "Cash on Delivery / Direct",
+    "pay_later_desc": "Arrange payment directly with the seller",
+    "pay_online": "Pay Online by Card",
+    "pay_online_desc": "Secure payment via Stripe",
+    "place_order": "Place Order \u2192"
   },
   "admin": {
     "title": "Administration",
