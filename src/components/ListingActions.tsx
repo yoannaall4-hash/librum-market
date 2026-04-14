@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Button from './ui/Button'
 import FeaturedModal from './FeaturedModal'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface ListingActionsProps {
   bookId: string
@@ -13,6 +14,7 @@ interface ListingActionsProps {
 
 export default function ListingActions({ bookId, bookTitle, currentStatus }: ListingActionsProps) {
   const router = useRouter()
+  const { t } = useLocale()
   const [loading, setLoading] = useState(false)
   const [featuredOpen, setFeaturedOpen] = useState(false)
 
@@ -31,27 +33,27 @@ export default function ListingActions({ bookId, bookTitle, currentStatus }: Lis
     <div className="flex flex-col gap-1.5">
       {currentStatus === 'active' && (
         <Link href={`/books/${bookId}/edit`}>
-          <Button size="sm" variant="secondary" className="w-full">Редактирай</Button>
+          <Button size="sm" variant="secondary" className="w-full">{t('actions.edit')}</Button>
         </Link>
       )}
       {currentStatus === 'active' && (
         <Button size="sm" variant="outline" onClick={() => setFeaturedOpen(true)} className="text-amber-700 border-amber-400 hover:bg-amber-50 w-full">
-          ⭐ Изтъкни
+          {t('actions.feature')}
         </Button>
       )}
       {currentStatus === 'active' && (
         <Button size="sm" variant="ghost" onClick={() => updateStatus('paused')} loading={loading}>
-          Пауза
+          {t('actions.pause')}
         </Button>
       )}
       {currentStatus === 'paused' && (
         <Button size="sm" variant="outline" onClick={() => updateStatus('active')} loading={loading}>
-          Активирай
+          {t('actions.activate')}
         </Button>
       )}
       {!['sold', 'removed'].includes(currentStatus) && (
-        <Button size="sm" variant="danger" onClick={() => { if (confirm('Изтриете обявата?')) updateStatus('removed') }} loading={loading}>
-          Изтрий
+        <Button size="sm" variant="danger" onClick={() => { if (confirm(t('actions.delete_confirm'))) updateStatus('removed') }} loading={loading}>
+          {t('actions.delete')}
         </Button>
       )}
       {featuredOpen && (

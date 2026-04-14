@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Button from './ui/Button'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface MessageModalProps {
   receiverId: string
@@ -11,6 +12,7 @@ interface MessageModalProps {
 }
 
 export default function MessageModal({ receiverId, bookId, orderId, bookTitle, onClose }: MessageModalProps) {
+  const { t } = useLocale()
   const [content, setContent] = useState('')
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -31,7 +33,7 @@ export default function MessageModal({ receiverId, bookId, orderId, bookTitle, o
       setSent(true)
       setTimeout(onClose, 1500)
     } catch {
-      setError('Грешка при изпращане')
+      setError(t('messages.error_sending'))
     } finally {
       setSending(false)
     }
@@ -42,31 +44,31 @@ export default function MessageModal({ receiverId, bookId, orderId, bookTitle, o
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800">
-            {bookTitle ? `Въпрос за: ${bookTitle}` : 'Ново съобщение'}
+            {bookTitle ? t('messages.question_about').replace('{title}', bookTitle) : t('messages.new_message')}
           </h3>
           <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl">×</button>
         </div>
 
         <div className="mb-3 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2">
-          ⚠️ Телефони, имейли и социални мрежи се скриват автоматично.
+          {t('messages.warning')}
         </div>
 
         {sent ? (
-          <p className="text-center text-green-600 py-4">✓ Съобщението е изпратено!</p>
+          <p className="text-center text-green-600 py-4">{t('messages.sent')}</p>
         ) : (
           <>
             {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Напишете вашия въпрос..."
+              placeholder={t('messages.placeholder')}
               className="w-full border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none h-28"
               autoFocus
             />
             <div className="flex gap-3 mt-3">
-              <Button variant="secondary" onClick={onClose} className="flex-1">Отказ</Button>
+              <Button variant="secondary" onClick={onClose} className="flex-1">{t('messages.cancel')}</Button>
               <Button onClick={send} loading={sending} disabled={!content.trim()} className="flex-1">
-                Изпрати
+                {t('messages.send')}
               </Button>
             </div>
           </>

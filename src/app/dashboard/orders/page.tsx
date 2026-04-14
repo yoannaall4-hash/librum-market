@@ -4,8 +4,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
+import { formatPrice, formatDate } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
+import { getT } from '@/lib/getT'
 
 const statusBadge: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
   pending: 'warning',
@@ -21,7 +22,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   const session = await getSession()
   if (!session) redirect('/login')
 
-  const { role } = await searchParams
+  const [{ role }, { t }] = await Promise.all([searchParams, getT()])
   const isSeller = role === 'seller'
 
   const orders = await prisma.order.findMany({
@@ -38,21 +39,21 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-stone-800">Поръчки</h1>
-          <p className="text-stone-500 mt-1">{orders.length} поръчки</p>
+          <h1 className="text-3xl font-bold text-stone-800">{t('orders.title')}</h1>
+          <p className="text-stone-500 mt-1">{t('orders.count', { count: orders.length })}</p>
         </div>
         <div className="flex bg-white border border-stone-200 rounded-lg overflow-hidden">
           <Link
             href="/dashboard/orders"
             className={`px-4 py-2 text-sm font-medium transition-colors ${!isSeller ? 'bg-amber-700 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
-            Покупки
+            {t('orders.purchases')}
           </Link>
           <Link
             href="/dashboard/orders?role=seller"
             className={`px-4 py-2 text-sm font-medium transition-colors ${isSeller ? 'bg-amber-700 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
-            Продажби
+            {t('orders.sales')}
           </Link>
         </div>
       </div>
@@ -60,7 +61,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
       {orders.length === 0 ? (
         <div className="text-center py-20 text-stone-400">
           <p className="text-5xl mb-4">{isSeller ? '📦' : '🛒'}</p>
-          <p className="text-lg">Нямате {isSeller ? 'продажби' : 'покупки'} все още</p>
+          <p className="text-lg">{isSeller ? t('orders.no_sales') : t('orders.no_purchases')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -82,19 +83,19 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-stone-800 truncate">{firstBook?.title}</p>
                       {order.items.length > 1 && (
-                        <p className="text-xs text-stone-400">+{order.items.length - 1} книги</p>
+                        <p className="text-xs text-stone-400">{t('orders.more_books', { count: order.items.length - 1 })}</p>
                       )}
                       <p className="text-xs text-stone-500 mt-1">
-                        {isSeller ? `Купувач: ${order.buyer.name}` : `Продавач: ${order.seller.name}`}
+                        {isSeller ? `${t('orders.buyer')}: ${order.buyer.name}` : `${t('orders.seller')}: ${order.seller.name}`}
                         {' · '}
                         {formatDate(order.createdAt)}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-bold text-amber-700">{formatPrice(isSeller ? order.sellerPayout : order.totalAmount)}</p>
-                      {isSeller && <p className="text-xs text-stone-400">нето</p>}
+                      {isSeller && <p className="text-xs text-stone-400">{t('order.net')}</p>}
                       <Badge variant={statusBadge[order.status] || 'default'} className="mt-1">
-                        {ORDER_STATUSES[order.status] || order.status}
+                        {t(`statuses.${order.status}`) || order.status}
                       </Badge>
                     </div>
                   </div>

@@ -3,11 +3,12 @@ export const dynamic = 'force-dynamic'
 import { notFound, redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { formatPrice, formatDate, ORDER_STATUSES } from '@/lib/utils'
+import { formatPrice, formatDate } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 import OrderActions from '@/components/OrderActions'
 import RateOrderForm from '@/components/RateOrderForm'
 import MessageModal from '@/components/MessageModal'
+import { getT } from '@/lib/getT'
 
 const statusBadge: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
   pending: 'warning', paid: 'info', shipped: 'info',
@@ -18,7 +19,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const session = await getSession()
   if (!session) redirect('/login')
 
-  const { id } = await params
+  const [{ id }, { t }] = await Promise.all([params, getT()])
   const order = await prisma.order.findUnique({
     where: { id },
     include: {
@@ -46,15 +47,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const steps = ['pending', 'paid', 'shipped', 'delivered']
   const currentStep = steps.indexOf(order.status)
 
+  const stepLabels = [t('order.step_pending'), t('order.step_paid'), t('order.step_shipped'), t('order.step_delivered')]
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-stone-800">Поръчка #{order.id.slice(-8).toUpperCase()}</h1>
+          <h1 className="text-2xl font-bold text-stone-800">{t('order.title')} #{order.id.slice(-8).toUpperCase()}</h1>
           <p className="text-stone-500 text-sm mt-1">{formatDate(order.createdAt)}</p>
         </div>
         <Badge variant={statusBadge[order.status] || 'default'} className="text-base px-4 py-2">
-          {ORDER_STATUSES[order.status] || order.status}
+          {t(`statuses.${order.status}`) || order.status}
         </Badge>
       </div>
 
@@ -70,7 +73,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                   {i < currentStep ? '✓' : i + 1}
                 </div>
                 <p className={`text-xs ml-2 ${i <= currentStep ? 'text-amber-700 font-medium' : 'text-stone-400'}`}>
-                  {['Изчаква', 'Платена', 'Изпратена', 'Доставена'][i]}
+                  {stepLabels[i]}
                 </p>
                 {i < steps.length - 1 && (
                   <div className={`flex-1 h-0.5 mx-3 ${i < currentStep ? 'bg-amber-700' : 'bg-stone-200'}`} />
@@ -85,7 +88,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <div className="lg:col-span-2 space-y-6">
           {/* Items */}
           <div className="bg-white rounded-xl border border-stone-200 p-5">
-            <h2 className="font-semibold text-stone-700 mb-4">Книги</h2>
+            <h2 className="font-semibold text-stone-700 mb-4">{t('order.items')}</h2>
             {order.items.map((item) => {
               const imgs: string[] = JSON.parse(item.book.images || '[]')
               return (
@@ -98,7 +101,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-stone-800">{item.book.title}</p>
-                    <p className="text-sm text-stone-500">Количество: {item.quantity}</p>
+                    <p className="text-sm text-stone-500">{t('order.qty')}: {item.quantity}</p>
                   </div>
                   <p className="font-semibold text-amber-700">{formatPrice(item.price * item.quantity)}</p>
                 </div>
@@ -108,9 +111,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
           {/* Messages */}
           <div className="bg-white rounded-xl border border-stone-200 p-5">
-            <h2 className="font-semibold text-stone-700 mb-4">Съобщения по поръчката</h2>
+            <h2 className="font-semibold text-stone-700 mb-4">{t('order.messages')}</h2>
             {order.messages.length === 0 ? (
-              <p className="text-stone-400 text-sm">Няма съобщения</p>
+              <p className="text-stone-400 text-sm">{t('order.no_messages')}</p>
             ) : (
               <div className="space-y-3 mb-4">
                 {order.messages.map((msg) => (
@@ -136,20 +139,20 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <div className="space-y-4">
           {/* Summary */}
           <div className="bg-white rounded-xl border border-stone-200 p-5">
-            <h2 className="font-semibold text-stone-700 mb-3">Сума</h2>
+            <h2 className="font-semibold text-stone-700 mb-3">{t('order.summary')}</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-stone-500">Сума</span>
+                <span className="text-stone-500">{t('order.amount')}</span>
                 <span>{formatPrice(order.totalAmount)}</span>
               </div>
               {!isBuyer && (
                 <>
                   <div className="flex justify-between text-red-600">
-                    <span>Комисионна (10%)</span>
+                    <span>{t('order.commission')}</span>
                     <span>-{formatPrice(order.commission)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-amber-700 border-t border-stone-100 pt-2">
-                    <span>Ще получите</span>
+                    <span>{t('order.you_receive')}</span>
                     <span>{formatPrice(order.sellerPayout)}</span>
                   </div>
                 </>
@@ -157,7 +160,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </div>
             {order.trackingNumber && (
               <div className="mt-3 pt-3 border-t border-stone-100">
-                <p className="text-xs text-stone-500">Товарителница</p>
+                <p className="text-xs text-stone-500">{t('order.tracking')}</p>
                 <p className="text-sm font-mono font-medium">{order.trackingNumber}</p>
               </div>
             )}
@@ -167,11 +170,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="bg-white rounded-xl border border-stone-200 p-5">
             <div className="space-y-3">
               <div>
-                <p className="text-xs text-stone-400">Купувач</p>
+                <p className="text-xs text-stone-400">{t('order.buyer')}</p>
                 <p className="text-sm font-medium">{order.buyer.name}</p>
               </div>
               <div>
-                <p className="text-xs text-stone-400">Продавач</p>
+                <p className="text-xs text-stone-400">{t('order.seller')}</p>
                 <p className="text-sm font-medium">{order.seller.name}</p>
               </div>
             </div>

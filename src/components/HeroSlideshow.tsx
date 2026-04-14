@@ -1,47 +1,25 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useLocale } from '@/contexts/LocaleContext'
 
-const slides = [
-  {
-    id: 0,
-    photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1920&q=85',
-    overlay: 'from-black/80 via-black/50 to-black/70',
-    label: 'БИБЛИОТЕКА',
-    title: 'Книги с душа',
-    quote: '„В началото бе Словото"',
-    source: 'Йоан 1:1',
-  },
-  {
-    id: 1,
-    photo: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=85',
-    overlay: 'from-black/75 via-black/40 to-black/65',
-    label: 'ПАТРИСТИКА',
-    title: 'Светоотеческо наследство',
-    quote: '„Дайте ми думи на пустинниците"',
-    source: 'Свети Йоан Лествичник',
-  },
-  {
-    id: 2,
-    photo: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=85',
-    overlay: 'from-black/80 via-black/45 to-black/70',
-    label: 'БОГОСЛОВИЕ',
-    title: 'Вечната мъдрост',
-    quote: '„Търсете и ще намерите"',
-    source: 'Матей 7:7',
-  },
-  {
-    id: 3,
-    photo: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1920&q=85',
-    overlay: 'from-black/80 via-black/50 to-black/70',
-    label: 'ДУХОВНОСТ',
-    title: 'Молитва и аскетика',
-    quote: '„Молитвата е дъхът на душата"',
-    source: 'Свети Теофан Затворник',
-  },
+const slidePhotos = [
+  { id: 0, photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1920&q=85', overlay: 'from-black/80 via-black/50 to-black/70' },
+  { id: 1, photo: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=85', overlay: 'from-black/75 via-black/40 to-black/65' },
+  { id: 2, photo: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=85', overlay: 'from-black/80 via-black/45 to-black/70' },
+  { id: 3, photo: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1920&q=85', overlay: 'from-black/80 via-black/50 to-black/70' },
 ]
 
 export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: number; usersCount: number }) {
+  const { t } = useLocale()
+
+  const slides = slidePhotos.map((s) => ({
+    ...s,
+    label: t(`hero.slide${s.id}_label`),
+    title: t(`hero.slide${s.id}_title`),
+    quote: t(`hero.slide${s.id}_quote`),
+    source: t(`hero.slide${s.id}_source`),
+  }))
   const [current, setCurrent] = useState(0)
   const [fading, setFading] = useState(false)
 
@@ -108,12 +86,12 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/books">
               <button className="px-7 py-3.5 bg-white text-stone-900 rounded-lg font-semibold text-sm tracking-wide hover:bg-stone-100 transition-all hover:scale-105 active:scale-95">
-                Разгледайте книгите
+                {t('hero.browse')}
               </button>
             </Link>
             <Link href="/register">
               <button className="px-7 py-3.5 border border-white/30 text-white rounded-lg font-semibold text-sm tracking-wide hover:bg-white/10 transition-all">
-                Станете продавач
+                {t('hero.become_seller')}
               </button>
             </Link>
           </div>
@@ -122,15 +100,15 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
           <div className="mt-12 flex gap-10">
             <div>
               <div className="text-2xl font-bold text-white">{booksCount}</div>
-              <div className="text-xs text-stone-500 tracking-wide mt-0.5">ОБЯВИ</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">{t('hero.stat_listings')}</div>
             </div>
             <div className="border-l border-white/10 pl-10">
               <div className="text-2xl font-bold text-white">{usersCount}</div>
-              <div className="text-xs text-stone-500 tracking-wide mt-0.5">ЧИТАТЕЛИ</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">{t('hero.stat_readers')}</div>
             </div>
             <div className="border-l border-white/10 pl-10">
               <div className="text-2xl font-bold text-white">10%</div>
-              <div className="text-xs text-stone-500 tracking-wide mt-0.5">КОМИСИОННА</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">{t('hero.stat_commission')}</div>
             </div>
           </div>
         </div>

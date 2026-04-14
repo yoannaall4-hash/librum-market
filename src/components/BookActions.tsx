@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from './ui/Button'
 import MessageModal from './MessageModal'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface BookActionsProps {
   bookId: string
@@ -18,6 +19,7 @@ export default function BookActions({
   bookId, sellerId, bookTitle, currentUserId, currentUserRole, stock, status
 }: BookActionsProps) {
   const router = useRouter()
+  const { t } = useLocale()
   const [msgOpen, setMsgOpen] = useState(false)
 
   const isOwner = currentUserId === sellerId
@@ -33,7 +35,7 @@ export default function BookActions({
     return (
       <div className="flex gap-3">
         <Button variant="secondary" onClick={() => router.push(`/books/${bookId}/edit`)}>
-          Редактирай
+          {t('actions.edit')}
         </Button>
       </div>
     )
@@ -44,20 +46,20 @@ export default function BookActions({
       {canBuy ? (
         <div className="flex gap-3">
           <Button size="lg" onClick={handleBuy} className="flex-1">
-            Купи сега
+            {t('actions.buy_now')}
           </Button>
           <Button size="lg" variant="outline" onClick={() => setMsgOpen(true)}>
-            💬 Питай
+            {t('actions.ask')}
           </Button>
         </div>
       ) : (
         <div className="text-sm text-stone-500 bg-stone-100 rounded-lg px-4 py-3">
-          {stock === 0 ? '❌ Изчерпано' : '⏸ Обявата е временно неактивна'}
+          {stock === 0 ? t('actions.out_of_stock') : t('actions.paused')}
         </div>
       )}
       {!canBuy && currentUserId && currentUserId !== sellerId && (
         <Button variant="outline" onClick={() => setMsgOpen(true)}>
-          💬 Изпрати съобщение
+          {t('actions.message')}
         </Button>
       )}
 
