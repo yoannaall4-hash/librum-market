@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import BookCard from '@/components/BookCard'
 import BooksFilter from '@/components/BooksFilter'
 import SortSelect from '@/components/SortSelect'
+import { getT } from '@/lib/getT'
 
 
 interface SearchParams {
@@ -73,16 +74,17 @@ async function getCategories() {
 
 export default async function BooksPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await searchParams
-  const [{ books, total, totalPages, page }, categories] = await Promise.all([
+  const [{ books, total, totalPages, page }, categories, { t }] = await Promise.all([
     getBooks(params),
     getCategories(),
+    getT(),
   ])
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-stone-800">Книги</h1>
-        <p className="text-stone-500 mt-1">{total} обяви</p>
+        <h1 className="text-3xl font-bold text-stone-800">{t('books.title')}</h1>
+        <p className="text-stone-500 mt-1">{t('books.listings_count', { count: total })}</p>
       </div>
 
       {/* Top search bar (visible on all screen sizes) */}
@@ -94,14 +96,14 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
             type="text"
             name="q"
             defaultValue={params.q || ''}
-            placeholder="Търси по заглавие, автор или описание…"
+            placeholder={t('books.search_placeholder')}
             className="flex-1 rounded-xl border border-stone-300 px-4 py-2.5 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
           />
           <button
             type="submit"
             className="px-5 py-2.5 bg-amber-700 text-white rounded-xl text-sm font-medium hover:bg-amber-800 transition-colors"
           >
-            Търси
+            {t('books.search')}
           </button>
         </div>
       </form>
@@ -109,7 +111,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
       {/* Mobile category pills */}
       <div className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
         <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
-          {[{ id: '', name: 'Всички', slug: '' }, ...categories].map((cat) => {
+          {[{ id: '', name: t('books.all_categories'), slug: '' }, ...categories].map((cat) => {
             const sp = new URLSearchParams()
             if (params.q) sp.set('q', params.q)
             if (params.sort) sp.set('sort', params.sort)
@@ -146,7 +148,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
           {/* Sort bar */}
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm text-stone-500">
-              Страница {page} от {totalPages || 1}
+              {t('books.page', { page, total: totalPages || 1 })}
             </p>
             <Suspense fallback={null}>
               <SortSelect currentSort={params.sort} />
@@ -156,8 +158,8 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
           {books.length === 0 ? (
             <div className="text-center py-20 text-stone-400">
               <p className="text-5xl mb-4">📚</p>
-              <p className="text-lg font-medium">Няма намерени книги</p>
-              <p className="text-sm mt-2">Опитайте с различни филтри</p>
+              <p className="text-lg font-medium">{t('books.no_results')}</p>
+              <p className="text-sm mt-2">{t('books.try_filters')}</p>
             </div>
           ) : (
             <>

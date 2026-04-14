@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface NavUser { id: string; name: string; role: string }
 
@@ -31,6 +32,7 @@ function ProfileIcon({ active }: { active: boolean }) {
 
 export default function MobileNav() {
   const pathname = usePathname()
+  const { t } = useLocale()
   const [user, setUser] = useState<NavUser | null>(null)
 
   useEffect(() => {
@@ -50,27 +52,27 @@ export default function MobileNav() {
         {/* Home */}
         <Link href="/" className={`mobile-nav-tab ${isHome ? 'text-amber-700' : 'text-stone-400'}`}>
           <HomeIcon active={isHome} />
-          <span className="mobile-nav-label">Начало</span>
+          <span className="mobile-nav-label">{t('mobile_nav.home')}</span>
         </Link>
 
         {/* Books */}
         <Link href="/books" className={`mobile-nav-tab ${isBooks ? 'text-amber-700' : 'text-stone-400'}`}>
           <BooksIcon active={isBooks} />
-          <span className="mobile-nav-label">Книги</span>
+          <span className="mobile-nav-label">{t('mobile_nav.books')}</span>
         </Link>
 
         {/* FAB - Add listing */}
         <Link
           href="/books/new"
           className="flex flex-col items-center -mt-5 relative"
-          aria-label="Добави обява"
+          aria-label={t('mobile_nav.listing')}
         >
           <div className="w-14 h-14 rounded-full bg-amber-700 shadow-lg shadow-amber-900/30 flex items-center justify-center transition-transform active:scale-95">
             <svg viewBox="0 0 24 24" className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </div>
-          <span className="mobile-nav-label text-stone-400 mt-0.5">Обява</span>
+          <span className="mobile-nav-label text-stone-400 mt-0.5">{t('mobile_nav.listing')}</span>
         </Link>
 
         {/* Profile / Login */}
@@ -80,12 +82,12 @@ export default function MobileNav() {
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${isProfile ? 'bg-amber-700' : 'bg-stone-400'}`}>
                 {user.name[0].toUpperCase()}
               </div>
-              <span className="mobile-nav-label">Профил</span>
+              <span className="mobile-nav-label">{t('mobile_nav.profile')}</span>
             </>
           ) : (
             <>
               <ProfileIcon active={isProfile} />
-              <span className="mobile-nav-label">Вход</span>
+              <span className="mobile-nav-label">{t('mobile_nav.login')}</span>
             </>
           )}
         </Link>

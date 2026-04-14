@@ -5,9 +5,11 @@ import Link from 'next/link'
 import Input from '@/components/ui/Input'
 import PasswordInput from '@/components/PasswordInput'
 import Button from '@/components/ui/Button'
+import { useLocale } from '@/contexts/LocaleContext'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useLocale()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,7 +29,7 @@ export default function LoginPage() {
       router.push('/dashboard')
       router.refresh()
     } catch {
-      setError('Грешка при свързване')
+      setError(t('auth.error_connection'))
     } finally {
       setLoading(false)
     }
@@ -38,7 +40,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-stone-800">Влезте в акаунта</h1>
+            <h1 className="text-2xl font-bold text-stone-800">{t('auth.login_title')}</h1>
             <p className="text-stone-500 text-sm mt-1">Librum Market</p>
           </div>
 
@@ -50,17 +52,17 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Имейл"
+              label={t('auth.email')}
               type="email"
               id="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="вашият@имейл.com"
+              placeholder="your@email.com"
               required
               autoComplete="email"
             />
             <PasswordInput
-              label="Парола"
+              label={t('auth.password')}
               id="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -69,14 +71,14 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
             <Button type="submit" loading={loading} size="lg" className="w-full">
-              Вход
+              {t('auth.login_btn')}
             </Button>
           </form>
 
           <p className="text-center text-sm text-stone-500 mt-6">
-            Нямате акаунт?{' '}
+            {t('auth.no_account')}{' '}
             <Link href="/register" className="text-amber-700 font-medium hover:text-amber-800">
-              Регистрирайте се
+              {t('auth.register_link')}
             </Link>
           </p>
         </div>

@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import BookCard from '@/components/BookCard'
 import Button from '@/components/ui/Button'
 import HeroSlideshow from '@/components/HeroSlideshow'
+import { getT } from '@/lib/getT'
 
 async function getFeaturedBooks() {
   return prisma.book.findMany({
@@ -64,11 +65,12 @@ const CATEGORY_ICONS: Record<string, string> = {
 }
 
 export default async function HomePage() {
-  const [featured, recent, stats, categories] = await Promise.all([
+  const [featured, recent, stats, categories, { t }] = await Promise.all([
     getFeaturedBooks().catch(() => []),
     getRecentBooks().catch(() => []),
     getStats().catch(() => ({ books: 0, users: 0 })),
     getCategories().catch(() => []),
+    getT(),
   ])
 
   return (
@@ -85,12 +87,12 @@ export default async function HomePage() {
               </svg>
             </div>
             <div>
-              <p className="text-white font-semibold text-sm">📱 Свалете приложението и сканирайте и качете за 1 минута!</p>
-              <p className="text-stone-400 text-xs mt-0.5">Снимайте корицата на книгата — AI попълва всичко автоматично</p>
+              <p className="text-white font-semibold text-sm">{t('home.banner_desktop')}</p>
+              <p className="text-stone-400 text-xs mt-0.5">{t('home.banner_desktop_sub')}</p>
             </div>
           </div>
           <Link href="/books/new" className="shrink-0 px-4 py-2 bg-amber-700 text-white text-sm font-medium rounded-lg hover:bg-amber-600 transition-colors whitespace-nowrap">
-            Качи обява →
+            {t('home.banner_upload')}
           </Link>
         </div>
       </div>
@@ -105,8 +107,8 @@ export default async function HomePage() {
             </svg>
           </div>
           <div className="flex-1">
-            <p className="text-white font-semibold text-sm leading-tight">✨ Сканирай корица с AI</p>
-            <p className="text-amber-100 text-xs mt-0.5">Снимай → AI попълва всичко → само добави цена</p>
+            <p className="text-white font-semibold text-sm leading-tight">{t('home.banner_mobile')}</p>
+            <p className="text-amber-100 text-xs mt-0.5">{t('home.banner_mobile_sub')}</p>
           </div>
           <svg className="w-4 h-4 text-amber-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -118,7 +120,7 @@ export default async function HomePage() {
       {categories.length > 0 && (
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-2xl font-bold text-stone-800 mb-8 text-center">Категории</h2>
+            <h2 className="text-2xl font-bold text-stone-800 mb-8 text-center">{t('home.categories')}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3">
               {categories.map((cat) => (
                 <Link
@@ -140,9 +142,9 @@ export default async function HomePage() {
         <section className="py-16 bg-amber-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-stone-800">⭐ Препоръчани книги</h2>
+              <h2 className="text-2xl font-bold text-stone-800">{t('home.featured')}</h2>
               <Link href="/books" className="text-sm text-amber-700 hover:text-amber-800">
-                Виж всички →
+                {t('home.viewAll')}
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -158,18 +160,18 @@ export default async function HomePage() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-stone-800">Нови обяви</h2>
+            <h2 className="text-2xl font-bold text-stone-800">{t('home.recent')}</h2>
             <Link href="/books" className="text-sm text-amber-700 hover:text-amber-800">
-              Виж всички →
+              {t('home.viewAll')}
             </Link>
           </div>
           {recent.length === 0 ? (
             <div className="text-center py-16 text-stone-400">
               <p className="text-5xl mb-4">📚</p>
-              <p className="text-lg">Все още няма обяви</p>
-              <p className="text-sm mt-2">Бъдете първият продавач!</p>
+              <p className="text-lg">{t('home.noBooks')}</p>
+              <p className="text-sm mt-2">{t('home.beFirst')}</p>
               <Link href="/register" className="mt-4 inline-block">
-                <Button>Регистрирайте се</Button>
+                <Button>{t('nav.register')}</Button>
               </Link>
             </div>
           ) : (
@@ -185,12 +187,12 @@ export default async function HomePage() {
       {/* How it works */}
       <section className="py-16 bg-stone-900 text-white">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-12 text-amber-400">Как работи платформата?</h2>
+          <h2 className="text-2xl font-bold text-center mb-12 text-amber-400">{t('home.how_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: 'Качете обява', desc: 'Снимайте книгата, опишете я и определете цена. Безплатно.', icon: '📸' },
-              { step: '2', title: 'Сделката е защитена', desc: 'Парите се задържат в платформата до потвърждение от купувача.', icon: '🔒' },
-              { step: '3', title: 'Получете парите', desc: 'След доставка удържаме 10% комисионна и изплащаме остатъка.', icon: '💰' },
+              { step: '1', title: t('home.step1_title'), desc: t('home.step1_desc'), icon: '📸' },
+              { step: '2', title: t('home.step2_title'), desc: t('home.step2_desc'), icon: '🔒' },
+              { step: '3', title: t('home.step3_title'), desc: t('home.step3_desc'), icon: '💰' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="text-4xl mb-3">{item.icon}</div>

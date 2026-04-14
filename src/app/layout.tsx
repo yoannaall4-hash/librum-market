@@ -7,6 +7,7 @@ import SplashScreen from '@/components/SplashScreen'
 import SupportChat from '@/components/SupportChat'
 import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
+import { getT } from '@/lib/getT'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
@@ -29,7 +30,8 @@ export const viewport: Viewport = {
   themeColor: '#1c1917',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { t } = await getT()
   return (
     <html lang="bg" className={`${geist.variable} h-full`}>
       <head>
@@ -54,36 +56,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  Платформа за книги в България. Свързваме читатели, продавачи и книги с душа.
+                  {t('footer.tagline')}
                 </p>
               </div>
 
               {/* Links */}
               <div>
-                <p className="text-stone-300 font-medium text-sm mb-3">Навигация</p>
+                <p className="text-stone-300 font-medium text-sm mb-3">{t('footer.navigation')}</p>
                 <div className="space-y-2">
-                  <Link href="/books" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">Всички книги</Link>
-                  <Link href="/books/new" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">Продайте книга</Link>
-                  <Link href="/about" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">За нас</Link>
+                  <Link href="/books" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.all_books')}</Link>
+                  <Link href="/books/new" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.sell_book')}</Link>
+                  <Link href="/about" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">{t('footer.about')}</Link>
                 </div>
               </div>
 
               {/* Contact */}
               <div>
-                <p className="text-stone-300 font-medium text-sm mb-3">Контакт</p>
-                <p className="text-sm text-stone-500 mb-2">Въпроси и поддръжка:</p>
+                <p className="text-stone-300 font-medium text-sm mb-3">{t('footer.contact')}</p>
+                <p className="text-sm text-stone-500 mb-2">{t('footer.contact_desc')}</p>
                 <a
                   href="mailto:librum.bookstore@gmail.com"
                   className="text-sm text-amber-400 hover:text-amber-300 transition-colors break-all"
                 >
                   librum.bookstore@gmail.com
                 </a>
-                <p className="text-xs text-stone-600 mt-3">Отговаряме до 24 часа в делнични дни.</p>
+                <p className="text-xs text-stone-600 mt-3">{t('footer.response_time')}</p>
               </div>
             </div>
 
             <div className="border-t border-stone-800 pt-6 text-center">
-              <p className="text-xs text-stone-600">© {new Date().getFullYear()} Librum Market. Всички права запазени.</p>
+              <p className="text-xs text-stone-600">© {new Date().getFullYear()} Librum Market. {t('footer.rights')}</p>
             </div>
           </div>
         </footer>

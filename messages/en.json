@@ -11,9 +11,8 @@
     "profile": "My Profile",
     "admin": "Administration",
     "logout": "Logout",
-    "addListing": "+ List a Book",
-    "global": "🌍 Global",
-    "local": "🇧🇬 Bulgarian"
+    "addListing": "+ Listing",
+    "account": "Account"
   },
   "home": {
     "hero_label": "MARKETPLACE",
@@ -69,24 +68,39 @@
     "all_languages": "All Languages"
   },
   "book": {
-    "featured_badge": "⭐ Featured Listing",
+    "featured_badge": "⭐ Featured",
     "author": "Author",
     "publisher": "Publisher",
     "year": "Year",
     "pages": "Pages",
     "isbn": "ISBN",
+    "language": "Language",
     "protected_deal": "🔒 Protected Deal — funds are held on the platform until delivery is confirmed.",
     "seller_title": "About the Seller",
     "listings_count": "{count} listings",
     "member_since": "Member since",
-    "reviews": "Seller Reviews",
+    "reviews": "Reviews",
+    "ratings": "ratings",
     "buy": "Buy Now",
-    "message": "Message Seller",
+    "message": "Message",
     "edit": "Edit",
     "delete": "Delete",
-    "shipping": "Shipping",
-    "domestic": "Domestic",
-    "international": "International"
+    "in_stock": "In Stock",
+    "out_of_stock": "Out of Stock",
+    "login_to_buy": "Login to Buy"
+  },
+  "shipping": {
+    "title": "Shipping",
+    "outside_bulgaria": "Do you live outside Bulgaria?",
+    "yes": "Yes",
+    "no": "No",
+    "choose": "Choose shipping method:",
+    "domestic": "Domestic (Bulgaria)",
+    "international": "International (Europe)",
+    "domestic_desc": "~5-10 BGN via courier (Econt / Speedy)",
+    "international_desc": "~15-25 BGN international shipping",
+    "transfer": "Bank Transfer",
+    "transfer_desc": "IBAN for international payments"
   },
   "conditions": {
     "new": "New",
@@ -117,6 +131,42 @@
     "IE": "Ireland",
     "other": "Other"
   },
+  "statuses": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "disputed": "Disputed",
+    "cancelled": "Cancelled",
+    "refunded": "Refunded",
+    "pending_approval": "Pending Approval",
+    "active": "Active",
+    "sold": "Sold",
+    "paused": "Paused",
+    "removed": "Removed"
+  },
+  "seller_types": {
+    "individual": "Individual",
+    "publisher": "Publisher",
+    "antiquarian": "Antiquarian",
+    "priest": "Priest",
+    "monastery": "Monastery"
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}!",
+    "subtitle": "Your personal dashboard",
+    "active_listings": "Active Listings",
+    "total_earnings": "Total Earnings",
+    "unread_messages": "Unread",
+    "recent_purchases": "Recent Purchases",
+    "recent_sales": "Recent Sales",
+    "view_all": "View All",
+    "no_orders": "No orders",
+    "add_listing": "Add Listing",
+    "manage": "Manage",
+    "order_from": "Order from",
+    "sold_to": "Sold to"
+  },
   "auth": {
     "login_title": "Sign In",
     "register_title": "Create Account",
@@ -125,14 +175,21 @@
     "name": "Full Name",
     "country": "Country",
     "select_country": "Select your country",
-    "seller_type": "Seller Type (optional)",
+    "seller_type": "Account Type (optional)",
+    "buyer_only": "Buyer only (I don't sell)",
     "individual": "Individual",
+    "publisher": "Publisher",
+    "antiquarian": "Antiquarian",
+    "password_min": "Minimum 8 characters",
+    "commission_note": "10% commission — deducted only on successful sale. Listing is free.",
     "login_btn": "Sign In",
     "register_btn": "Register",
     "no_account": "Don't have an account?",
     "register_link": "Sign up",
     "have_account": "Already have an account?",
-    "login_link": "Sign in"
+    "login_link": "Sign in",
+    "error_short_password": "Password must be at least 8 characters",
+    "error_connection": "Connection error"
   },
   "new_book": {
     "title": "New Listing",
@@ -171,6 +228,43 @@
     "domestic_shipping": "Domestic",
     "international_shipping": "International (Europe)"
   },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Librum Market was created by people for whom a book is more than an object — it is a bridge to the eternal.",
+    "quote": "The beginning of wisdom is the desire to learn.",
+    "quote_source": "Book of Wisdom",
+    "our_idea_title": "Our Idea",
+    "our_idea_text": "Librum Market was born from the simple thought that books deserve a home. Not just an online store — but a community where readers, sellers and publishers can share and find valuable literature.",
+    "mission_title": "Our Mission",
+    "mission_text": "To make quality books accessible to every reader — through a transparent, secure and easy platform.",
+    "values_title": "Our Values",
+    "value1": "Quality — verified books only",
+    "value2": "Security — protected deals",
+    "value3": "Community — people who love books",
+    "contact_title": "Contact",
+    "contact_text": "Questions, suggestions or partnerships:",
+    "cta": "Browse Books"
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "city": "City",
+    "address": "Address",
+    "bio": "About Me",
+    "iban": "IBAN (for payouts)",
+    "member_since": "Member since",
+    "listings": "listings",
+    "sales": "sales",
+    "change_password": "Change Password",
+    "old_password": "Old Password",
+    "new_password": "New Password",
+    "seller_type": "Seller Type"
+  },
   "footer": {
     "tagline": "Book marketplace for Europe. Connecting readers, sellers and books with soul.",
     "navigation": "Navigation",
@@ -181,6 +275,13 @@
     "contact_desc": "Questions and support:",
     "response_time": "We respond within 24 hours on weekdays.",
     "rights": "All rights reserved."
+  },
+  "mobile_nav": {
+    "home": "Home",
+    "books": "Books",
+    "listing": "Listing",
+    "profile": "Profile",
+    "login": "Login"
   },
   "splash": "Books with Soul",
   "protected_deal": "🔒 Protected Deal",

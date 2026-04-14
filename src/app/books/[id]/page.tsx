@@ -3,10 +3,11 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
-import { formatPrice, formatDate, CONDITIONS, PERIODS, SELLER_TYPES } from '@/lib/utils'
+import { formatPrice, formatDate, PERIODS, SELLER_TYPES } from '@/lib/utils'
 import Badge from '@/components/ui/Badge'
 import Stars from '@/components/ui/Stars'
 import BookActions from '@/components/BookActions'
+import { getT } from '@/lib/getT'
 
 async function getBook(id: string) {
   const book = await prisma.book.findUnique({
@@ -42,7 +43,7 @@ async function getSellerRatings(sellerId: string) {
 
 export default async function BookDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [book, session] = await Promise.all([getBook(id), getSession()])
+  const [book, session, { t }] = await Promise.all([getBook(id), getSession(), getT()])
   if (!book || book.status === 'removed') notFound()
 
   // Increment views (fire and forget)
@@ -50,6 +51,13 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
   const { ratings, avg, count } = await getSellerRatings(book.sellerId)
   const images: string[] = JSON.parse(book.images || '[]')
+
+  const conditionLabels: Record<string, string> = {
+    new: t('conditions.new'),
+    like_new: t('conditions.like_new'),
+    good: t('conditions.good'),
+    acceptable: t('conditions.acceptable'),
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -76,11 +84,11 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
         {/* Details */}
         <div>
-          {book.isFeatured && <Badge variant="gold" className="mb-3">⭐ Препоръчана обява</Badge>}
+          {book.isFeatured && <Badge variant="gold" className="mb-3">{t('book.featured_badge')}</Badge>}
 
           <div className="flex flex-wrap gap-2 mb-3">
             <Badge variant={book.condition === 'new' ? 'success' : 'default'}>
-              {CONDITIONS[book.condition] || book.condition}
+              {conditionLabels[book.condition] || book.condition}
             </Badge>
             {book.period && <Badge variant="info">{PERIODS[book.period] || book.period}</Badge>}
             {book.category && <Badge>{book.category.name}</Badge>}
@@ -90,28 +98,28 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
           {book.authors.length > 0 && (
             <p className="text-stone-600 mb-1">
-              <span className="text-stone-400">Автор: </span>
+              <span className="text-stone-400">{t('book.author')}: </span>
               {book.authors.map((a) => a.author.name).join(', ')}
             </p>
           )}
           {book.publisher && (
             <p className="text-stone-600 mb-1">
-              <span className="text-stone-400">Издателство: </span>{book.publisher.name}
+              <span className="text-stone-400">{t('book.publisher')}: </span>{book.publisher.name}
             </p>
           )}
           {book.year && (
             <p className="text-stone-600 mb-1">
-              <span className="text-stone-400">Година: </span>{book.year}
+              <span className="text-stone-400">{t('book.year')}: </span>{book.year}
             </p>
           )}
           {book.pages && (
             <p className="text-stone-600 mb-1">
-              <span className="text-stone-400">Страници: </span>{book.pages}
+              <span className="text-stone-400">{t('book.pages')}: </span>{book.pages}
             </p>
           )}
           {book.isbn && (
             <p className="text-stone-600 mb-3">
-              <span className="text-stone-400">ISBN: </span>{book.isbn}
+              <span className="text-stone-400">{t('book.isbn')}: </span>{book.isbn}
             </p>
           )}
 
@@ -129,7 +137,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
-            🔒 <strong>Защитена сделка</strong> — парите се задържат в платформата до потвърждение за доставка.
+            {t('book.protected_deal')}
           </div>
 
           <BookActions
@@ -151,7 +159,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
       {/* Seller info */}
       <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white border border-stone-200 rounded-2xl p-6">
-          <h2 className="font-semibold text-stone-700 mb-4">За продавача</h2>
+          <h2 className="font-semibold text-stone-700 mb-4">{t('book.seller_title')}</h2>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-lg">
               {book.seller.name[0].toUpperCase()}
@@ -165,14 +173,14 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
           </div>
           {book.seller.bio && <p className="text-sm text-stone-600 mb-3">{book.seller.bio}</p>}
           <div className="flex items-center gap-4 text-sm text-stone-500">
-            <span>{book.seller._count.listings} обяви</span>
+            <span>{t('book.listings_count', { count: book.seller._count.listings })}</span>
             <span>·</span>
-            <span>От {formatDate(book.seller.createdAt)}</span>
+            <span>{t('book.member_since')} {formatDate(book.seller.createdAt)}</span>
           </div>
           {count > 0 && (
             <div className="mt-3 flex items-center gap-2">
               <Stars score={avg} size="sm" />
-              <span className="text-sm text-stone-600">{avg.toFixed(1)} ({count} оценки)</span>
+              <span className="text-sm text-stone-600">{avg.toFixed(1)} ({count} {t('book.ratings')})</span>
             </div>
           )}
         </div>
@@ -180,7 +188,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         {/* Reviews */}
         {ratings.length > 0 && (
           <div className="bg-white border border-stone-200 rounded-2xl p-6">
-            <h2 className="font-semibold text-stone-700 mb-4">Отзиви за продавача</h2>
+            <h2 className="font-semibold text-stone-700 mb-4">{t('book.reviews')}</h2>
             <div className="space-y-4">
               {ratings.map((r) => (
                 <div key={r.id} className="border-b border-stone-100 pb-3 last:border-0 last:pb-0">

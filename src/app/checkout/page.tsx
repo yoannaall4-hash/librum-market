@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { formatPrice, COURIER_PRICES, calculateCommission } from '@/lib/utils'
 import { ECONT_OFFICES, SPEEDY_OFFICES, type CourierOffice } from '@/data/courier-offices'
+import { useLocale } from '@/contexts/LocaleContext'
 
 interface Book {
   id: string
@@ -15,14 +16,16 @@ interface Book {
   authors: { author: { name: string } }[]
 }
 
-type DeliveryType = 'address' | 'econt_office' | 'speedy_office'
+type DeliveryType = 'address' | 'econt_office' | 'speedy_office' | 'international'
 
 function CheckoutContent() {
   const router = useRouter()
   const params = useSearchParams()
   const bookId = params.get('bookId')
+  const { t } = useLocale()
 
   const [book, setBook] = useState<Book | null>(null)
+  const [outsideBulgaria, setOutsideBulgaria] = useState<boolean | null>(null)
   const [deliveryType, setDeliveryType] = useState<DeliveryType>('address')
   const [courier, setCourier] = useState<'econt' | 'speedy'>('econt')
   const [name, setName] = useState('')
@@ -49,6 +52,7 @@ function CheckoutContent() {
   }, [deliveryType])
 
   const offices = deliveryType === 'econt_office' ? ECONT_OFFICES : SPEEDY_OFFICES
+  const internationalShippingCost = 20 // ~20 BGN for international shipping
 
   const filteredOffices = useMemo(() => {
     if (!officeSearch.trim()) return offices.slice(0, 30)
@@ -68,7 +72,7 @@ function CheckoutContent() {
     )
   }
 
-  const courierInfo = COURIER_PRICES[courier]
+  const courierInfo = deliveryType === 'international' ? { name: t('shipping.transfer'), price: internationalShippingCost, days: '7-14 дни' } : COURIER_PRICES[courier]
   const { total } = calculateCommission(book.price, courierInfo.price)
   const images: string[] = JSON.parse(book.images || '[]')
 
@@ -133,7 +137,7 @@ function CheckoutContent() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-stone-800 mb-8">Оформяне на поръчка</h1>
+      <h1 className="text-3xl font-bold text-stone-800 mb-8">{t('shipping.title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
@@ -141,9 +145,51 @@ function CheckoutContent() {
             <form onSubmit={proceedToPayment} className="space-y-6">
               {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>}
 
+              {/* Outside Bulgaria? */}
+              <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-3">
+                <h2 className="font-semibold text-stone-700">{t('shipping.outside_bulgaria')}</h2>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => { setOutsideBulgaria(false); setDeliveryType('address') }}
+                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === false ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
+                  >
+                    {t('shipping.no')} 🇧🇬
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setOutsideBulgaria(true); setDeliveryType('international') }}
+                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === true ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
+                  >
+                    {t('shipping.yes')} 🌍
+                  </button>
+                </div>
+              </div>
+
+              {/* International shipping info */}
+              {outsideBulgaria === true && (
+                <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
+                  <h2 className="font-semibold text-stone-700">{t('shipping.choose')}</h2>
+                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <p className="font-medium text-amber-800 text-sm">🌍 {t('shipping.international')}</p>
+                    <p className="text-amber-700 text-xs mt-1">{t('shipping.international_desc')}</p>
+                  </div>
+                  <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
+                    <p className="font-medium text-stone-700 text-sm">🏦 {t('shipping.transfer')}</p>
+                    <p className="text-stone-500 text-xs mt-1">{t('shipping.transfer_desc')}</p>
+                    <p className="text-stone-600 text-sm mt-2 font-mono">IBAN: BG00 XXXX 0000 0000 0000 00</p>
+                    <p className="text-stone-500 text-xs mt-1">BIC: XXXXBGSF</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Domestic delivery options - only shown if not outside Bulgaria */}
+              {outsideBulgaria === false && (
+              <>
+
               {/* Contact info */}
               <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
-                <h2 className="font-semibold text-stone-700">Данни за получателя</h2>
+                <h2 className="font-semibold text-stone-700">{t('profile.name')}</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <Input label="Три имена *" value={name} onChange={e => setName(e.target.value)} placeholder="Иван Петров" required />
                   <Input label="Мобилен телефон *" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+359 88 000 0000" required />
@@ -242,8 +288,18 @@ function CheckoutContent() {
               </div>
 
               <Button type="submit" size="lg" className="w-full" loading={loading}>
-                Продължи към плащане →
+                {t('nav.orders')} →
               </Button>
+
+              </> /* end outsideBulgaria === false */
+              )}
+
+              {/* For international: simple confirm button */}
+              {outsideBulgaria === true && (
+                <Button type="button" size="lg" className="w-full" onClick={() => setStep('payment')}>
+                  {t('nav.orders')} →
+                </Button>
+              )}
             </form>
           )}
 
@@ -283,28 +339,27 @@ function CheckoutContent() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm text-stone-800 line-clamp-2">{book.title}</p>
                 {book.authors.length > 0 && <p className="text-xs text-stone-500">{book.authors.map(a => a.author.name).join(', ')}</p>}
-                <p className="text-xs text-stone-400 mt-1">Продавач: {book.seller.name}</p>
+                <p className="text-xs text-stone-400 mt-1">{t('book.seller_title')}: {book.seller.name}</p>
               </div>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-stone-500">Цена</span>
+                <span className="text-stone-500">{t('new_book.price').replace(' *', '')}</span>
                 <span>{formatPrice(book.price)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">Доставка</span>
+                <span className="text-stone-500">{t('shipping.title')}</span>
                 <span>{formatPrice(courierInfo.price)}</span>
               </div>
               <div className="flex justify-between font-bold text-amber-700 border-t border-stone-100 pt-2 text-base">
-                <span>Общо</span>
+                <span>{t('books.price').split('(')[0].trim()}</span>
                 <span>{formatPrice(total)}</span>
               </div>
             </div>
           </div>
           <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 text-xs text-stone-500 space-y-1">
-            <p>🔒 Плащането е защитено чрез Stripe</p>
-            <p>📦 Парите се задържат до доставка</p>
-            <p>✓ 10% комисионна се удържа при успех</p>
+            <p>🔒 {t('protected_deal')} — {t('protected_deal_desc')}</p>
+            <p>✓ {t('auth.commission_note')}</p>
           </div>
         </div>
       </div>

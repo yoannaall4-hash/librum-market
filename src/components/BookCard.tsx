@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { formatPrice, CONDITIONS, SELLER_TYPES } from '@/lib/utils'
+import { formatPrice, SELLER_TYPES } from '@/lib/utils'
 import Badge from './ui/Badge'
+import { getT } from '@/lib/getT'
 
 interface BookCardProps {
   book: {
@@ -18,14 +19,21 @@ interface BookCardProps {
   }
 }
 
-export default function BookCard({ book }: BookCardProps) {
+export default async function BookCard({ book }: BookCardProps) {
+  const { t } = await getT()
   let imageUrl = '/placeholder-book.jpg'
   try {
     const imgs = JSON.parse(book.images)
     if (imgs.length > 0) imageUrl = imgs[0]
   } catch {}
 
-  const conditionLabel = CONDITIONS[book.condition] || book.condition
+  const conditionLabels: Record<string, string> = {
+    new: t('conditions.new'),
+    like_new: t('conditions.like_new'),
+    good: t('conditions.good'),
+    acceptable: t('conditions.acceptable'),
+  }
+  const conditionLabel = conditionLabels[book.condition] || book.condition
   const authorNames = book.authors.map((a) => a.author.name).join(', ')
 
   return (
@@ -41,7 +49,7 @@ export default function BookCard({ book }: BookCardProps) {
           )}
           {book.isFeatured && (
             <div className="absolute top-2 left-2">
-              <Badge variant="gold">⭐ Препоръчана</Badge>
+              <Badge variant="gold">{t('book.featured_badge')}</Badge>
             </div>
           )}
           <div className="absolute top-2 right-2">
