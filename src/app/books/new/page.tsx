@@ -106,7 +106,6 @@ export default function NewBookPage() {
     setScanSuccess(false)
     setError('')
     try {
-      // Resize to max 1600px before sending (mobile photos can be 10MB+)
       const base64 = await resizeImage(file)
 
       const res = await fetch('/api/scan-book', {
@@ -120,47 +119,12 @@ export default function NewBookPage() {
         return
       }
 
-      const book = data.book
-      // Find category id by slug
-      let catId = ''
-      if (book.category) {
-        const mappedId = CATEGORY_SLUG_MAP[book.category]
-        if (mappedId) {
-          catId = mappedId
-        } else {
-          // try matching by slug directly
-          const found = categories.find(c => c.slug === book.category || c.id === mappedId)
-          catId = found?.id || ''
-        }
+      if (data.description) {
+        setForm(f => ({ ...f, description: data.description }))
+        setScanSuccess(true)
       }
-
-      // Find or suggest publisher
-      let pubId = ''
-      if (book.publisher) {
-        const found = publishers.find(p => p.name.toLowerCase().includes(book.publisher.toLowerCase()) || book.publisher.toLowerCase().includes(p.name.toLowerCase()))
-        pubId = found?.id || ''
-        if (!found) {
-          setNewPublisherName(book.publisher)
-          setShowNewPublisher(true)
-        }
-      }
-
-      setForm(f => ({
-        ...f,
-        title: book.title || f.title,
-        description: book.description || f.description,
-        isbn: book.isbn || f.isbn,
-        year: book.year ? String(book.year) : f.year,
-        pages: book.pages ? String(book.pages) : f.pages,
-        language: book.language || f.language,
-        authorNames: book.authors?.join(', ') || f.authorNames,
-        categoryId: catId || f.categoryId,
-        publisherId: pubId || f.publisherId,
-      }))
-
-      setScanSuccess(true)
     } catch {
-      setError('Грешка при сканиране на корицата')
+      setError('Грешка при сканиране')
     } finally {
       setScanning(false)
     }
@@ -224,23 +188,20 @@ export default function NewBookPage() {
       {/* AI Scanner card */}
       <div className="bg-gradient-to-br from-stone-50 to-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl">✨</span>
-          <h2 className="font-semibold text-stone-800">Сканирай корицата с AI</h2>
-          <span className="ml-auto text-xs bg-amber-700 text-white px-2 py-0.5 rounded-full">Ново</span>
+          <span className="text-xl">📷</span>
+          <h2 className="font-semibold text-stone-800">Сканирай задната корица</h2>
         </div>
         <p className="text-sm text-stone-600 mb-4">
-          Снимайте или качете снимка на корицата — AI ще попълни автоматично заглавието, автора, описанието и всички детайли.
-          Само цената се въвежда ръчно от вас.
+          Снимайте задната корица на книгата — текстът от нея ще се добави автоматично в описанието.
         </p>
 
         {scanSuccess && (
           <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm flex items-center gap-2">
-            <span>✓</span> Информацията е попълнена автоматично! Проверете и добавете цена.
+            <span>✓</span> Описанието е попълнено! Прегледайте и коригирайте при нужда.
           </div>
         )}
 
         <div className="flex gap-3">
-          {/* Camera button (mobile-friendly) */}
           <button
             type="button"
             disabled={scanning}
@@ -253,7 +214,7 @@ export default function NewBookPage() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Анализира...
+                Чете текст...
               </>
             ) : (
               <>
@@ -261,12 +222,10 @@ export default function NewBookPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Снимай корица
+                Снимай задна корица
               </>
             )}
           </button>
-
-          {/* File upload option */}
           <button
             type="button"
             disabled={scanning}

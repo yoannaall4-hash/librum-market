@@ -24,23 +24,6 @@ export async function POST(request: NextRequest) {
     const mediaTypeMatch = image.match(/^data:(image\/\w+);base64,/)
     const mimeType = mediaTypeMatch?.[1] ?? 'image/jpeg'
 
-    const prompt = `This is a book cover photo. Identify the book and return ALL available information.
-
-Return ONLY a valid JSON object (no markdown, no code blocks) with these exact fields:
-{
-  "title": "exact book title",
-  "authors": ["Author Name"],
-  "description": "2-4 sentence description in Bulgarian language",
-  "isbn": null,
-  "year": null,
-  "pages": null,
-  "publisher": null,
-  "category": "one of: theology, psychology, philosophy, history, pedagogy, children, archaeology, encyclopedias, health, economics, music, tourism, textbooks, law, fiction, exact-sciences",
-  "language": "bg"
-}
-
-Description MUST be in Bulgarian. Use null for unknown fields. Numbers must be integers.`
-
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
@@ -50,31 +33,28 @@ Description MUST be in Bulgarian. Use null for unknown fields. Numbers must be i
           contents: [{
             parts: [
               { inline_data: { mime_type: mimeType, data: base64Data } },
-              { text: prompt },
+              { text: 'This is a photo of the back cover of a book. Please read and extract ALL the text visible in this image. Return ONLY the extracted text, nothing else. Preserve paragraphs and line breaks.' },
             ],
           }],
-          generationConfig: { temperature: 0.1, maxOutputTokens: 1024 },
+          generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
         }),
       }
     )
 
     if (!res.ok) {
       const errBody = await res.text()
-      console.error('Gemini API error:', res.status, errBody)
-      return NextResponse.json({ error: `Gemini грешка ${res.status}: ${errBody.slice(0, 200)}` }, { status: 500 })
+      console.error('Gemini error:', res.status, errBody.slice(0, 300))
+      return NextResponse.json({ error: `Грешка ${res.status}: ${errBody.slice(0, 150)}` }, { status: 500 })
     }
 
     const data = await res.json()
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-    console.log('Gemini response:', text.slice(0, 300))
 
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      return NextResponse.json({ error: 'Не успях да разпозная книгата. Опитайте с по-ясна снимка.' }, { status: 422 })
+    if (!text.trim()) {
+      return NextResponse.json({ error: 'Не успях да прочета текста. Опитайте с по-ясна снимка.' }, { status: 422 })
     }
 
-    const bookData = JSON.parse(jsonMatch[0])
-    return NextResponse.json({ book: bookData })
+    return NextResponse.json({ description: text.trim() })
   } catch (err: unknown) {
     console.error('scan-book error:', err)
     const message = err instanceof Error ? err.message : String(err)

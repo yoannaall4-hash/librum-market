@@ -48,12 +48,6 @@ export default function Navbar() {
             <Link href="/books" className="px-3 py-1.5 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg transition-colors">
               Книги
             </Link>
-            <Link href="/books?period=patristic" className="px-3 py-1.5 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg transition-colors">
-              Патристика
-            </Link>
-            <Link href="/books?period=contemporary" className="px-3 py-1.5 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg transition-colors">
-              Съвременни
-            </Link>
             <Link href="/about" className="px-3 py-1.5 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg transition-colors">
               За нас
             </Link>

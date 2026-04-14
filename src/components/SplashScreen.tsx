@@ -50,7 +50,7 @@ export default function SplashScreen() {
         className="text-stone-500 text-sm mt-3 tracking-widest uppercase"
         style={{ animation: 'splashFadeUp 0.5s ease 0.5s both' }}
       >
-        Богословска литература
+        Книги с душа
       </div>
 
       {/* Bottom loading bar */}

@@ -10,8 +10,8 @@ import Link from 'next/link'
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
 export const metadata: Metadata = {
-  title: 'Librum Market — Богословска литература',
-  description: 'Купете и продайте православни книги, патристика и богословска литература в България',
+  title: 'Librum Market — Книги',
+  description: 'Купете и продайте книги в България. Широк избор от категории на достъпни цени.',
   keywords: 'православни книги, богословие, патристика, православие, книги България',
   manifest: '/manifest.json',
   appleWebApp: {
@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  Платформа за богословска литература в България. Свързваме читатели, продавачи и книги с душа.
+                  Платформа за книги в България. Свързваме читатели, продавачи и книги с душа.
                 </p>
               </div>
 
@@ -61,7 +61,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-stone-300 font-medium text-sm mb-3">Навигация</p>
                 <div className="space-y-2">
                   <Link href="/books" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">Всички книги</Link>
-                  <Link href="/books?period=patristic" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">Патристика</Link>
                   <Link href="/books/new" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">Продайте книга</Link>
                   <Link href="/about" className="block text-sm text-stone-500 hover:text-amber-400 transition-colors">За нас</Link>
                 </div>
