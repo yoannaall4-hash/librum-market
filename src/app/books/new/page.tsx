@@ -123,6 +123,17 @@ export default function NewBookPage() {
       }
 
       const filled: string[] = []
+
+      // Add the scanned photo to images (prepend as first image)
+      // Prefer Google Books cover if available, otherwise use the scanned photo
+      setImages(prev => {
+        const coverUrl = data.googleCover ?? base64
+        // Avoid duplicates
+        if (prev.includes(coverUrl)) return prev
+        return [coverUrl, ...prev.filter(i => i !== base64)]
+      })
+      filled.push('Снимка')
+
       setForm(f => {
         const updated = { ...f }
         if (data.title) { updated.title = data.title; filled.push('Заглавие') }
@@ -145,7 +156,9 @@ export default function NewBookPage() {
       // Match publisher by name (fuzzy)
       if (data.publisher && publishers.length) {
         const pubLower = data.publisher.toLowerCase()
-        const match = publishers.find(p => p.name.toLowerCase().includes(pubLower) || pubLower.includes(p.name.toLowerCase()))
+        const match = publishers.find(p =>
+          p.name.toLowerCase().includes(pubLower) || pubLower.includes(p.name.toLowerCase())
+        )
         if (match) { setForm(f => ({ ...f, publisherId: match.id })); filled.push('Издателство') }
       }
 
@@ -216,22 +229,27 @@ export default function NewBookPage() {
       {/* AI Scanner card */}
       <div className="bg-gradient-to-br from-stone-50 to-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl">📷</span>
-          <h2 className="font-semibold text-stone-800">{t('new_book.scan_title')}</h2>
+          <span className="text-xl">✨</span>
+          <h2 className="font-semibold text-stone-800">AI сканиране на корица</h2>
+          <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">Ново</span>
         </div>
         <p className="text-sm text-stone-600 mb-4">
-          {t('new_book.scan_desc')}
+          Снимайте <strong>предната корица</strong> — AI разпознава заглавието и автора, после търси в Google Books за описание, ISBN, издател и снимка.
         </p>
 
         {scanSuccess && (
           <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
             <p className="font-medium flex items-center gap-1.5">
-              <span>✓</span> AI попълни {scanFields.length} полета!
+              <span>✅</span> AI попълни {scanFields.length} полета автоматично!
             </p>
             {scanFields.length > 0 && (
-              <p className="text-xs text-green-600 mt-1">{scanFields.join(' · ')}</p>
+              <p className="text-xs text-green-600 mt-1 flex flex-wrap gap-1">
+                {scanFields.map(f => (
+                  <span key={f} className="bg-green-100 px-1.5 py-0.5 rounded text-green-700">{f}</span>
+                ))}
+              </p>
             )}
-            <p className="text-xs text-green-600 mt-1">Прегледайте и коригирайте при нужда.</p>
+            <p className="text-xs text-green-500 mt-1.5">Прегледайте и коригирайте при нужда.</p>
           </div>
         )}
 
