@@ -49,6 +49,10 @@ export default function NewBookPage() {
   const [showNewPublisher, setShowNewPublisher] = useState(false)
   const [newPublisherName, setNewPublisherName] = useState('')
   const [addingPublisher, setAddingPublisher] = useState(false)
+  const [scanningFront, setScanningFront] = useState(false)
+  const [scanningBack, setScanningBack] = useState(false)
+  const [scanFields, setScanFields] = useState<string[]>([])
+  const [scanIban, setScanIban] = useState<string | null>(null)
   const frontCameraRef = useRef<HTMLInputElement>(null)
   const frontFileRef = useRef<HTMLInputElement>(null)
   const backCameraRef = useRef<HTMLInputElement>(null)
@@ -103,12 +107,72 @@ export default function NewBookPage() {
     })
   }
 
-  async function addCoverPhoto(file: File, position: 'front' | 'back') {
+  async function scanCover(file: File, position: 'front' | 'back') {
+    if (position === 'front') setScanningFront(true)
+    else setScanningBack(true)
+    setError('')
+
     const base64 = await resizeImage(file)
+
+    // Add photo immediately regardless of scan result
     setImages(prev => {
       if (prev.includes(base64)) return prev
       return position === 'front' ? [base64, ...prev] : [...prev, base64]
     })
+
+    try {
+      const res = await fetch('/api/scan-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64 }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        // Photo is already added; just skip auto-fill silently
+        return
+      }
+
+      const filled: string[] = []
+
+      setForm(f => {
+        const u = { ...f }
+        if (data.title && !u.title) { u.title = data.title; filled.push('Заглавие') }
+        if (data.authors?.length && !u.authorNames) { u.authorNames = data.authors.join(', '); filled.push('Автори') }
+        if (data.description && !u.description) { u.description = data.description; filled.push('Описание') }
+        if (data.isbn && !u.isbn) { u.isbn = data.isbn; filled.push('ISBN') }
+        if (data.year && !u.year) { u.year = String(data.year); filled.push('Година') }
+        if (data.pages && !u.pages) { u.pages = String(data.pages); filled.push('Страници') }
+        if (data.price && !u.price) { u.price = String(data.price); filled.push('Цена') }
+        if (data.language) { u.language = data.language }
+        return u
+      })
+
+      if (data.publisher && publishers.length) {
+        const pubLower = String(data.publisher).toLowerCase()
+        const match = publishers.find(p =>
+          p.name.toLowerCase().includes(pubLower) || pubLower.includes(p.name.toLowerCase())
+        )
+        if (match) { setForm(f => ({ ...f, publisherId: match.id })); filled.push('Издателство') }
+      }
+
+      // Store IBAN separately (shown as hint below the form)
+      if (data.iban) {
+        setScanIban(data.iban)
+        filled.push('IBAN')
+      }
+
+      if (filled.length) {
+        setScanFields(prev => {
+          const combined = [...new Set([...prev, ...filled])]
+          return combined
+        })
+      }
+    } catch {
+      // Scan failed — photo is still added, user fills manually
+    } finally {
+      if (position === 'front') setScanningFront(false)
+      else setScanningBack(false)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -164,8 +228,24 @@ export default function NewBookPage() {
           <h2 className="font-semibold text-stone-800">Снимки на корицата</h2>
         </div>
         <p className="text-sm text-stone-500 mb-4">
-          Снимайте предната и задната корица — снимките се добавят към обявата. Останалата информация попълвате ръчно по корицата.
+          Снимайте предната и задната корица — снимките се добавят и полетата се попълват автоматично от това, което е написано на корицата.
         </p>
+
+        {scanFields.length > 0 && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+            <p className="font-medium mb-1">✅ Попълнено от корицата:</p>
+            <div className="flex flex-wrap gap-1">
+              {scanFields.map(f => (
+                <span key={f} className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">{f}</span>
+              ))}
+            </div>
+            {scanIban && (
+              <p className="mt-2 text-xs text-green-600 font-mono bg-green-100 px-2 py-1 rounded">
+                IBAN от корицата: {scanIban}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="space-y-3">
           {/* Front cover */}
@@ -174,15 +254,16 @@ export default function NewBookPage() {
               <span className="w-5 h-5 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs font-bold">1</span>
               Предна корица
               <span className="text-stone-400 font-normal">— заглавие, автор</span>
+              {scanningFront && <svg className="animate-spin w-3.5 h-3.5 ml-auto text-amber-700" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>}
             </p>
             <div className="flex gap-2">
-              <button type="button" onClick={() => frontCameraRef.current?.click()}
-                className="flex-1 flex items-center justify-center gap-1.5 bg-amber-700 text-white rounded-lg py-2.5 text-xs font-medium hover:bg-amber-800 transition-colors">
+              <button type="button" disabled={scanningFront || scanningBack} onClick={() => frontCameraRef.current?.click()}
+                className="flex-1 flex items-center justify-center gap-1.5 bg-amber-700 text-white rounded-lg py-2.5 text-xs font-medium hover:bg-amber-800 transition-colors disabled:opacity-60">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 📷 Снимай
               </button>
-              <button type="button" onClick={() => frontFileRef.current?.click()}
-                className="flex items-center justify-center gap-1.5 border border-stone-300 text-stone-600 rounded-lg px-3 py-2.5 text-xs hover:bg-stone-50 transition-colors">
+              <button type="button" disabled={scanningFront || scanningBack} onClick={() => frontFileRef.current?.click()}
+                className="flex items-center justify-center gap-1.5 border border-stone-300 text-stone-600 rounded-lg px-3 py-2.5 text-xs hover:bg-stone-50 transition-colors disabled:opacity-60">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
                 Файл
               </button>
@@ -195,15 +276,16 @@ export default function NewBookPage() {
               <span className="w-5 h-5 rounded-full bg-stone-600 text-white flex items-center justify-center text-xs font-bold">2</span>
               Задна корица
               <span className="text-stone-400 font-normal">— описание, ISBN, цена, IBAN</span>
+              {scanningBack && <svg className="animate-spin w-3.5 h-3.5 ml-auto text-stone-600" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>}
             </p>
             <div className="flex gap-2">
-              <button type="button" onClick={() => backCameraRef.current?.click()}
-                className="flex-1 flex items-center justify-center gap-1.5 bg-stone-700 text-white rounded-lg py-2.5 text-xs font-medium hover:bg-stone-800 transition-colors">
+              <button type="button" disabled={scanningFront || scanningBack} onClick={() => backCameraRef.current?.click()}
+                className="flex-1 flex items-center justify-center gap-1.5 bg-stone-700 text-white rounded-lg py-2.5 text-xs font-medium hover:bg-stone-800 transition-colors disabled:opacity-60">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 📷 Снимай
               </button>
-              <button type="button" onClick={() => backFileRef.current?.click()}
-                className="flex items-center justify-center gap-1.5 border border-stone-300 text-stone-600 rounded-lg px-3 py-2.5 text-xs hover:bg-stone-50 transition-colors">
+              <button type="button" disabled={scanningFront || scanningBack} onClick={() => backFileRef.current?.click()}
+                className="flex items-center justify-center gap-1.5 border border-stone-300 text-stone-600 rounded-lg px-3 py-2.5 text-xs hover:bg-stone-50 transition-colors disabled:opacity-60">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
                 Файл
               </button>
@@ -213,13 +295,13 @@ export default function NewBookPage() {
 
         {/* Hidden inputs */}
         <input ref={frontCameraRef} type="file" accept="image/*" capture="environment" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) addCoverPhoto(f, 'front'); e.target.value = '' }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) scanCover(f, 'front'); e.target.value = '' }} />
         <input ref={frontFileRef} type="file" accept="image/*" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) addCoverPhoto(f, 'front'); e.target.value = '' }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) scanCover(f, 'front'); e.target.value = '' }} />
         <input ref={backCameraRef} type="file" accept="image/*" capture="environment" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) addCoverPhoto(f, 'back'); e.target.value = '' }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) scanCover(f, 'back'); e.target.value = '' }} />
         <input ref={backFileRef} type="file" accept="image/*" className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) addCoverPhoto(f, 'back'); e.target.value = '' }} />
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) scanCover(f, 'back'); e.target.value = '' }} />
       </div>
 
       {error && (
