@@ -27,7 +27,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
     by: ['status'],
     _count: true,
   })
-  const countMap = Object.fromEntries(counts.map(c => [c.status, c._count]))
+  const countMap = Object.fromEntries(counts.map((c: { status: string; _count: number }) => [c.status, c._count]))
 
   const tabs = [
     { key: 'pending_approval', label: 'Очакват одобрение', variant: 'warning' as const },
