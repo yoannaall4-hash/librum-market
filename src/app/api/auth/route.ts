@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { hashPassword, verifyPassword, generateToken } from '@/lib/auth'
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers' // used only for logout token read
 
 const SESSION_DURATION_DAYS = 30
 
 export async function POST(request: NextRequest) {
   try {
     const { action, ...data } = await request.json()
+
+    const cookieOpts = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+    }
 
     if (action === 'register') {
       const { name, email, password, sellerType } = data
@@ -36,16 +43,9 @@ export async function POST(request: NextRequest) {
       const expiresAt = new Date(Date.now() + SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000)
       await prisma.session.create({ data: { userId: user.id, token, expiresAt } })
 
-      const cookieStore = await cookies()
-      cookieStore.set('auth_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: expiresAt,
-        path: '/',
-      })
-
-      return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } })
+      const res = NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } })
+      res.cookies.set('auth_token', token, { ...cookieOpts, expires: expiresAt })
+      return res
     }
 
     if (action === 'login') {
@@ -72,16 +72,9 @@ export async function POST(request: NextRequest) {
       const expiresAt = new Date(Date.now() + SESSION_DURATION_DAYS * 24 * 60 * 60 * 1000)
       await prisma.session.create({ data: { userId: user.id, token, expiresAt } })
 
-      const cookieStore = await cookies()
-      cookieStore.set('auth_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: expiresAt,
-        path: '/',
-      })
-
-      return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } })
+      const res = NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } })
+      res.cookies.set('auth_token', token, { ...cookieOpts, expires: expiresAt })
+      return res
     }
 
     if (action === 'logout') {
@@ -89,9 +82,10 @@ export async function POST(request: NextRequest) {
       const token = cookieStore.get('auth_token')?.value
       if (token) {
         await prisma.session.deleteMany({ where: { token } }).catch(() => {})
-        cookieStore.delete('auth_token')
       }
-      return NextResponse.json({ success: true })
+      const res = NextResponse.json({ success: true })
+      res.cookies.set('auth_token', '', { ...cookieOpts, expires: new Date(0) })
+      return res
     }
 
     return NextResponse.json({ error: 'Невалидно действие' }, { status: 400 })

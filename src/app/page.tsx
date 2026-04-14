@@ -40,45 +40,61 @@ async function getStats() {
   return { books, users }
 }
 
+async function getCategories() {
+  return prisma.category.findMany({ orderBy: { name: 'asc' } })
+}
+
+const CATEGORY_ICONS: Record<string, string> = {
+  archaeology:    '🏺',
+  theology:       '📖',
+  children:       '🧒',
+  encyclopedias:  '📚',
+  health:         '🌿',
+  economics:      '📈',
+  history:        '🏛',
+  music:          '🎵',
+  pedagogy:       '🎓',
+  law:            '⚖️',
+  psychology:     '🧠',
+  'exact-sciences':'🔬',
+  tourism:        '🗺️',
+  textbooks:      '📝',
+  philosophy:     '💭',
+  fiction:        '✍️',
+}
+
 export default async function HomePage() {
-  const [featured, recent, stats] = await Promise.all([
+  const [featured, recent, stats, categories] = await Promise.all([
     getFeaturedBooks().catch(() => []),
     getRecentBooks().catch(() => []),
     getStats().catch(() => ({ books: 0, users: 0 })),
+    getCategories().catch(() => []),
   ])
-
-  const categories = [
-    { slug: 'patristic', name: 'Патристика', icon: '📜', desc: 'Светоотеческо наследство' },
-    { slug: 'liturgical', name: 'Богослужебни', icon: '⛪', desc: 'Миней, Типик, Требник' },
-    { slug: 'theology', name: 'Богословие', icon: '✝', desc: 'Систематично богословие' },
-    { slug: 'hagiography', name: 'Жития', icon: '🕯', desc: 'Агиография' },
-    { slug: 'history', name: 'Цър. история', icon: '🏛', desc: 'История на Православието' },
-    { slug: 'spirituality', name: 'Духовност', icon: '🙏', desc: 'Аскетика и молитва' },
-  ]
 
   return (
     <div>
       <HeroSlideshow booksCount={stats.books} usersCount={stats.users} />
 
       {/* Categories */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-stone-800 mb-8 text-center">Категории</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/books?category=${cat.slug}`}
-                className="flex flex-col items-center p-4 rounded-xl border border-stone-200 hover:border-amber-400 hover:bg-amber-50 transition-all group"
-              >
-                <span className="text-3xl mb-2">{cat.icon}</span>
-                <span className="text-sm font-medium text-stone-700 group-hover:text-amber-700 text-center">{cat.name}</span>
-                <span className="text-xs text-stone-400 text-center mt-1">{cat.desc}</span>
-              </Link>
-            ))}
+      {categories.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-2xl font-bold text-stone-800 mb-8 text-center">Категории</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3">
+              {categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/books?category=${cat.slug}`}
+                  className="flex flex-col items-center p-3 rounded-xl border border-stone-200 hover:border-amber-400 hover:bg-amber-50 transition-all group"
+                >
+                  <span className="text-2xl mb-1.5">{CATEGORY_ICONS[cat.slug] || '📚'}</span>
+                  <span className="text-xs font-medium text-stone-700 group-hover:text-amber-700 text-center leading-tight">{cat.name}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Featured */}
       {featured.length > 0 && (

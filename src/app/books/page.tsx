@@ -104,6 +104,31 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
         </div>
       </form>
 
+      {/* Mobile category pills */}
+      <div className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
+        <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
+          {[{ id: '', name: 'Всички', slug: '' }, ...categories].map((cat) => {
+            const sp = new URLSearchParams()
+            if (params.q) sp.set('q', params.q)
+            if (params.sort) sp.set('sort', params.sort)
+            if (cat.slug) sp.set('category', cat.slug)
+            const href = `/books${sp.toString() ? `?${sp.toString()}` : ''}`
+            const active = cat.slug ? params.category === cat.slug : !params.category
+            return (
+              <a
+                key={cat.id || 'all'}
+                href={href}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  active ? 'bg-amber-700 text-white border-amber-700' : 'bg-white text-stone-600 border-stone-300'
+                }`}
+              >
+                {cat.name}
+              </a>
+            )
+          })}
+        </div>
+      </div>
+
       <div className="flex gap-8">
         {/* Sidebar filters */}
         <aside className="hidden lg:block w-64 shrink-0">
@@ -142,19 +167,30 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-10">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <a
-                      key={p}
-                      href={`/books?${new URLSearchParams({ ...params, page: p.toString() })}`}
-                      className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                        p === page
-                          ? 'bg-amber-700 text-white'
-                          : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'
-                      }`}
-                    >
-                      {p}
-                    </a>
-                  ))}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                    const sp = new URLSearchParams()
+                    if (params.q) sp.set('q', params.q)
+                    if (params.category) sp.set('category', params.category)
+                    if (params.sort) sp.set('sort', params.sort)
+                    if (params.condition) sp.set('condition', params.condition)
+                    if (params.period) sp.set('period', params.period)
+                    if (params.minPrice) sp.set('minPrice', params.minPrice)
+                    if (params.maxPrice) sp.set('maxPrice', params.maxPrice)
+                    sp.set('page', p.toString())
+                    return (
+                      <a
+                        key={p}
+                        href={`/books?${sp.toString()}`}
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                          p === page
+                            ? 'bg-amber-700 text-white'
+                            : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'
+                        }`}
+                      >
+                        {p}
+                      </a>
+                    )
+                  })}
                 </div>
               )}
             </>

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
@@ -10,12 +10,36 @@ import { CONDITIONS, PERIODS } from '@/lib/utils'
 interface Category { id: string; name: string; slug: string }
 interface Publisher { id: string; name: string }
 
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  theology: 'cat_theology',
+  psychology: 'cat_psychology',
+  philosophy: 'cat_philosophy',
+  history: 'cat_history',
+  pedagogy: 'cat_pedagogy',
+  children: 'cat_children',
+  archaeology: 'cat_archaeology',
+  encyclopedias: 'cat_encyclopedias',
+  health: 'cat_health',
+  economics: 'cat_economics',
+  music: 'cat_music',
+  tourism: 'cat_tourism',
+  textbooks: 'cat_textbooks',
+  law: 'cat_law',
+  fiction: 'cat_fiction',
+  'exact-sciences': 'cat_exact',
+}
+
 export default function NewBookPage() {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [publishers, setPublishers] = useState<Publisher[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [authChecked, setAuthChecked] = useState(false)
+  const [scanning, setScanning] = useState(false)
+  const [scanSuccess, setScanSuccess] = useState(false)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [form, setForm] = useState({
     title: '', description: '', isbn: '', price: '', originalPrice: '',
@@ -52,10 +76,95 @@ export default function NewBookPage() {
   useEffect(() => {
     fetch('/api/me').then(r => r.json()).then(data => {
       if (!data.user) { router.push('/login') }
+      else setAuthChecked(true)
     })
     fetch('/api/categories').then(r => r.json()).then(data => setCategories(data.categories || []))
     fetch('/api/publishers').then(r => r.json()).then(data => setPublishers(data.publishers || []))
   }, [router])
+
+  async function resizeImage(file: File, maxPx = 1600, quality = 0.82): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        const scale = Math.min(1, maxPx / Math.max(img.width, img.height))
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.round(img.width * scale)
+        canvas.height = Math.round(img.height * scale)
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+        resolve(canvas.toDataURL('image/jpeg', quality))
+      }
+      img.onerror = reject
+      img.src = url
+    })
+  }
+
+  async function handleScanImage(file: File) {
+    setScanning(true)
+    setScanSuccess(false)
+    setError('')
+    try {
+      // Resize to max 1600px before sending (mobile photos can be 10MB+)
+      const base64 = await resizeImage(file)
+
+      const res = await fetch('/api/scan-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64 }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Грешка при сканиране')
+        return
+      }
+
+      const book = data.book
+      // Find category id by slug
+      let catId = ''
+      if (book.category) {
+        const mappedId = CATEGORY_SLUG_MAP[book.category]
+        if (mappedId) {
+          catId = mappedId
+        } else {
+          // try matching by slug directly
+          const found = categories.find(c => c.slug === book.category || c.id === mappedId)
+          catId = found?.id || ''
+        }
+      }
+
+      // Find or suggest publisher
+      let pubId = ''
+      if (book.publisher) {
+        const found = publishers.find(p => p.name.toLowerCase().includes(book.publisher.toLowerCase()) || book.publisher.toLowerCase().includes(p.name.toLowerCase()))
+        pubId = found?.id || ''
+        if (!found) {
+          setNewPublisherName(book.publisher)
+          setShowNewPublisher(true)
+        }
+      }
+
+      setForm(f => ({
+        ...f,
+        title: book.title || f.title,
+        description: book.description || f.description,
+        isbn: book.isbn || f.isbn,
+        year: book.year ? String(book.year) : f.year,
+        pages: book.pages ? String(book.pages) : f.pages,
+        language: book.language || f.language,
+        authorNames: book.authors?.join(', ') || f.authorNames,
+        categoryId: catId || f.categoryId,
+        publisherId: pubId || f.publisherId,
+      }))
+
+      setScanSuccess(true)
+    } catch {
+      setError('Грешка при сканиране на корицата')
+    } finally {
+      setScanning(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -90,10 +199,112 @@ export default function NewBookPage() {
   const categoryOptions = [{ value: '', label: 'Без категория' }, ...categories.map((c) => ({ value: c.id, label: c.name }))]
   const publisherOptions = [{ value: '', label: 'Без издателство' }, ...publishers.map((p) => ({ value: p.id, label: p.name }))]
 
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-amber-700 border-t-transparent animate-spin" />
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-stone-800 mb-2">Нова обява</h1>
-      <p className="text-stone-500 mb-8">Попълнете информацията за книгата</p>
+      <p className="text-stone-500 mb-6">Попълнете информацията за книгата</p>
+
+      {/* Desktop banner */}
+      <div className="hidden md:flex items-center gap-3 mb-6 bg-gradient-to-r from-amber-700 to-amber-600 text-white rounded-2xl px-5 py-4">
+        <span className="text-2xl">📱</span>
+        <div>
+          <p className="font-semibold text-sm">Свалете приложението и сканирайте и качете за 1 минута!</p>
+          <p className="text-xs text-amber-100 mt-0.5">Снимайте корицата с телефона → AI попълва цялата информация автоматично</p>
+        </div>
+      </div>
+
+      {/* AI Scanner card */}
+      <div className="bg-gradient-to-br from-stone-50 to-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl">✨</span>
+          <h2 className="font-semibold text-stone-800">Сканирай корицата с AI</h2>
+          <span className="ml-auto text-xs bg-amber-700 text-white px-2 py-0.5 rounded-full">Ново</span>
+        </div>
+        <p className="text-sm text-stone-600 mb-4">
+          Снимайте или качете снимка на корицата — AI ще попълни автоматично заглавието, автора, описанието и всички детайли.
+          Само цената се въвежда ръчно от вас.
+        </p>
+
+        {scanSuccess && (
+          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm flex items-center gap-2">
+            <span>✓</span> Информацията е попълнена автоматично! Проверете и добавете цена.
+          </div>
+        )}
+
+        <div className="flex gap-3">
+          {/* Camera button (mobile-friendly) */}
+          <button
+            type="button"
+            disabled={scanning}
+            onClick={() => cameraInputRef.current?.click()}
+            className="flex-1 flex items-center justify-center gap-2 bg-amber-700 text-white rounded-xl py-3 text-sm font-medium hover:bg-amber-800 active:bg-amber-900 transition-colors disabled:opacity-60"
+          >
+            {scanning ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Анализира...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Снимай корица
+              </>
+            )}
+          </button>
+
+          {/* File upload option */}
+          <button
+            type="button"
+            disabled={scanning}
+            onClick={() => fileInputRef.current?.click()}
+            className="flex-1 flex items-center justify-center gap-2 bg-white border border-amber-300 text-amber-800 rounded-xl py-3 text-sm font-medium hover:bg-amber-50 transition-colors disabled:opacity-60"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Качи снимка
+          </button>
+        </div>
+
+        {/* Hidden inputs */}
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) handleScanImage(file)
+            e.target.value = ''
+          }}
+        />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) handleScanImage(file)
+            e.target.value = ''
+          }}
+        />
+      </div>
 
       {error && (
         <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
@@ -182,10 +393,16 @@ export default function NewBookPage() {
 
         <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
           <h2 className="font-semibold text-stone-700">Цена и наличност</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Цена (лв.) *" id="price" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="25.00" min="1" step="0.01" required />
-            <Input label="Оригинална цена (лв.)" id="originalPrice" type="number" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} placeholder="35.00" min="0" step="0.01" />
+
+          {/* Price highlight box */}
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-xs text-amber-700 font-medium mb-2">Само цената се въвежда ръчно — всичко останало може да попълни AI</p>
+            <div className="grid grid-cols-2 gap-4">
+              <Input label="Цена (лв.) *" id="price" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="25.00" min="1" step="0.01" required />
+              <Input label="Оригинална цена (лв.)" id="originalPrice" type="number" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} placeholder="35.00" min="0" step="0.01" />
+            </div>
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <Select label="Състояние *" id="condition" value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} options={conditionOptions} />
             <Input label="Наличност (бр.)" id="stock" type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} min="1" max="999" />
