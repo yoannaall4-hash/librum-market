@@ -305,7 +305,7 @@ export default async function HomePage() {
           <p className="text-stone-400 text-sm mb-7">{t('home.cta_desc')}</p>
           <div className="flex justify-center gap-3 flex-wrap">
             <Link href="/books">
-              <button className="px-7 py-3 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-amber-50 transition-colors">
+              <button className="px-7 py-3 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-stone-100 transition-colors">
                 {t('hero.browse')}
               </button>
             </Link>

@@ -41,7 +41,7 @@ export default async function BookCard({ book }: BookCardProps) {
 
   return (
     <Link href={`/books/${book.id}`} className="group block">
-      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-md hover:border-amber-300 transition-all">
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden hover:shadow-md hover:border-stone-400 transition-all">
         {/* Image */}
         <div className="aspect-[3/4] bg-stone-100 relative overflow-hidden">
           {imageUrl !== '/placeholder-book.jpg' ? (

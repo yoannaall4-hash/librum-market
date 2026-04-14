@@ -95,7 +95,7 @@ export default function RegisterPage() {
               options={sellerOptions}
             />
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+            <div className="bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-700">
               {t('auth.commission_note')}
             </div>
 
@@ -106,7 +106,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-stone-500 mt-6">
             {t('auth.have_account')}{' '}
-            <Link href="/login" className="text-amber-700 font-medium hover:text-amber-800">
+            <Link href="/login" className="text-stone-700 font-medium hover:text-stone-900">
               {t('auth.login_link')}
             </Link>
           </p>

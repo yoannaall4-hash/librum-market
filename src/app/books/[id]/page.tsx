@@ -77,7 +77,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             <div className="flex gap-2 mt-3">
               {images.slice(1).map((img, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={i} src={img} alt="" className="w-16 h-16 rounded-lg object-cover border-2 border-stone-200 hover:border-amber-400 cursor-pointer" />
+                <img key={i} src={img} alt="" className="w-16 h-16 rounded-lg object-cover border-2 border-stone-200 hover:border-stone-600 cursor-pointer" />
               ))}
             </div>
           )}
