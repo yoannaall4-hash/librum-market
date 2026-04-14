@@ -66,7 +66,7 @@ export default async function BookCard({ book }: BookCardProps) {
           {authorNames && (
             <p className="text-xs text-stone-500 truncate mb-0.5">{authorNames}</p>
           )}
-          <h3 className="font-semibold text-stone-800 text-sm leading-tight line-clamp-2 group-hover:text-amber-700 transition-colors">
+          <h3 className="font-semibold text-stone-800 text-sm leading-tight line-clamp-2 group-hover:text-stone-600 transition-colors">
             {book.title}
           </h3>
           {book.category && (
@@ -74,7 +74,7 @@ export default async function BookCard({ book }: BookCardProps) {
           )}
           <div className="mt-2 flex items-center justify-between">
             <div>
-              <span className="text-lg font-bold text-amber-700">{formatPrice(book.price)}</span>
+              <span className="text-lg font-bold text-stone-800">{formatPrice(book.price)}</span>
               <span className="text-xs text-stone-400 ml-1.5">/ {formatEur(book.price)}</span>
               {book.originalPrice && book.originalPrice > book.price && (
                 <span className="text-xs text-stone-400 line-through ml-2">{formatPrice(book.originalPrice)}</span>

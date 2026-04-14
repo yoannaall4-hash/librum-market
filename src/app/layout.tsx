@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar'
 import MobileNav from '@/components/layout/MobileNav'
 import SplashScreen from '@/components/SplashScreen'
 import SupportChat from '@/components/SupportChat'
+import AdminContentPanel from '@/components/AdminContentPanel'
 import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
 import { getT } from '@/lib/getT'
@@ -135,6 +136,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </footer>
 
+        <AdminContentPanel />
         <MobileNav />
         <SupportChat />
         </LocaleProvider>

@@ -123,23 +123,23 @@ export default async function HomePage() {
     <div className="bg-white">
       <HeroSlideshow booksCount={stats.books} usersCount={stats.users} />
 
-      {/* Upload-a-book promo bar — clean, no emojis */}
-      <div className="bg-amber-700 hidden md:block">
+      {/* Upload-a-book promo bar */}
+      <div className="bg-stone-800 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-6">
-          <p className="text-white text-sm font-medium">{ct('home.banner_desktop')}<span className="text-amber-200 ml-2 font-normal">{ct('home.banner_desktop_sub')}</span></p>
-          <Link href="/books/new" className="shrink-0 px-5 py-1.5 bg-white text-amber-800 text-sm font-semibold rounded-lg hover:bg-amber-50 transition-colors whitespace-nowrap">
+          <p className="text-stone-100 text-sm font-medium">{ct('home.banner_desktop')}<span className="text-stone-400 ml-2 font-normal">{ct('home.banner_desktop_sub')}</span></p>
+          <Link href="/books/new" className="shrink-0 px-5 py-1.5 bg-stone-100 text-stone-800 text-sm font-semibold rounded-lg hover:bg-white transition-colors whitespace-nowrap">
             {t('home.banner_upload')}
           </Link>
         </div>
       </div>
       {/* Mobile promo bar */}
-      <div className="md:hidden bg-amber-700">
+      <div className="md:hidden bg-stone-800">
         <Link href="/books/new" className="flex items-center gap-3 px-4 py-3">
           <div className="flex-1">
-            <p className="text-white font-semibold text-sm leading-tight">{ct('home.banner_mobile')}</p>
-            <p className="text-amber-200 text-xs mt-0.5">{ct('home.banner_mobile_sub')}</p>
+            <p className="text-stone-100 font-semibold text-sm leading-tight">{ct('home.banner_mobile')}</p>
+            <p className="text-stone-400 text-xs mt-0.5">{ct('home.banner_mobile_sub')}</p>
           </div>
-          <svg className="w-4 h-4 text-amber-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
@@ -155,12 +155,12 @@ export default async function HomePage() {
                 <Link
                   key={cat.slug}
                   href={`/books?category=${cat.slug}`}
-                  className="flex flex-col items-center py-4 px-2 rounded-xl border border-stone-200 bg-white hover:border-amber-400 hover:shadow-sm transition-all group"
+                  className="flex flex-col items-center py-4 px-2 rounded-xl border border-stone-200 bg-white hover:border-stone-400 hover:shadow-sm transition-all group"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-stone-100 group-hover:bg-amber-50 flex items-center justify-center mb-2 transition-colors">
-                    <span className="text-stone-500 group-hover:text-amber-700 text-base transition-colors font-serif">{CATEGORY_ICONS[cat.slug] || '◈'}</span>
+                  <div className="w-9 h-9 rounded-lg bg-stone-100 group-hover:bg-stone-200 flex items-center justify-center mb-2 transition-colors">
+                    <span className="text-stone-500 group-hover:text-stone-700 text-base transition-colors font-serif">{CATEGORY_ICONS[cat.slug] || '◈'}</span>
                   </div>
-                  <span className="text-xs font-medium text-stone-600 group-hover:text-amber-800 text-center leading-tight">{cat.name}</span>
+                  <span className="text-xs font-medium text-stone-600 group-hover:text-stone-800 text-center leading-tight">{cat.name}</span>
                 </Link>
               ))}
             </div>
@@ -174,7 +174,7 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-baseline justify-between mb-8">
               <div>
-                <p className="text-xs font-bold tracking-[0.2em] text-amber-600 uppercase mb-1">{t('home.featured_label')}</p>
+                <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-1">{t('home.featured_label')}</p>
                 <h2 className="text-2xl font-bold text-stone-800">{t('home.featured')}</h2>
               </div>
               <Link href="/books" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">
@@ -227,7 +227,7 @@ export default async function HomePage() {
       <section className="py-16 bg-white border-t border-stone-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <p className="text-xs font-bold tracking-[0.2em] text-amber-600 uppercase mb-2">{t('home.how_label')}</p>
+            <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-2">{t('home.how_label')}</p>
             <h2 className="text-2xl font-bold text-stone-800">{ct('home.how_title')}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -238,7 +238,7 @@ export default async function HomePage() {
             ].map((item) => (
               <div key={item.num} className="flex gap-5">
                 <div className="shrink-0">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700">
+                  <div className="w-14 h-14 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-600">
                     {item.icon}
                   </div>
                 </div>

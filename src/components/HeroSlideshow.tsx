@@ -3,27 +3,27 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/contexts/LocaleContext'
 
-// Brighter, warmer editorial photos
+// Bright, warm editorial photos — right side stays visible through lighter gradient
 const slidePhotos = [
   {
     id: 0,
     photo: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/55 via-stone-900/25 to-transparent',
+    overlay: 'from-stone-900/45 via-stone-900/15 to-transparent',
   },
   {
     id: 1,
     photo: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-800/50 via-stone-800/20 to-transparent',
+    overlay: 'from-stone-900/45 via-stone-800/15 to-transparent',
   },
   {
     id: 2,
     photo: 'https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/55 via-stone-900/20 to-transparent',
+    overlay: 'from-stone-900/45 via-stone-900/15 to-transparent',
   },
   {
     id: 3,
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/50 via-stone-800/20 to-transparent',
+    overlay: 'from-stone-900/40 via-stone-800/15 to-transparent',
   },
 ]
 
@@ -60,7 +60,7 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
   const slide = slides[current]
 
   return (
-    <section className="relative overflow-hidden min-h-[520px] md:min-h-[640px] flex items-center bg-stone-100">
+    <section className="relative overflow-hidden min-h-[420px] md:min-h-[500px] flex items-center bg-stone-100">
 
       {/* Background photo */}
       <div
@@ -74,55 +74,55 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
       {/* Content */}
-      <div className={`relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-20 w-full transition-all duration-600 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
-        <div className="max-w-xl">
+      <div className={`relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-14 md:py-16 w-full transition-all duration-600 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+        <div className="max-w-lg">
 
           {/* Section label */}
-          <p className="text-xs font-bold tracking-[0.25em] text-amber-300/90 mb-4 uppercase">
+          <p className="text-[11px] font-bold tracking-[0.25em] text-white/60 mb-3 uppercase">
             {slide.label}
           </p>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight tracking-tight">
             {slide.title}
           </h1>
 
-          {/* Thin accent line */}
-          <div className="w-10 h-0.5 bg-amber-400 mb-5" />
+          {/* Thin accent line — off-white */}
+          <div className="w-8 h-px bg-white/50 mb-4" />
 
           {/* Quote */}
-          <blockquote className="text-base md:text-lg text-white/80 italic leading-relaxed mb-1">
+          <blockquote className="text-sm md:text-base text-white/75 italic leading-relaxed mb-1">
             {slide.quote}
           </blockquote>
-          <p className="text-sm text-white/50 mb-9">— {slide.source}</p>
+          <p className="text-xs text-white/40 mb-7">— {slide.source}</p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2.5">
             <Link href="/books">
-              <button className="px-7 py-3 bg-white text-stone-900 rounded-lg font-semibold text-sm tracking-wide hover:bg-amber-50 transition-all hover:scale-[1.02] active:scale-95 shadow-sm">
+              <button className="px-6 py-2.5 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-stone-100 transition-all hover:scale-[1.02] active:scale-95 shadow-sm">
                 {t('hero.browse')}
               </button>
             </Link>
             <Link href="/register">
-              <button className="px-7 py-3 border border-white/40 text-white rounded-lg font-semibold text-sm tracking-wide hover:bg-white/10 transition-all backdrop-blur-sm">
+              <button className="px-6 py-2.5 border border-white/30 text-white rounded-lg font-semibold text-sm hover:bg-white/10 transition-all backdrop-blur-sm">
                 {t('hero.become_seller')}
               </button>
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="mt-10 flex gap-8">
+          <div className="mt-8 flex gap-6">
             <div>
-              <div className="text-2xl font-bold text-white">{booksCount.toLocaleString()}</div>
-              <div className="text-xs text-white/50 tracking-wide mt-0.5">{t('hero.stat_listings')}</div>
+              <div className="text-xl font-bold text-white">{booksCount.toLocaleString()}</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_listings')}</div>
             </div>
-            <div className="border-l border-white/15 pl-8">
-              <div className="text-2xl font-bold text-white">{usersCount.toLocaleString()}</div>
-              <div className="text-xs text-white/50 tracking-wide mt-0.5">{t('hero.stat_readers')}</div>
+            <div className="border-l border-white/15 pl-6">
+              <div className="text-xl font-bold text-white">{usersCount.toLocaleString()}</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_readers')}</div>
             </div>
-            <div className="border-l border-white/15 pl-8">
-              <div className="text-2xl font-bold text-white">10%</div>
-              <div className="text-xs text-white/50 tracking-wide mt-0.5">{t('hero.stat_commission')}</div>
+            <div className="border-l border-white/15 pl-6">
+              <div className="text-xl font-bold text-white">10%</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_commission')}</div>
             </div>
           </div>
         </div>

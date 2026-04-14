@@ -125,7 +125,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
 
           <div className="my-6">
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="text-4xl font-bold text-amber-700">{formatPrice(book.price)}</span>
+              <span className="text-4xl font-bold text-stone-900">{formatPrice(book.price)}</span>
               <span className="text-xl text-stone-400 font-medium">/ {formatEur(book.price)}</span>
               {book.originalPrice && book.originalPrice > book.price && (
                 <div className="flex items-center gap-2">

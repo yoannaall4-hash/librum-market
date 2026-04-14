@@ -133,7 +133,7 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link href="/books/new" className="hidden md:block">
-                  <Button size="sm" variant="primary" className="bg-amber-700 hover:bg-amber-800 border-0 text-white text-xs px-4">
+                  <Button size="sm" variant="primary" className="bg-stone-800 hover:bg-stone-900 border-0 text-white text-xs px-4">
                     + {t('nav.addListing')}
                   </Button>
                 </Link>
@@ -175,7 +175,7 @@ export default function Navbar() {
                         {user.role === 'admin' && (
                           <>
                             <div className="border-t border-stone-100 my-1" />
-                            <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-amber-700 hover:bg-amber-50 font-medium">
+                            <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 font-semibold">
                               <SettingsIcon /> {t('nav.admin')}
                             </Link>
                           </>
@@ -200,7 +200,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button size="sm" className="bg-amber-700 hover:bg-amber-800 text-white border-0 font-medium">
+                  <Button size="sm" className="bg-stone-800 hover:bg-stone-900 text-white border-0 font-medium">
                     {t('nav.register')}
                   </Button>
                 </Link>
