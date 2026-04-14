@@ -1,11 +1,26 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import BookCard from '@/components/BookCard'
 import Button from '@/components/ui/Button'
 import HeroSlideshow from '@/components/HeroSlideshow'
 import { getT } from '@/lib/getT'
+
+async function getSiteContent(locale: string) {
+  try {
+    const rows = await prisma.siteContent.findMany()
+    const map: Record<string, string> = {}
+    for (const row of rows) {
+      const val = locale === 'bg' ? row.valueBg : locale === 'ro' ? row.valueRo : row.valueEn
+      if (val) map[row.key] = val
+    }
+    return map
+  } catch {
+    return {}
+  }
+}
 
 async function getFeaturedBooks() {
   return prisma.book.findMany({
@@ -65,13 +80,21 @@ const CATEGORY_ICONS: Record<string, string> = {
 }
 
 export default async function HomePage() {
-  const [featured, recent, stats, categories, { t }] = await Promise.all([
+  const cookieStore = await cookies()
+  const locale = cookieStore.get('locale')?.value || 'bg'
+
+  const [featured, recent, stats, categories, { t }, db] = await Promise.all([
     getFeaturedBooks().catch(() => []),
     getRecentBooks().catch(() => []),
     getStats().catch(() => ({ books: 0, users: 0 })),
     getCategories().catch(() => []),
     getT(),
+    getSiteContent(locale),
   ])
+
+  function ct(key: string) {
+    return (db[key] as string | undefined) || t(key as Parameters<typeof t>[0])
+  }
 
   return (
     <div>
@@ -87,8 +110,8 @@ export default async function HomePage() {
               </svg>
             </div>
             <div>
-              <p className="text-white font-semibold text-sm">{t('home.banner_desktop')}</p>
-              <p className="text-stone-400 text-xs mt-0.5">{t('home.banner_desktop_sub')}</p>
+              <p className="text-white font-semibold text-sm">{ct('home.banner_desktop')}</p>
+              <p className="text-stone-400 text-xs mt-0.5">{ct('home.banner_desktop_sub')}</p>
             </div>
           </div>
           <Link href="/books/new" className="shrink-0 px-4 py-2 bg-amber-700 text-white text-sm font-medium rounded-lg hover:bg-amber-600 transition-colors whitespace-nowrap">
@@ -107,8 +130,8 @@ export default async function HomePage() {
             </svg>
           </div>
           <div className="flex-1">
-            <p className="text-white font-semibold text-sm leading-tight">{t('home.banner_mobile')}</p>
-            <p className="text-amber-100 text-xs mt-0.5">{t('home.banner_mobile_sub')}</p>
+            <p className="text-white font-semibold text-sm leading-tight">{ct('home.banner_mobile')}</p>
+            <p className="text-amber-100 text-xs mt-0.5">{ct('home.banner_mobile_sub')}</p>
           </div>
           <svg className="w-4 h-4 text-amber-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -187,12 +210,12 @@ export default async function HomePage() {
       {/* How it works */}
       <section className="py-16 bg-stone-900 text-white">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-12 text-amber-400">{t('home.how_title')}</h2>
+          <h2 className="text-2xl font-bold text-center mb-12 text-amber-400">{ct('home.how_title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { step: '1', title: t('home.step1_title'), desc: t('home.step1_desc'), icon: '📸' },
-              { step: '2', title: t('home.step2_title'), desc: t('home.step2_desc'), icon: '🔒' },
-              { step: '3', title: t('home.step3_title'), desc: t('home.step3_desc'), icon: '💰' },
+              { step: '1', title: ct('home.step1_title'), desc: ct('home.step1_desc'), icon: '📸' },
+              { step: '2', title: ct('home.step2_title'), desc: ct('home.step2_desc'), icon: '🔒' },
+              { step: '3', title: ct('home.step3_title'), desc: ct('home.step3_desc'), icon: '💰' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="text-4xl mb-3">{item.icon}</div>
