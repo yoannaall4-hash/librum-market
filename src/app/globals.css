@@ -12,15 +12,90 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ── Smooth scrolling ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Remove iOS tap highlight ── */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Safe area helpers ── */
+.pb-safe {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+/* ── Mobile bottom nav ── */
+.mobile-nav-bar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding-top: 8px;
+}
+
+.mobile-nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 4px 0 2px;
+  gap: 3px;
+  transition: color 0.2s ease;
+  min-height: 44px;
+}
+
+.mobile-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ── Splash screen animations ── */
+@keyframes splashZoom {
+  0%   { transform: scale(0.1) rotate(-10deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  80%  { transform: scale(0.95) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes splashFadeUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes splashBar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes splashGlow {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1.5); opacity: 1; }
+}
+
+/* ── Page content offset for mobile bottom nav ── */
+@media (max-width: 767px) {
+  .mobile-page-offset {
+    padding-bottom: 80px;
+  }
+}
+
+/* ── Touch-friendly inputs ── */
+@media (max-width: 767px) {
+  input, select, textarea, button {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
 }

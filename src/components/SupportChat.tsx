@@ -48,7 +48,7 @@ export default function SupportChat() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
         aria-label="Поддръжка"
       >
         {open ? (
@@ -64,7 +64,7 @@ export default function SupportChat() {
 
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden" style={{ maxHeight: '500px' }}>
+        <div className="fixed bottom-36 md:bottom-24 right-2 md:right-6 z-50 w-[calc(100vw-16px)] sm:w-96 bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden" style={{ maxHeight: '70vh' }}>
           {/* Header */}
           <div className="bg-amber-700 text-white px-4 py-3 flex items-center gap-3">
             <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-sm font-bold">L</div>

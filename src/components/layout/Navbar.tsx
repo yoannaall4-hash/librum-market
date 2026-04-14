@@ -14,7 +14,6 @@ export default function Navbar() {
   const router = useRouter()
   const [user, setUser] = useState<NavUser | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     fetch('/api/me')
@@ -137,30 +136,8 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-stone-800 transition-colors"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </button>
           </div>
         </div>
-
-        {/* Mobile nav */}
-        {mobileOpen && (
-          <div className="md:hidden border-t border-stone-800 py-3 space-y-1">
-            <Link href="/books" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg">Книги</Link>
-            <Link href="/books?period=patristic" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg">Патристика</Link>
-            <Link href="/books?period=contemporary" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg">Съвременни</Link>
-            <Link href="/about" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-stone-300 hover:text-white hover:bg-stone-800 rounded-lg">За нас</Link>
-            {user && (
-              <Link href="/books/new" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-amber-400 hover:bg-stone-800 rounded-lg">+ Нова обява</Link>
-            )}
-          </div>
-        )}
       </div>
     </nav>
   )
