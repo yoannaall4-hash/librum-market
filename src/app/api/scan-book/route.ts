@@ -42,7 +42,7 @@ Return ONLY a valid JSON object (no markdown, no code blocks) with these exact f
 Description MUST be in Bulgarian. Use null for unknown fields. Numbers must be integers.`
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
