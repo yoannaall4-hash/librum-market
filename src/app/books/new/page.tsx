@@ -112,63 +112,69 @@ export default function NewBookPage() {
     else setScanningBack(true)
     setError('')
 
-    const base64 = await resizeImage(file)
-
-    // Add photo immediately regardless of scan result
-    setImages(prev => {
-      if (prev.includes(base64)) return prev
-      return position === 'front' ? [base64, ...prev] : [...prev, base64]
-    })
-
     try {
+      const base64 = await resizeImage(file)
+
+      // Add photo immediately
+      setImages(prev => prev.includes(base64) ? prev : position === 'front' ? [base64, ...prev] : [...prev, base64])
+
       const res = await fetch('/api/scan-book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: base64 }),
       })
+
       const data = await res.json()
+
       if (!res.ok) {
-        // Photo is already added; just skip auto-fill silently
+        setError(data.error || 'Грешка при разчитане на корицата')
         return
       }
 
+      // Build all updates first, outside any setState callback
       const filled: string[] = []
+      let publisherMatch: Publisher | undefined
 
-      setForm(f => {
-        const u = { ...f }
-        if (data.title && !u.title) { u.title = data.title; filled.push('Заглавие') }
-        if (data.authors?.length && !u.authorNames) { u.authorNames = data.authors.join(', '); filled.push('Автори') }
-        if (data.description && !u.description) { u.description = data.description; filled.push('Описание') }
-        if (data.isbn && !u.isbn) { u.isbn = data.isbn; filled.push('ISBN') }
-        if (data.year && !u.year) { u.year = String(data.year); filled.push('Година') }
-        if (data.pages && !u.pages) { u.pages = String(data.pages); filled.push('Страници') }
-        if (data.price && !u.price) { u.price = String(data.price); filled.push('Цена') }
-        if (data.language) { u.language = data.language }
-        return u
-      })
+      if (data.title) filled.push('Заглавие')
+      if (data.authors?.length) filled.push('Автори')
+      if (data.description) filled.push('Описание')
+      if (data.isbn) filled.push('ISBN')
+      if (data.year) filled.push('Година')
+      if (data.pages) filled.push('Страници')
+      if (data.price) filled.push('Цена')
+      if (data.iban) filled.push('IBAN')
 
       if (data.publisher && publishers.length) {
         const pubLower = String(data.publisher).toLowerCase()
-        const match = publishers.find(p =>
+        publisherMatch = publishers.find(p =>
           p.name.toLowerCase().includes(pubLower) || pubLower.includes(p.name.toLowerCase())
         )
-        if (match) { setForm(f => ({ ...f, publisherId: match.id })); filled.push('Издателство') }
+        if (publisherMatch) filled.push('Издателство')
       }
 
-      // Store IBAN separately (shown as hint below the form)
-      if (data.iban) {
-        setScanIban(data.iban)
-        filled.push('IBAN')
-      }
+      // Apply form updates — only overwrite empty fields
+      setForm(prev => {
+        const u = { ...prev }
+        if (data.title && !u.title) u.title = String(data.title)
+        if (data.authors?.length && !u.authorNames) u.authorNames = (data.authors as string[]).join(', ')
+        if (data.description && !u.description) u.description = String(data.description)
+        if (data.isbn && !u.isbn) u.isbn = String(data.isbn)
+        if (data.year && !u.year) u.year = String(data.year)
+        if (data.pages && !u.pages) u.pages = String(data.pages)
+        if (data.price && !u.price) u.price = String(data.price)
+        if (data.language) u.language = String(data.language)
+        if (publisherMatch && !u.publisherId) u.publisherId = publisherMatch.id
+        return u
+      })
+
+      if (data.iban) setScanIban(String(data.iban))
 
       if (filled.length) {
-        setScanFields(prev => {
-          const combined = [...new Set([...prev, ...filled])]
-          return combined
-        })
+        setScanFields(prev => [...new Set([...prev, ...filled])])
       }
-    } catch {
-      // Scan failed — photo is still added, user fills manually
+    } catch (e) {
+      setError('Грешка при обработка на снимката')
+      console.error(e)
     } finally {
       if (position === 'front') setScanningFront(false)
       else setScanningBack(false)
