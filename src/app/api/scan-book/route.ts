@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import { getSession } from '@/lib/auth'
 
 export const maxDuration = 30
-
-const client = new Anthropic()
 
 export async function POST(request: NextRequest) {
   const session = await getSession()
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) {
+    return NextResponse.json({ error: 'Липсва GEMINI_API_KEY в настройките на сървъра' }, { status: 500 })
   }
 
   try {
@@ -18,67 +21,53 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No image provided' }, { status: 400 })
     }
 
-    // Strip data URL prefix if present
     const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
     const mediaTypeMatch = image.match(/^data:(image\/\w+);base64,/)
-    const mediaType = (mediaTypeMatch?.[1] ?? 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
+    const mimeType = (mediaTypeMatch?.[1] ?? 'image/jpeg') as string
 
-    const response = await client.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: base64Data,
-              },
-            },
-            {
-              type: 'text',
-              text: `This is a book cover photo. Please identify the book and return ALL available information about it.
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
-Return ONLY a valid JSON object (no markdown, no explanation) with these fields:
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          data: base64Data,
+          mimeType,
+        },
+      },
+      `This is a book cover photo. Identify the book and return ALL available information.
+
+Return ONLY a valid JSON object (no markdown, no code blocks, no explanation) with these exact fields:
 {
-  "title": "exact book title in Bulgarian or original language",
-  "authors": ["Author Name 1", "Author Name 2"],
-  "description": "2-4 sentence description of the book content in Bulgarian",
-  "isbn": "ISBN number if visible or known",
+  "title": "exact book title",
+  "authors": ["Author Name"],
+  "description": "2-4 sentence description in Bulgarian language",
+  "isbn": "ISBN if visible or known, else null",
   "year": 2023,
   "pages": 350,
-  "publisher": "publisher name",
+  "publisher": "publisher name or null",
   "category": "one of: theology, psychology, philosophy, history, pedagogy, children, archaeology, encyclopedias, health, economics, music, tourism, textbooks, law, fiction, exact-sciences",
   "language": "bg"
 }
 
-If you cannot identify a field, use null. The description MUST be in Bulgarian. Focus on accuracy — only include information you are confident about.`,
-            },
-          ],
-        },
-      ],
-    })
+Rules: description MUST be in Bulgarian. Use null for unknown fields. Numbers must be integers not strings.`,
+    ])
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : ''
+    const text = result.response.text()
 
-    // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (!jsonMatch) {
-      return NextResponse.json({ error: 'Could not parse book data from image' }, { status: 422 })
+      return NextResponse.json({ error: 'Не успях да разпозная книгата. Опитайте с по-ясна снимка.' }, { status: 422 })
     }
 
     const bookData = JSON.parse(jsonMatch[0])
-
     return NextResponse.json({ book: bookData })
   } catch (err: unknown) {
     console.error('scan-book error:', err)
     const message = err instanceof Error ? err.message : String(err)
-    if (message.includes('API key') || message.includes('auth') || message.includes('401')) {
-      return NextResponse.json({ error: 'Липсва Anthropic API ключ — добавете ANTHROPIC_API_KEY в настройките на Vercel' }, { status: 500 })
+    if (message.includes('API_KEY') || message.includes('API key') || message.includes('403')) {
+      return NextResponse.json({ error: 'Невалиден GEMINI_API_KEY' }, { status: 500 })
     }
-    return NextResponse.json({ error: `Грешка при анализ: ${message}` }, { status: 500 })
+    return NextResponse.json({ error: 'Грешка при анализ на снимката. Опитайте отново.' }, { status: 500 })
   }
 }
