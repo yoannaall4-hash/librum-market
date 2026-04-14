@@ -49,7 +49,7 @@ export default function MessageModal({ receiverId, bookId, orderId, bookTitle, o
           <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-xl">×</button>
         </div>
 
-        <div className="mb-3 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2">
+        <div className="mb-3 text-xs text-stone-600 bg-stone-50 border border-stone-200 rounded-lg p-2">
           {t('messages.warning')}
         </div>
 
@@ -62,7 +62,7 @@ export default function MessageModal({ receiverId, bookId, orderId, bookTitle, o
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={t('messages.placeholder')}
-              className="w-full border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none h-28"
+              className="w-full border border-stone-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-1 focus:ring-stone-400 resize-none h-28"
               autoFocus
             />
             <div className="flex gap-3 mt-3">

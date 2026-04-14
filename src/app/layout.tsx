@@ -8,6 +8,8 @@ import SupportChat from '@/components/SupportChat'
 import AdminContentPanel from '@/components/AdminContentPanel'
 import Link from 'next/link'
 import { LocaleProvider } from '@/contexts/LocaleContext'
+import { CartProvider } from '@/contexts/CartContext'
+import { AdminPanelProvider } from '@/contexts/AdminPanelContext'
 import { getT } from '@/lib/getT'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
@@ -43,6 +45,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 antialiased">
         <LocaleProvider>
+        <AdminPanelProvider>
+        <CartProvider>
         <SplashScreen />
         <Navbar />
         <main className="flex-1 mobile-page-offset">{children}</main>
@@ -101,7 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <p className="text-sm text-stone-500 mb-2">{t('footer.contact_desc')}</p>
                 <a
                   href="mailto:librum.bookstore@gmail.com"
-                  className="text-sm text-amber-400 hover:text-amber-300 transition-colors"
+                  className="text-sm text-stone-300 hover:text-white transition-colors"
                 >
                   librum.bookstore@gmail.com
                 </a>
@@ -131,7 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Link href="/cookies" className="text-stone-600 hover:text-stone-400">{t('footer.cookies')}</Link>
           </div>
           <div className="text-center">
-            <a href="mailto:librum.bookstore@gmail.com" className="text-xs text-amber-600 block">librum.bookstore@gmail.com</a>
+            <a href="mailto:librum.bookstore@gmail.com" className="text-xs text-stone-400 block">librum.bookstore@gmail.com</a>
             <p className="text-xs text-stone-700 mt-1">© {new Date().getFullYear()} Librum Market</p>
           </div>
         </footer>
@@ -139,6 +143,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AdminContentPanel />
         <MobileNav />
         <SupportChat />
+        </CartProvider>
+        </AdminPanelProvider>
         </LocaleProvider>
       </body>
     </html>

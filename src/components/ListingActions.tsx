@@ -37,7 +37,7 @@ export default function ListingActions({ bookId, bookTitle, currentStatus }: Lis
         </Link>
       )}
       {currentStatus === 'active' && (
-        <Button size="sm" variant="outline" onClick={() => setFeaturedOpen(true)} className="text-amber-700 border-amber-400 hover:bg-amber-50 w-full">
+        <Button size="sm" variant="outline" onClick={() => setFeaturedOpen(true)} className="w-full">
           {t('actions.feature')}
         </Button>
       )}

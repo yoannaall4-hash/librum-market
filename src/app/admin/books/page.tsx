@@ -45,7 +45,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
           <h1 className="text-3xl font-bold text-stone-800">Управление на книги</h1>
           <p className="text-stone-500 mt-1">Одобряване и модериране на обяви</p>
         </div>
-        <Link href="/admin" className="text-sm text-amber-700 hover:text-amber-800">← Към таблото</Link>
+        <Link href="/admin" className="text-sm text-stone-700 hover:text-stone-700">← Към таблото</Link>
       </div>
 
       {/* Status tabs */}
@@ -56,7 +56,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
             href={`/admin/books?status=${tab.key}`}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               filterStatus === tab.key
-                ? 'bg-amber-700 text-white'
+                ? 'bg-stone-800 text-white'
                 : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
             }`}
           >
@@ -79,7 +79,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <Link href={`/books/${book.id}`} target="_blank" className="font-semibold text-stone-800 hover:text-amber-700">
+                      <Link href={`/books/${book.id}`} target="_blank" className="font-semibold text-stone-800 hover:text-stone-700">
                         {book.title}
                       </Link>
                       {book.authors.length > 0 && (
@@ -97,7 +97,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
                   <div className="flex flex-wrap gap-4 mt-2 text-xs text-stone-500">
                     <span>Продавач: <strong>{book.seller.name}</strong></span>
                     {book.category && <span>Категория: {book.category.name}</span>}
-                    <span>Цена: <strong className="text-amber-700">{formatPrice(book.price)}</strong></span>
+                    <span>Цена: <strong className="text-stone-700">{formatPrice(book.price)}</strong></span>
                     <span>Добавена: {formatDate(book.createdAt)}</span>
                     <span>{CONDITIONS[book.condition] || book.condition}</span>
                   </div>

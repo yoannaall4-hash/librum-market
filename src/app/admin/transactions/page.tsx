@@ -45,7 +45,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
           <h1 className="text-3xl font-bold text-stone-800">Транзакции и спорове</h1>
           <p className="text-stone-500 mt-1">{orders.length} поръчки</p>
         </div>
-        <Link href="/admin" className="text-sm text-amber-700">← Към таблото</Link>
+        <Link href="/admin" className="text-sm text-stone-700">← Към таблото</Link>
       </div>
 
       {/* Stats */}
@@ -55,7 +55,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
           <p className="text-sm text-stone-500">Общ оборот</p>
         </div>
         <div className="bg-white rounded-xl border border-stone-200 p-4">
-          <p className="text-2xl font-bold text-amber-700">{formatPrice(totals._sum.commission || 0)}</p>
+          <p className="text-2xl font-bold text-stone-700">{formatPrice(totals._sum.commission || 0)}</p>
           <p className="text-sm text-stone-500">Комисионни приходи</p>
         </div>
         <div className="bg-white rounded-xl border border-stone-200 p-4">
@@ -80,7 +80,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
             href={`/admin/transactions${tab.key ? `?status=${tab.key}` : ''}`}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               (status || '') === tab.key
-                ? 'bg-amber-700 text-white'
+                ? 'bg-stone-800 text-white'
                 : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
             }`}
           >
@@ -114,7 +114,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
                 )}
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-amber-700 text-lg">{formatPrice(order.totalAmount)}</p>
+                <p className="font-bold text-stone-700 text-lg">{formatPrice(order.totalAmount)}</p>
                 <p className="text-xs text-stone-400">Ком: {formatPrice(order.commission)}</p>
               </div>
               {order.status === 'disputed' && (

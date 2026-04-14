@@ -48,7 +48,7 @@ export default function SupportChat() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-stone-900 hover:bg-stone-950 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
         aria-label="Поддръжка"
       >
         {open ? (
@@ -66,11 +66,11 @@ export default function SupportChat() {
       {open && (
         <div className="fixed bottom-36 md:bottom-24 right-2 md:right-6 z-50 w-[calc(100vw-16px)] sm:w-96 bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden" style={{ maxHeight: '70vh' }}>
           {/* Header */}
-          <div className="bg-amber-700 text-white px-4 py-3 flex items-center gap-3">
-            <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-sm font-bold">L</div>
+          <div className="bg-stone-900 text-white px-4 py-3 flex items-center gap-3">
+            <div className="w-8 h-8 bg-stone-700 rounded-full flex items-center justify-center text-sm font-bold">L</div>
             <div>
               <p className="font-semibold text-sm">Librum Market поддръжка</p>
-              <p className="text-xs text-amber-200">Обикновено отговаряме веднага</p>
+              <p className="text-xs text-stone-300">Обикновено отговаряме веднага</p>
             </div>
           </div>
 
@@ -80,7 +80,7 @@ export default function SupportChat() {
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-amber-700 text-white rounded-br-sm'
+                    ? 'bg-stone-900 text-white rounded-br-sm'
                     : 'bg-stone-100 text-stone-800 rounded-bl-sm'
                 }`}>
                   {msg.content}
@@ -109,13 +109,13 @@ export default function SupportChat() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
               placeholder="Напишете съобщение..."
-              className="flex-1 text-sm border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="flex-1 text-sm border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-stone-400"
               disabled={loading}
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
-              className="w-9 h-9 bg-amber-700 hover:bg-amber-800 disabled:opacity-40 text-white rounded-xl flex items-center justify-center transition-colors"
+              className="w-9 h-9 bg-stone-900 hover:bg-stone-950 disabled:opacity-40 text-white rounded-xl flex items-center justify-center transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -125,7 +125,7 @@ export default function SupportChat() {
 
           <p className="text-center text-xs text-stone-400 pb-2">
             или пишете на{' '}
-            <a href="mailto:librum.bookstore@gmail.com" className="text-amber-700 hover:underline">
+            <a href="mailto:librum.bookstore@gmail.com" className="text-stone-700 hover:underline font-medium">
               librum.bookstore@gmail.com
             </a>
           </p>

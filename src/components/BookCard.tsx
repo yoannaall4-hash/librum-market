@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { formatPrice, formatEur, SELLER_TYPES } from '@/lib/utils'
 import Badge from './ui/Badge'
+import AddToCartButton from './AddToCartButton'
 import { getT } from '@/lib/getT'
 
 interface BookCardProps {
@@ -85,11 +86,18 @@ export default async function BookCard({ book }: BookCardProps) {
             <p className="text-xs text-stone-400 truncate">
               {book.seller.sellerType ? SELLER_TYPES[book.seller.sellerType] : book.seller.name}
             </p>
-            {book.stock > 0 ? (
-              <span className="text-xs font-medium text-green-600 shrink-0 ml-1">✓ {t('book.in_stock')}</span>
-            ) : (
-              <span className="text-xs font-medium text-red-400 shrink-0 ml-1">{t('book.out_of_stock')}</span>
-            )}
+            <AddToCartButton
+              size="sm"
+              item={{
+                bookId: book.id,
+                title: book.title,
+                price: book.price,
+                image: imageUrl !== '/placeholder-book.jpg' ? imageUrl : undefined,
+                sellerId: book.seller.id,
+                sellerName: book.seller.name,
+                stock: book.stock,
+              }}
+            />
           </div>
         </div>
       </div>

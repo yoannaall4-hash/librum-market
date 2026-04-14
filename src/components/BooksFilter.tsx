@@ -68,7 +68,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
           value={params.q || ''}
           onChange={(e) => setParams({ ...params, q: e.target.value })}
           placeholder={t('books.search_filter_placeholder')}
-          className="mt-1 w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
+          className="mt-1 w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-stone-400"
           onKeyDown={(e) => e.key === 'Enter' && router.push(buildUrl(params))}
         />
       </div>
@@ -80,7 +80,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
           <div className="mt-2 space-y-1">
             <button
               onClick={() => setAndNavigate('category', '')}
-              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${!params.category ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
+              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${!params.category ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
             >
               {t('books.all_categories')}
             </button>
@@ -88,7 +88,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
               <button
                 key={cat.id}
                 onClick={() => setAndNavigate('category', params.category === cat.slug ? '' : cat.slug)}
-                className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.category === cat.slug ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
+                className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.category === cat.slug ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
               >
                 {t(`category_names.${cat.slug}`) || cat.name}
               </button>
@@ -103,7 +103,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
         <div className="mt-2 space-y-1">
           <button
             onClick={() => setAndNavigate('lang', '')}
-            className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${!params.lang ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
+            className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${!params.lang ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
           >
             {t('books.all_languages')}
           </button>
@@ -111,7 +111,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
             <button
               key={l.code}
               onClick={() => setAndNavigate('lang', params.lang === l.code ? '' : l.code)}
-              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.lang === l.code ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
+              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.lang === l.code ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
             >
               {l.label[locale as keyof typeof l.label] || l.label.en}
             </button>
@@ -127,7 +127,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
             <button
               key={value}
               onClick={() => setAndNavigate('condition', params.condition === value ? '' : value)}
-              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.condition === value ? 'bg-amber-100 text-amber-800 font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
+              className={`w-full text-left text-sm px-3 py-1.5 rounded-lg transition-colors ${params.condition === value ? 'bg-stone-900 text-white font-medium' : 'text-stone-600 hover:bg-stone-50'}`}
             >
               {conditionLabels[value] || value}
             </button>
@@ -145,7 +145,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
             value={params.minPrice || ''}
             onChange={(e) => setParams({ ...params, minPrice: e.target.value })}
             onBlur={() => router.push(buildUrl(params))}
-            className="w-1/2 text-sm border border-stone-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-1/2 text-sm border border-stone-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-stone-400"
             min="0"
           />
           <input
@@ -154,7 +154,7 @@ export default function BooksFilter({ categories, currentParams }: FilterProps) 
             value={params.maxPrice || ''}
             onChange={(e) => setParams({ ...params, maxPrice: e.target.value })}
             onBlur={() => router.push(buildUrl(params))}
-            className="w-1/2 text-sm border border-stone-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-1/2 text-sm border border-stone-300 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-stone-400"
             min="0"
           />
         </div>

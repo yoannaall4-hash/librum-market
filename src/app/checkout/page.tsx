@@ -65,7 +65,7 @@ function StripePaymentForm({ orderId, total, onBack }: { orderId: string; total:
       <div className="bg-white rounded-2xl border border-stone-200 p-6">
         <h2 className="font-semibold text-stone-700 mb-4">{t('checkout.payment_title')}</h2>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 text-sm text-amber-800">
+        <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-5 text-sm text-stone-700">
           {t('checkout.protected_payment')}
         </div>
 
@@ -130,7 +130,7 @@ function CheckoutContent() {
   if (!book) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <div className="animate-spin w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-stone-800 border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -221,11 +221,11 @@ function CheckoutContent() {
                 <div className="flex gap-3">
                   <button type="button"
                     onClick={() => { setOutsideBulgaria(false); setDeliveryType('address') }}
-                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === false ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
+                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === false ? 'border-stone-800 bg-stone-50 text-stone-900' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
                   >{t('shipping.no')} 🇧🇬</button>
                   <button type="button"
                     onClick={() => { setOutsideBulgaria(true); setDeliveryType('international') }}
-                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === true ? 'border-amber-500 bg-amber-50 text-amber-800' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
+                    className={`flex-1 py-3 rounded-xl border-2 font-medium transition-all ${outsideBulgaria === true ? 'border-stone-800 bg-stone-50 text-stone-900' : 'border-stone-200 text-stone-600 hover:border-stone-300'}`}
                   >{t('shipping.yes')} 🌍</button>
                 </div>
               </div>
@@ -242,9 +242,9 @@ function CheckoutContent() {
                 </div>
                 <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4">
                   <h2 className="font-semibold text-stone-700">{t('shipping.choose')}</h2>
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                    <p className="font-medium text-amber-800 text-sm">🌍 {t('shipping.international')}</p>
-                    <p className="text-amber-700 text-xs mt-1">{t('shipping.international_desc')}</p>
+                  <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
+                    <p className="font-medium text-stone-800 text-sm">🌍 {t('shipping.international')}</p>
+                    <p className="text-stone-600 text-xs mt-1">{t('shipping.international_desc')}</p>
                   </div>
                   <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl">
                     <p className="font-medium text-stone-700 text-sm">🏦 {t('shipping.transfer')}</p>
@@ -275,7 +275,7 @@ function CheckoutContent() {
                   ]).map(opt => (
                     <button key={opt.type} type="button"
                       onClick={() => { setDeliveryType(opt.type); setOfficeAddress('') }}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${deliveryType === opt.type ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${deliveryType === opt.type ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">{opt.icon}</div>
                       <p className="font-medium text-sm text-stone-800">{opt.label}</p>
@@ -288,8 +288,8 @@ function CheckoutContent() {
                   <div className="space-y-4 pt-2 border-t border-stone-100">
                     <div className="flex gap-3">
                       {(['econt', 'speedy'] as const).map(key => (
-                        <label key={key} className={`flex-1 flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer ${courier === key ? 'border-amber-500 bg-amber-50' : 'border-stone-200'}`}>
-                          <input type="radio" name="courier" value={key} checked={courier === key} onChange={() => setCourier(key)} className="accent-amber-700" />
+                        <label key={key} className={`flex-1 flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer ${courier === key ? 'border-stone-800 bg-stone-50' : 'border-stone-200'}`}>
+                          <input type="radio" name="courier" value={key} checked={courier === key} onChange={() => setCourier(key)} className="accent-stone-800" />
                           <div>
                             <p className="text-sm font-medium">{COURIER_PRICES[key].name}</p>
                             <p className="text-xs text-stone-500">{formatPrice(COURIER_PRICES[key].price)} · {COURIER_PRICES[key].days}</p>
@@ -327,7 +327,7 @@ function CheckoutContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button type="button"
                     onClick={() => setPayMethod('later')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                   >
                     <div className="text-2xl mb-1">📩</div>
                     <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
@@ -335,7 +335,7 @@ function CheckoutContent() {
                   </button>
                   <button type="button"
                     onClick={() => setPayMethod('stripe')}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                   >
                     <div className="text-2xl mb-1">💳</div>
                     <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
@@ -358,7 +358,7 @@ function CheckoutContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button type="button"
                       onClick={() => setPayMethod('later')}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'later' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">📩</div>
                       <p className="font-medium text-sm text-stone-800">{t('checkout.pay_later')}</p>
@@ -366,7 +366,7 @@ function CheckoutContent() {
                     </button>
                     <button type="button"
                       onClick={() => setPayMethod('stripe')}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${payMethod === 'stripe' ? 'border-stone-800 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}
                     >
                       <div className="text-2xl mb-1">💳</div>
                       <p className="font-medium text-sm text-stone-800">{t('checkout.pay_online')}</p>
@@ -433,7 +433,7 @@ function CheckoutContent() {
                 <span className="text-stone-500">{t('shipping.title')}</span>
                 <span>{formatPrice(courierInfo.price)}</span>
               </div>
-              <div className="flex justify-between font-bold text-amber-700 border-t border-stone-100 pt-2 text-base">
+              <div className="flex justify-between font-bold text-stone-900 border-t border-stone-100 pt-2 text-base">
                 <span>{t('books.price').split('(')[0].trim()}</span>
                 <span>{formatPrice(total)}</span>
               </div>
@@ -451,7 +451,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-64"><div className="animate-spin w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full" /></div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-64"><div className="animate-spin w-8 h-8 border-4 border-stone-800 border-t-transparent rounded-full" /></div>}>
       <CheckoutContent />
     </Suspense>
   )

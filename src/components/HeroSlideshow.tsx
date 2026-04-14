@@ -3,27 +3,27 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/contexts/LocaleContext'
 
-// Bright, warm editorial photos — right side stays visible through lighter gradient
+// Book and monastery editorial photos — no people
 const slidePhotos = [
   {
     id: 0,
-    photo: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/45 via-stone-900/15 to-transparent',
+    photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1920&q=90',
+    overlay: 'from-stone-900/50 via-stone-900/20 to-transparent',
   },
   {
     id: 1,
-    photo: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/45 via-stone-800/15 to-transparent',
+    photo: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=90',
+    overlay: 'from-stone-900/55 via-stone-900/20 to-transparent',
   },
   {
     id: 2,
-    photo: 'https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/45 via-stone-900/15 to-transparent',
+    photo: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1920&q=90',
+    overlay: 'from-stone-900/50 via-stone-900/20 to-transparent',
   },
   {
     id: 3,
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1920&q=90',
-    overlay: 'from-stone-900/40 via-stone-800/15 to-transparent',
+    photo: 'https://images.unsplash.com/photo-1474932430478-367b591be0b4?auto=format&fit=crop&w=1920&q=90',
+    overlay: 'from-stone-900/50 via-stone-800/20 to-transparent',
   },
 ]
 
@@ -60,7 +60,7 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
   const slide = slides[current]
 
   return (
-    <section className="relative overflow-hidden min-h-[420px] md:min-h-[500px] flex items-center bg-stone-100">
+    <section className="relative overflow-hidden min-h-[340px] max-h-[420px] md:min-h-[420px] md:max-h-[500px] flex items-center bg-stone-100">
 
       {/* Background photo */}
       <div
@@ -136,7 +136,7 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
             onClick={() => goTo(i)}
             className={`rounded-full transition-all duration-300 ${
               i === current
-                ? 'w-6 h-1.5 bg-amber-400'
+                ? 'w-6 h-1.5 bg-white'
                 : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'
             }`}
           />

@@ -59,7 +59,7 @@ export default function SplashScreen() {
         style={{ animation: 'splashFadeUp 0.4s ease 0.8s both' }}
       >
         <div
-          className="h-full bg-amber-600 rounded-full"
+          className="h-full bg-stone-400 rounded-full"
           style={{ animation: 'splashBar 1.2s ease 0.9s both' }}
         />
       </div>

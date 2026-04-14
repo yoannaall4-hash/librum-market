@@ -63,7 +63,7 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
       {/* Seller header */}
       <div className="bg-white border border-stone-200 rounded-2xl p-6 mb-8">
         <div className="flex items-start gap-5">
-          <div className="w-16 h-16 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-2xl shrink-0">
+          <div className="w-16 h-16 rounded-full bg-stone-800 flex items-center justify-center text-white font-bold text-2xl shrink-0">
             {seller.name[0].toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">

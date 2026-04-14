@@ -133,7 +133,7 @@ export default function AdminContentPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <div className="animate-spin w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-stone-700 border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -163,7 +163,7 @@ export default function AdminContentPage() {
               onClick={() => setActiveSection(s.id)}
               className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                 activeSection === s.id
-                  ? 'bg-amber-700 text-white'
+                  ? 'bg-stone-800 text-white'
                   : 'text-stone-600 hover:bg-stone-100'
               }`}
             >
@@ -180,7 +180,7 @@ export default function AdminContentPage() {
             <a
               href={currentSection.preview}
               target="_blank"
-              className="text-xs text-amber-700 hover:text-amber-800"
+              className="text-xs text-stone-700 hover:text-stone-700"
             >
               🔗 Преглед →
             </a>
@@ -194,7 +194,7 @@ export default function AdminContentPage() {
                 onClick={() => setActiveLang(l.key)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeLang === l.key
-                    ? 'bg-amber-700 text-white'
+                    ? 'bg-stone-800 text-white'
                     : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
                 }`}
               >
@@ -213,14 +213,14 @@ export default function AdminContentPage() {
                     value={getValue(key, activeLang)}
                     onChange={e => setValue(key, activeLang, e.target.value)}
                     rows={3}
-                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600 resize-y"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400 resize-y"
                   />
                 ) : (
                   <input
                     type="text"
                     value={getValue(key, activeLang)}
                     onChange={e => setValue(key, activeLang, e.target.value)}
-                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                    className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
                   />
                 )}
                 <p className="text-xs text-stone-400 mt-1 font-mono">{key}</p>

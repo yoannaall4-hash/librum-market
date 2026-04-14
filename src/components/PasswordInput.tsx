@@ -26,7 +26,7 @@ export default function PasswordInput({ label, id, value, onChange, placeholder,
           placeholder={placeholder}
           required={required}
           autoComplete={autoComplete}
-          className="w-full rounded-lg border border-stone-300 px-3 py-2 pr-10 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+          className="w-full rounded-lg border border-stone-300 px-3 py-2 pr-10 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
         />
         <button
           type="button"

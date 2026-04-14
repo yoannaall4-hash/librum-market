@@ -68,9 +68,9 @@ export default async function DashboardPage() {
           { label: t('dashboard.recent_purchases'), value: purchases.length.toString(), link: '/dashboard/orders', icon: '🛒' },
           { label: t('dashboard.total_earnings'), value: formatPrice(totalEarnings), link: '/dashboard/orders?role=seller', icon: '💰' },
         ].map((stat) => (
-          <Link key={stat.label} href={stat.link} className="bg-white rounded-xl border border-stone-200 p-5 hover:border-amber-400 transition-colors group">
+          <Link key={stat.label} href={stat.link} className="bg-white rounded-xl border border-stone-200 p-5 hover:border-stone-400 transition-colors group">
             <div className="text-2xl mb-2">{stat.icon}</div>
-            <div className="text-2xl font-bold text-stone-800 group-hover:text-amber-700">{stat.value}</div>
+            <div className="text-2xl font-bold text-stone-800 group-hover:text-stone-900">{stat.value}</div>
             <div className="text-sm text-stone-500 mt-1">{stat.label}</div>
           </Link>
         ))}
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-2xl border border-stone-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-stone-700">{t('dashboard.recent_purchases')}</h2>
-            <Link href="/dashboard/orders" className="text-sm text-amber-700 hover:text-amber-800">{t('dashboard.view_all')}</Link>
+            <Link href="/dashboard/orders" className="text-sm text-stone-600 hover:text-stone-900 font-medium">{t('dashboard.view_all')}</Link>
           </div>
           {purchases.length === 0 ? (
             <p className="text-stone-400 text-sm">{t('dashboard.no_orders')}</p>
@@ -108,12 +108,12 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-2xl border border-stone-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-stone-700">{t('dashboard.recent_sales')}</h2>
-            <Link href="/dashboard/orders?role=seller" className="text-sm text-amber-700 hover:text-amber-800">{t('dashboard.view_all')}</Link>
+            <Link href="/dashboard/orders?role=seller" className="text-sm text-stone-600 hover:text-stone-900 font-medium">{t('dashboard.view_all')}</Link>
           </div>
           {sales.length === 0 ? (
             <p className="text-stone-400 text-sm">
               {t('dashboard.no_orders')}{' '}
-              <Link href="/books/new" className="text-amber-700 hover:underline">{t('dashboard.add_listing')} →</Link>
+              <Link href="/books/new" className="text-stone-700 hover:underline font-medium">{t('dashboard.add_listing')} →</Link>
             </p>
           ) : (
             <div className="space-y-3">
@@ -143,9 +143,9 @@ export default async function DashboardPage() {
           { href: '/dashboard/messages', label: t('nav.messages'), desc: `${unread} ${t('dashboard.unread_messages').toLowerCase()}`, icon: '💬' },
           { href: '/books', label: t('nav.books'), desc: t('home.browse'), icon: '🔍' },
         ].map((item) => (
-          <Link key={item.href} href={item.href} className="bg-white rounded-xl border border-stone-200 p-4 hover:border-amber-400 hover:bg-amber-50 transition-all group text-center">
+          <Link key={item.href} href={item.href} className="bg-white rounded-xl border border-stone-200 p-4 hover:border-stone-400 hover:bg-stone-50 transition-all group text-center">
             <div className="text-3xl mb-2">{item.icon}</div>
-            <p className="text-sm font-medium text-stone-700 group-hover:text-amber-700">{item.label}</p>
+            <p className="text-sm font-medium text-stone-700 group-hover:text-stone-900">{item.label}</p>
             <p className="text-xs text-stone-400 mt-0.5">{item.desc}</p>
           </Link>
         ))}

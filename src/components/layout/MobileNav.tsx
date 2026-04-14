@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useLocale } from '@/contexts/LocaleContext'
+import { useCart } from '@/contexts/CartContext'
 
 interface NavUser { id: string; name: string; role: string }
 
@@ -33,6 +34,7 @@ function ProfileIcon({ active }: { active: boolean }) {
 export default function MobileNav() {
   const pathname = usePathname()
   const { t } = useLocale()
+  const { count: cartCount } = useCart()
   const [user, setUser] = useState<NavUser | null>(null)
 
   useEffect(() => {
@@ -50,13 +52,13 @@ export default function MobileNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden mobile-nav-bar">
       <div className="flex items-end justify-around px-2 pb-safe">
         {/* Home */}
-        <Link href="/" className={`mobile-nav-tab ${isHome ? 'text-amber-700' : 'text-stone-400'}`}>
+        <Link href="/" className={`mobile-nav-tab ${isHome ? 'text-stone-900' : 'text-stone-400'}`}>
           <HomeIcon active={isHome} />
           <span className="mobile-nav-label">{t('mobile_nav.home')}</span>
         </Link>
 
         {/* Books */}
-        <Link href="/books" className={`mobile-nav-tab ${isBooks ? 'text-amber-700' : 'text-stone-400'}`}>
+        <Link href="/books" className={`mobile-nav-tab ${isBooks ? 'text-stone-900' : 'text-stone-400'}`}>
           <BooksIcon active={isBooks} />
           <span className="mobile-nav-label">{t('mobile_nav.books')}</span>
         </Link>
@@ -67,7 +69,7 @@ export default function MobileNav() {
           className="flex flex-col items-center -mt-5 relative"
           aria-label={t('mobile_nav.listing')}
         >
-          <div className="w-14 h-14 rounded-full bg-amber-700 shadow-lg shadow-amber-900/30 flex items-center justify-center transition-transform active:scale-95">
+          <div className="w-14 h-14 rounded-full bg-stone-900 shadow-lg shadow-stone-900/30 flex items-center justify-center transition-transform active:scale-95">
             <svg viewBox="0 0 24 24" className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -75,11 +77,26 @@ export default function MobileNav() {
           <span className="mobile-nav-label text-stone-400 mt-0.5">{t('mobile_nav.listing')}</span>
         </Link>
 
+        {/* Cart */}
+        <Link href="/cart" className={`mobile-nav-tab relative ${pathname === '/cart' ? 'text-stone-900' : 'text-stone-400'}`}>
+          <div className="relative">
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill={pathname === '/cart' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={pathname === '/cart' ? 0 : 1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+            </svg>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-stone-900 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
+          </div>
+          <span className="mobile-nav-label">Количка</span>
+        </Link>
+
         {/* Profile / Login */}
-        <Link href={user ? '/dashboard' : '/login'} className={`mobile-nav-tab ${isProfile ? 'text-amber-700' : 'text-stone-400'}`}>
+        <Link href={user ? '/dashboard' : '/login'} className={`mobile-nav-tab ${isProfile ? 'text-stone-900' : 'text-stone-400'}`}>
           {user ? (
             <>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${isProfile ? 'bg-amber-700' : 'bg-stone-400'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${isProfile ? 'bg-stone-900' : 'bg-stone-400'}`}>
                 {user.name[0].toUpperCase()}
               </div>
               <span className="mobile-nav-label">{t('mobile_nav.profile')}</span>

@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <span>{item.icon}</span>
             <span>{item.label}</span>
             {item.badge != null && item.badge > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-stone-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">
                 {item.badge}
               </span>
             )}

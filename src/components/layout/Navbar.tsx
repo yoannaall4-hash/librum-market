@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Button from '@/components/ui/Button'
 import { useLocale, type Locale } from '@/contexts/LocaleContext'
+import { useCart } from '@/contexts/CartContext'
+import { useAdminPanel } from '@/contexts/AdminPanelContext'
 
 interface NavUser {
   id: string
@@ -66,6 +68,8 @@ function LogOutIcon() {
 export default function Navbar() {
   const router = useRouter()
   const { t, locale, setLocale } = useLocale()
+  const { count: cartCount } = useCart()
+  const { setOpen: openAdminPanel } = useAdminPanel()
   const [user, setUser] = useState<NavUser | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -96,9 +100,12 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between gap-4">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 group">
-            <span className="font-bold text-stone-900 text-xl tracking-widest group-hover:text-amber-800 transition-colors">LIBRUM</span>
-            <span className="font-light text-stone-400 text-xl tracking-wide ml-1.5 group-hover:text-stone-600 transition-colors">Market</span>
+          <Link href="/" className="flex flex-col items-start shrink-0 group">
+            <div className="flex items-baseline">
+              <span className="font-bold text-stone-900 text-xl tracking-widest group-hover:text-stone-700 transition-colors">LIBRUM</span>
+              <span className="font-light text-stone-400 text-xl tracking-wide ml-1.5 group-hover:text-stone-600 transition-colors">Market</span>
+            </div>
+            <span className="hidden md:block text-[10px] text-stone-400 tracking-[0.15em] uppercase -mt-0.5 font-medium">Онлайн книжарница</span>
           </Link>
 
           {/* Desktop nav links */}
@@ -113,6 +120,30 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Admin edit button */}
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => openAdminPanel(true)}
+                title="Редактирай съдържанието"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-stone-600 hover:bg-stone-100 hover:text-stone-900 border border-stone-200 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                </svg>
+                <span className="hidden md:inline">Редактирай</span>
+              </button>
+            )}
+            {/* Cart icon */}
+            <Link href="/cart" className="relative flex items-center justify-center w-9 h-9 rounded-lg text-stone-600 hover:bg-stone-50 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+              </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-stone-900 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
+            </Link>
             {/* Language switcher */}
             <div className="flex items-center gap-0.5 bg-stone-100 rounded-lg p-0.5">
               {(['bg', 'en', 'ro'] as Locale[]).map((l) => (
@@ -142,7 +173,7 @@ export default function Navbar() {
                     onClick={() => setMenuOpen(!menuOpen)}
                     className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-sm text-stone-700 hover:bg-stone-50 transition-colors"
                   >
-                    <div className="w-7 h-7 rounded-full bg-amber-700 flex items-center justify-center font-bold text-white text-xs shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-stone-800 flex items-center justify-center font-bold text-white text-xs shrink-0">
                       {user.name[0].toUpperCase()}
                     </div>
                     <span className="hidden md:block font-medium max-w-[120px] truncate">{user.name}</span>

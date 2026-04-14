@@ -88,17 +88,17 @@ export default function MessagesClient({
             <button
               key={conv.user.id}
               onClick={() => setActiveUser(conv.user)}
-              className={`w-full text-left p-4 border-b border-stone-50 hover:bg-stone-50 transition-colors ${activeUser?.id === conv.user.id ? 'bg-amber-50 border-l-2 border-l-amber-700' : ''}`}
+              className={`w-full text-left p-4 border-b border-stone-50 hover:bg-stone-50 transition-colors ${activeUser?.id === conv.user.id ? 'bg-stone-100 border-l-2 border-l-stone-900' : ''}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold shrink-0">
+                <div className="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white font-bold shrink-0">
                   {conv.user.name[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-stone-800 truncate">{conv.user.name}</p>
                     {conv.unread > 0 && (
-                      <span className="w-5 h-5 rounded-full bg-amber-700 text-white text-xs flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-stone-900 text-white text-xs flex items-center justify-center">
                         {conv.unread}
                       </span>
                     )}
@@ -115,7 +115,7 @@ export default function MessagesClient({
       {activeUser ? (
         <div className="flex-1 flex flex-col">
           <div className="p-4 border-b border-stone-100 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-9 h-9 rounded-full bg-stone-900 flex items-center justify-center text-white font-bold text-sm">
               {activeUser.name[0].toUpperCase()}
             </div>
             <p className="font-semibold text-stone-700">{activeUser.name}</p>
@@ -129,11 +129,11 @@ export default function MessagesClient({
                 </div>
                 <div className={`max-w-xs lg:max-w-sm rounded-2xl px-3 py-2 text-sm ${
                   msg.senderId === currentUserId
-                    ? 'bg-amber-700 text-white rounded-tr-sm'
+                    ? 'bg-stone-900 text-white rounded-tr-sm'
                     : 'bg-stone-100 text-stone-800 rounded-tl-sm'
                 }`}>
                   <p>{msg.content}</p>
-                  <p className={`text-xs mt-1 ${msg.senderId === currentUserId ? 'text-amber-200' : 'text-stone-400'}`}>
+                  <p className={`text-xs mt-1 ${msg.senderId === currentUserId ? 'text-stone-300' : 'text-stone-400'}`}>
                     {formatDate(msg.createdAt)}
                   </p>
                 </div>
@@ -149,7 +149,7 @@ export default function MessagesClient({
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
               placeholder="Напишете съобщение..."
-              className="flex-1 text-sm border border-stone-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="flex-1 text-sm border border-stone-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-1 focus:ring-stone-400"
             />
             <Button onClick={send} loading={sending} disabled={!content.trim()} size="sm">
               Изпрати

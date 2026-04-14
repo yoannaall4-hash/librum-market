@@ -56,7 +56,7 @@ export default async function ListingsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <Link href={`/books/${book.id}`} className="font-semibold text-stone-800 hover:text-amber-700 line-clamp-1">
+                      <Link href={`/books/${book.id}`} className="font-semibold text-stone-800 hover:text-stone-600 line-clamp-1">
                         {book.title}
                       </Link>
                       {book.authors.length > 0 && (
@@ -73,7 +73,7 @@ export default async function ListingsPage() {
                     </Badge>
                   </div>
                   <div className="flex items-center gap-4 mt-2">
-                    <span className="text-lg font-bold text-amber-700">{formatPrice(book.price)}</span>
+                    <span className="text-lg font-bold text-stone-900">{formatPrice(book.price)}</span>
                     <span className="text-xs text-stone-400">{CONDITIONS[book.condition]} · {book.views} прегледа</span>
                     <span className="text-xs text-stone-400">Публ. {formatDate(book.createdAt)}</span>
                   </div>

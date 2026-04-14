@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 import { formatPrice, formatEur, formatDate, PERIODS, SELLER_TYPES } from '@/lib/utils'
@@ -151,14 +152,17 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
             </div>
           </div>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+          <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 mb-6 text-sm text-stone-700">
             {t('book.protected_deal')}
           </div>
 
           <BookActions
             bookId={book.id}
             sellerId={book.sellerId}
+            sellerName={book.seller.name}
             bookTitle={book.title}
+            bookPrice={book.price}
+            bookImage={images[0]}
             currentUserId={session?.id}
             currentUserRole={session?.role}
             stock={book.stock}
@@ -176,11 +180,11 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         <div className="bg-white border border-stone-200 rounded-2xl p-6">
           <h2 className="font-semibold text-stone-700 mb-4">{t('book.seller_title')}</h2>
           <div className="flex items-center gap-4 mb-4">
-            <Link href={`/sellers/${book.sellerId}`} className="w-12 h-12 rounded-full bg-amber-700 flex items-center justify-center text-white font-bold text-lg hover:bg-amber-800 transition-colors shrink-0">
+            <Link href={`/sellers/${book.sellerId}`} className="w-12 h-12 rounded-full bg-stone-800 flex items-center justify-center text-white font-bold text-lg hover:bg-stone-900 transition-colors shrink-0">
               {book.seller.name[0].toUpperCase()}
             </Link>
             <div>
-              <Link href={`/sellers/${book.sellerId}`} className="font-semibold text-stone-800 hover:text-amber-700 transition-colors">
+              <Link href={`/sellers/${book.sellerId}`} className="font-semibold text-stone-800 hover:text-stone-600 transition-colors">
                 {book.seller.name}
               </Link>
               {book.seller.sellerType && (

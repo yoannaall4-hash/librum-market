@@ -60,22 +60,31 @@ async function getCategories() {
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
-  archaeology:    '🏺',
-  theology:       '✝',
-  children:       '◎',
-  encyclopedias:  '◈',
-  health:         '◉',
-  economics:      '◎',
-  history:        '◈',
-  music:          '♪',
-  pedagogy:       '◉',
-  law:            '◈',
-  psychology:     '◎',
-  'exact-sciences': '◉',
-  tourism:        '◎',
-  textbooks:      '◈',
-  philosophy:     '◎',
-  fiction:        '◈',
+  archaeology:      '🏛',
+  theology:         '✞',
+  children:         '🎈',
+  encyclopedias:    '📖',
+  health:           '🌿',
+  economics:        '📊',
+  history:          '🗺',
+  music:            '🎵',
+  pedagogy:         '🏫',
+  law:              '⚖',
+  psychology:       '🧠',
+  'exact-sciences': '🔬',
+  tourism:          '✈',
+  textbooks:        '📐',
+  philosophy:       '💭',
+  fiction:          '✍',
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  theology:         'bg-stone-900 text-white',
+  history:          'bg-stone-700 text-white',
+  philosophy:       'bg-stone-600 text-white',
+  fiction:          'bg-stone-500 text-white',
+  archaeology:      'bg-stone-800 text-white',
+  law:              'bg-stone-700 text-white',
 }
 
 // SVG icons for "how it works" steps
@@ -147,22 +156,29 @@ export default async function HomePage() {
 
       {/* Categories */}
       {categories.length > 0 && (
-        <section className="py-14 bg-stone-50 border-b border-stone-100">
+        <section className="py-12 bg-white border-b border-stone-100">
           <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-6 text-center">{t('home.categories')}</h2>
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-8 gap-2">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/books?category=${cat.slug}`}
-                  className="flex flex-col items-center py-4 px-2 rounded-xl border border-stone-200 bg-white hover:border-stone-400 hover:shadow-sm transition-all group"
-                >
-                  <div className="w-9 h-9 rounded-lg bg-stone-100 group-hover:bg-stone-200 flex items-center justify-center mb-2 transition-colors">
-                    <span className="text-stone-500 group-hover:text-stone-700 text-base transition-colors font-serif">{CATEGORY_ICONS[cat.slug] || '◈'}</span>
-                  </div>
-                  <span className="text-xs font-medium text-stone-600 group-hover:text-stone-800 text-center leading-tight">{cat.name}</span>
-                </Link>
-              ))}
+            <div className="text-center mb-8">
+              <p className="text-xs font-bold tracking-[0.2em] text-stone-400 uppercase mb-1">{t('home.categories')}</p>
+              <h2 className="text-xl font-bold text-stone-800">Разгледай по категория</h2>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3">
+              {categories.map((cat) => {
+                const iconColorClass = CATEGORY_COLORS[cat.slug] || 'bg-stone-100 text-stone-700'
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/books?category=${cat.slug}`}
+                    className="flex flex-col items-center py-5 px-2 rounded-2xl bg-white border border-stone-150 hover:border-stone-300 hover:shadow-md transition-all group"
+                    style={{ borderColor: '#ede8e3' }}
+                  >
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 text-2xl transition-all group-hover:scale-110 ${iconColorClass}`}>
+                      {CATEGORY_ICONS[cat.slug] || '📚'}
+                    </div>
+                    <span className="text-xs font-semibold text-stone-600 group-hover:text-stone-900 text-center leading-tight">{cat.name}</span>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -209,7 +225,7 @@ export default async function HomePage() {
               </svg>
               <p className="text-lg text-stone-500">{t('home.noBooks')}</p>
               <p className="text-sm mt-2 text-stone-400">{t('home.beFirst')}</p>
-              <Link href="/register" className="mt-5 inline-block px-6 py-2.5 bg-amber-700 text-white text-sm font-semibold rounded-lg hover:bg-amber-800 transition-colors">
+              <Link href="/register" className="mt-5 inline-block px-6 py-2.5 bg-stone-800 text-white text-sm font-semibold rounded-lg hover:bg-stone-900 transition-colors">
                 {t('nav.register')}
               </Link>
             </div>

@@ -68,15 +68,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             {steps.map((step, i) => (
               <div key={step} className="flex items-center flex-1 last:flex-none">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-                  i <= currentStep ? 'bg-amber-700 text-white' : 'bg-stone-100 text-stone-400'
+                  i <= currentStep ? 'bg-stone-800 text-white' : 'bg-stone-100 text-stone-400'
                 }`}>
                   {i < currentStep ? '✓' : i + 1}
                 </div>
-                <p className={`text-xs ml-2 ${i <= currentStep ? 'text-amber-700 font-medium' : 'text-stone-400'}`}>
+                <p className={`text-xs ml-2 ${i <= currentStep ? 'text-stone-800 font-medium' : 'text-stone-400'}`}>
                   {stepLabels[i]}
                 </p>
                 {i < steps.length - 1 && (
-                  <div className={`flex-1 h-0.5 mx-3 ${i < currentStep ? 'bg-amber-700' : 'bg-stone-200'}`} />
+                  <div className={`flex-1 h-0.5 mx-3 ${i < currentStep ? 'bg-stone-800' : 'bg-stone-200'}`} />
                 )}
               </div>
             ))}
@@ -103,7 +103,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                     <p className="font-medium text-stone-800">{item.book.title}</p>
                     <p className="text-sm text-stone-500">{t('order.qty')}: {item.quantity}</p>
                   </div>
-                  <p className="font-semibold text-amber-700">{formatPrice(item.price * item.quantity)}</p>
+                  <p className="font-semibold text-stone-900">{formatPrice(item.price * item.quantity)}</p>
                 </div>
               )
             })}
@@ -118,12 +118,12 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <div className="space-y-3 mb-4">
                 {order.messages.map((msg) => (
                   <div key={msg.id} className={`flex gap-3 ${msg.senderId === session.id ? 'flex-row-reverse' : ''}`}>
-                    <div className="w-8 h-8 rounded-full bg-amber-700 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center text-white text-xs font-bold shrink-0">
                       {msg.sender.name[0].toUpperCase()}
                     </div>
-                    <div className={`max-w-xs rounded-xl px-3 py-2 text-sm ${msg.senderId === session.id ? 'bg-amber-700 text-white' : 'bg-stone-100 text-stone-800'}`}>
+                    <div className={`max-w-xs rounded-xl px-3 py-2 text-sm ${msg.senderId === session.id ? 'bg-stone-800 text-white' : 'bg-stone-100 text-stone-800'}`}>
                       {msg.content}
-                      <p className={`text-xs mt-1 ${msg.senderId === session.id ? 'text-amber-200' : 'text-stone-400'}`}>
+                      <p className={`text-xs mt-1 ${msg.senderId === session.id ? 'text-stone-300' : 'text-stone-400'}`}>
                         {formatDate(msg.createdAt)}
                       </p>
                     </div>
@@ -151,7 +151,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                     <span>{t('order.commission')}</span>
                     <span>-{formatPrice(order.commission)}</span>
                   </div>
-                  <div className="flex justify-between font-bold text-amber-700 border-t border-stone-100 pt-2">
+                  <div className="flex justify-between font-bold text-stone-900 border-t border-stone-100 pt-2">
                     <span>{t('order.you_receive')}</span>
                     <span>{formatPrice(order.sellerPayout)}</span>
                   </div>

@@ -98,11 +98,11 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
             name="q"
             defaultValue={params.q || ''}
             placeholder={t('books.search_placeholder')}
-            className="flex-1 rounded-xl border border-stone-300 px-4 py-2.5 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+            className="flex-1 rounded-xl border border-stone-300 px-4 py-2.5 text-sm focus:border-stone-600 focus:outline-none focus:ring-1 focus:ring-stone-400"
           />
           <button
             type="submit"
-            className="px-5 py-2.5 bg-amber-700 text-white rounded-xl text-sm font-medium hover:bg-amber-800 transition-colors"
+            className="px-5 py-2.5 bg-stone-800 text-white rounded-xl text-sm font-medium hover:bg-stone-900 transition-colors"
           >
             {t('books.search')}
           </button>
@@ -125,7 +125,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
                 key={cat.id || 'all'}
                 href={href}
                 className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                  active ? 'bg-amber-700 text-white border-amber-700' : 'bg-white text-stone-600 border-stone-300'
+                  active ? 'bg-stone-800 text-white border-stone-800' : 'bg-white text-stone-600 border-stone-300'
                 }`}
               >
                 {cat.name}
@@ -190,7 +190,7 @@ export default async function BooksPage({ searchParams }: { searchParams: Promis
                         href={`/books?${sp.toString()}`}
                         className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
                           p === page
-                            ? 'bg-amber-700 text-white'
+                            ? 'bg-stone-800 text-white'
                             : 'bg-white text-stone-600 border border-stone-300 hover:bg-stone-50'
                         }`}
                       >

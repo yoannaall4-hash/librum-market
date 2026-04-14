@@ -45,13 +45,13 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         <div className="flex bg-white border border-stone-200 rounded-lg overflow-hidden">
           <Link
             href="/dashboard/orders"
-            className={`px-4 py-2 text-sm font-medium transition-colors ${!isSeller ? 'bg-amber-700 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${!isSeller ? 'bg-stone-800 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
             {t('orders.purchases')}
           </Link>
           <Link
             href="/dashboard/orders?role=seller"
-            className={`px-4 py-2 text-sm font-medium transition-colors ${isSeller ? 'bg-amber-700 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
+            className={`px-4 py-2 text-sm font-medium transition-colors ${isSeller ? 'bg-stone-800 text-white' : 'text-stone-600 hover:bg-stone-50'}`}
           >
             {t('orders.sales')}
           </Link>
@@ -70,7 +70,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
             const images: string[] = JSON.parse(firstBook?.images || '[]')
             return (
               <Link key={order.id} href={`/dashboard/orders/${order.id}`}>
-                <div className="bg-white rounded-xl border border-stone-200 p-5 hover:border-amber-400 transition-colors">
+                <div className="bg-white rounded-xl border border-stone-200 p-5 hover:border-stone-400 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-18 bg-stone-100 rounded-lg overflow-hidden shrink-0 w-14 h-16">
                       {images[0] ? (
@@ -92,7 +92,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="font-bold text-amber-700">{formatPrice(isSeller ? order.sellerPayout : order.totalAmount)}</p>
+                      <p className="font-bold text-stone-900">{formatPrice(isSeller ? order.sellerPayout : order.totalAmount)}</p>
                       {isSeller && <p className="text-xs text-stone-400">{t('order.net')}</p>}
                       <Badge variant={statusBadge[order.status] || 'default'} className="mt-1">
                         {t(`statuses.${order.status}`) || order.status}

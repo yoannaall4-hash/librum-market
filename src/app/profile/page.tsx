@@ -114,7 +114,7 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-stone-800 border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -128,7 +128,7 @@ export default function ProfilePage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8 flex items-start gap-6">
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-full bg-amber-700 flex items-center justify-center text-white text-3xl font-bold shrink-0">
+        <div className="w-20 h-20 rounded-full bg-stone-800 flex items-center justify-center text-white text-3xl font-bold shrink-0">
           {user.name[0].toUpperCase()}
         </div>
         <div className="flex-1">
@@ -148,7 +148,7 @@ export default function ProfilePage() {
               { label: t('profile.sales'), value: user._count.sales },
             ].map(s => (
               <div key={s.label}>
-                <span className="text-xl font-bold text-amber-700">{s.value}</span>
+                <span className="text-xl font-bold text-stone-900">{s.value}</span>
                 <span className="text-sm text-stone-500 ml-1">{s.label}</span>
               </div>
             ))}
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             key={tabKey}
             onClick={() => setTab(tabKey)}
             className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
-              tab === tabKey ? 'border-amber-700 text-amber-700' : 'border-transparent text-stone-500 hover:text-stone-700'
+              tab === tabKey ? 'border-stone-900 text-stone-900' : 'border-transparent text-stone-500 hover:text-stone-700'
             }`}
           >
             {tabKey === 'profile' ? t('profile.tab_profile') : tabKey === 'security' ? t('profile.tab_security') : t('profile.tab_payments')}
@@ -193,7 +193,7 @@ export default function ProfilePage() {
               <textarea
                 value={form.bio}
                 onChange={e => setForm({ ...form, bio: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600 resize-none h-24"
+                className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400 resize-none h-24"
                 placeholder={t('profile.bio_placeholder')}
               />
             </div>
@@ -254,7 +254,7 @@ export default function ProfilePage() {
               required
             />
           </div>
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+          <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm text-stone-700">
             🔒 {t('profile.min_chars')}.
           </div>
           <Button type="submit" loading={loading}>{t('profile.change_password_btn')}</Button>

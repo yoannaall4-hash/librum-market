@@ -60,7 +60,7 @@ export default async function AdminPage() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
         {[
           { label: 'Потребители', value: totalUsers.toString(), icon: '👤', color: 'text-blue-700' },
-          { label: 'Активни книги', value: totalBooks.toString(), icon: '📚', color: 'text-amber-700' },
+          { label: 'Активни книги', value: totalBooks.toString(), icon: '📚', color: 'text-stone-700' },
           { label: 'Поръчки', value: totalOrders.toString(), icon: '📦', color: 'text-stone-700' },
           { label: 'Спорове', value: pendingDisputes.toString(), icon: '⚠️', color: 'text-red-700' },
           { label: 'Комисионни', value: formatPrice(revenue._sum.commission || 0), icon: '💰', color: 'text-green-700' },
@@ -75,16 +75,16 @@ export default async function AdminPage() {
 
       {/* Pending book approvals */}
       {pendingBooks.length > 0 && (
-        <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+        <div className="mb-8 bg-stone-50 border border-stone-200 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">📚</span>
               <div>
                 <h2 className="font-bold text-stone-800">Книги за одобрение</h2>
-                <p className="text-sm text-amber-700">{pendingBooks.length} чакат вашето одобрение</p>
+                <p className="text-sm text-stone-700">{pendingBooks.length} чакат вашето одобрение</p>
               </div>
             </div>
-            <Link href="/admin/books?status=pending_approval" className="text-sm text-amber-700 hover:text-amber-800 font-medium">
+            <Link href="/admin/books?status=pending_approval" className="text-sm text-stone-700 hover:text-stone-700 font-medium">
               Виж всички →
             </Link>
           </div>
@@ -120,7 +120,7 @@ export default async function AdminPage() {
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-amber-700">{formatPrice(order.totalAmount)}</p>
+                  <p className="text-sm font-bold text-stone-700">{formatPrice(order.totalAmount)}</p>
                   <Badge variant={
                     order.status === 'delivered' ? 'success' :
                     order.status === 'disputed' ? 'danger' :
@@ -143,7 +143,7 @@ export default async function AdminPage() {
             {recentUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between py-2 border-b border-stone-50 last:border-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-700 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center text-white text-xs font-bold">
                     {user.name[0].toUpperCase()}
                   </div>
                   <div>
@@ -161,7 +161,7 @@ export default async function AdminPage() {
               </div>
             ))}
           </div>
-          <Link href="/admin/users" className="mt-4 block text-sm text-amber-700 hover:text-amber-800">
+          <Link href="/admin/users" className="mt-4 block text-sm text-stone-700 hover:text-stone-700">
             Всички потребители →
           </Link>
         </div>

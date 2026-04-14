@@ -65,7 +65,7 @@ export default function ImageUpload({ images, onChange, max = 5 }: ImageUploadPr
                 className="w-full h-full object-cover rounded-lg border border-stone-200"
               />
               {i === 0 && (
-                <span className="absolute top-1 left-1 bg-amber-700 text-white text-[10px] px-1 rounded">
+                <span className="absolute top-1 left-1 bg-stone-900 text-white text-[10px] px-1 rounded">
                   Корица
                 </span>
               )}
@@ -87,11 +87,11 @@ export default function ImageUpload({ images, onChange, max = 5 }: ImageUploadPr
           onClick={() => inputRef.current?.click()}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
-          className="border-2 border-dashed border-stone-300 rounded-xl p-6 text-center cursor-pointer hover:border-amber-500 hover:bg-amber-50 transition-colors"
+          className="border-2 border-dashed border-stone-300 rounded-xl p-6 text-center cursor-pointer hover:border-stone-500 hover:bg-stone-50 transition-colors"
         >
           {uploading ? (
             <div className="flex items-center justify-center gap-2 text-stone-500">
-              <div className="w-5 h-5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-stone-700 border-t-transparent rounded-full animate-spin" />
               <span className="text-sm">Качване...</span>
             </div>
           ) : (

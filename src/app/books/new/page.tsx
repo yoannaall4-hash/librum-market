@@ -97,7 +97,7 @@ export default function NewBookPage() {
   if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-amber-700 border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-stone-800 border-t-transparent animate-spin" />
       </div>
     )
   }
@@ -127,7 +127,7 @@ export default function NewBookPage() {
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600 resize-none h-32"
+              className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400 resize-none h-32"
               placeholder="Опишете съдържанието, изданието, забележки..."
               required
             />
@@ -148,7 +148,7 @@ export default function NewBookPage() {
               <button
                 type="button"
                 onClick={() => { setShowNewPublisher(!showNewPublisher); setNewPublisherName('') }}
-                className="text-xs text-amber-700 hover:text-amber-800 font-medium"
+                className="text-xs text-stone-600 hover:text-stone-900 font-medium"
               >
                 {showNewPublisher ? t('new_book.cancel_publisher') : t('new_book.add_publisher')}
               </button>
@@ -161,14 +161,14 @@ export default function NewBookPage() {
                   onChange={(e) => setNewPublisherName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddPublisher())}
                   placeholder={t('new_book.publisher_placeholder')}
-                  className="flex-1 rounded-lg border border-amber-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                  className="flex-1 rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
                   autoFocus
                 />
                 <button
                   type="button"
                   onClick={handleAddPublisher}
                   disabled={addingPublisher || !newPublisherName.trim()}
-                  className="px-4 py-2 bg-amber-700 text-white text-sm rounded-lg hover:bg-amber-800 disabled:opacity-40 transition-colors"
+                  className="px-4 py-2 bg-stone-800 text-white text-sm rounded-lg hover:bg-stone-900 disabled:opacity-40 transition-colors"
                 >
                   {addingPublisher ? '...' : t('new_book.add_publisher_btn')}
                 </button>
@@ -178,7 +178,7 @@ export default function NewBookPage() {
                 id="publisherId"
                 value={form.publisherId}
                 onChange={(e) => setForm({ ...form, publisherId: e.target.value })}
-                className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-600"
+                className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-400"
               >
                 {publisherOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
@@ -212,7 +212,7 @@ export default function NewBookPage() {
           </div>
         </div>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 space-y-1">
+        <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm text-stone-700 space-y-1">
           <p>{t('new_book.commission_note')}</p>
           <p>{t('new_book.approval_note')}</p>
         </div>

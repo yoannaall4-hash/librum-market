@@ -46,7 +46,7 @@ export default function FeaturedModal({ bookId, bookTitle, onClose }: FeaturedMo
 
         <p className="text-sm text-stone-600 mb-2 line-clamp-1 font-medium">{bookTitle}</p>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs text-amber-800">
+        <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 mb-4 text-xs text-stone-700">
           ⭐ Изтъкнатите обяви се показват на първо място в търсенето и на началната страница.
         </div>
 
@@ -57,12 +57,12 @@ export default function FeaturedModal({ bookId, bookTitle, onClose }: FeaturedMo
             {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
             <div className="space-y-2 mb-4">
               {FEATURED_PLANS.map(plan => (
-                <label key={plan.id} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${selected === plan.id ? 'border-amber-500 bg-amber-50' : 'border-stone-200 hover:border-stone-300'}`}>
-                  <input type="radio" name="plan" value={plan.id} checked={selected === plan.id} onChange={() => setSelected(plan.id)} className="accent-amber-700" />
+                <label key={plan.id} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${selected === plan.id ? 'border-stone-900 bg-stone-50' : 'border-stone-200 hover:border-stone-300'}`}>
+                  <input type="radio" name="plan" value={plan.id} checked={selected === plan.id} onChange={() => setSelected(plan.id)} className="accent-stone-900" />
                   <div className="flex-1">
                     <p className="font-medium text-sm text-stone-700">{plan.label}</p>
                   </div>
-                  <span className="font-bold text-amber-700">{formatPrice(plan.price)}</span>
+                  <span className="font-bold text-stone-900">{formatPrice(plan.price)}</span>
                 </label>
               ))}
             </div>

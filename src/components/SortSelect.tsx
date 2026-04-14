@@ -18,7 +18,7 @@ export default function SortSelect({ currentSort }: { currentSort?: string }) {
     <select
       value={currentSort || 'newest'}
       onChange={handleChange}
-      className="text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-amber-500"
+      className="text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-stone-400"
     >
       <option value="newest">{t('books.sort_newest')}</option>
       <option value="price_asc">{t('books.sort_price_asc')}</option>
