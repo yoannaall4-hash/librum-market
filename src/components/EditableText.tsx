@@ -100,12 +100,18 @@ export default function EditableText({
       if (res.ok) {
         const data = await res.json()
         const existing = data.content[contentKey]
-        setValues(existing || { bg: defaultValue, en: '', ro: '' })
+        const bg = existing?.bg || defaultValue
+        // Pre-fill EN/RO with BG value if they've never been set
+        setValues({
+          bg,
+          en: existing?.en || bg,
+          ro: existing?.ro || bg,
+        })
       } else {
-        setValues({ bg: defaultValue, en: '', ro: '' })
+        setValues({ bg: defaultValue, en: defaultValue, ro: defaultValue })
       }
     } catch {
-      setValues({ bg: defaultValue, en: '', ro: '' })
+      setValues({ bg: defaultValue, en: defaultValue, ro: defaultValue })
     }
     setEditing(true)
   }
