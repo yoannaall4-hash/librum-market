@@ -47,9 +47,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               {/* Brand */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-amber-400">✝</span>
-                  <span className="text-amber-400 font-bold text-lg">Librum Market</span>
+                <div className="flex items-center mb-3">
+                  <span className="text-white font-bold text-lg tracking-widest">LIBRUM</span>
+                  <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
                 <p className="text-sm text-stone-500 leading-relaxed">
                   Платформа за богословска литература в България. Свързваме читатели, продавачи и книги с душа.

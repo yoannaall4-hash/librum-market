@@ -36,26 +36,19 @@ export default function SplashScreen() {
         }}
       />
 
-      {/* Cross / Logo */}
+      {/* Logo text */}
       <div
-        className="text-8xl text-amber-400 mb-5 select-none"
+        className="select-none flex items-baseline gap-2"
         style={{ animation: 'splashZoom 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
       >
-        ✝
-      </div>
-
-      {/* Name */}
-      <div
-        className="text-3xl font-bold text-amber-400 tracking-widest"
-        style={{ animation: 'splashFadeUp 0.5s ease 0.5s both' }}
-      >
-        Librum Market
+        <span className="text-4xl font-bold text-white tracking-widest">LIBRUM</span>
+        <span className="text-2xl font-light text-stone-500 tracking-wide">Market</span>
       </div>
 
       {/* Tagline */}
       <div
-        className="text-stone-500 text-sm mt-2 tracking-wide"
-        style={{ animation: 'splashFadeUp 0.5s ease 0.7s both' }}
+        className="text-stone-500 text-sm mt-3 tracking-widest uppercase"
+        style={{ animation: 'splashFadeUp 0.5s ease 0.5s both' }}
       >
         Богословска литература
       </div>

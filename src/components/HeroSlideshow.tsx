@@ -5,108 +5,39 @@ import Link from 'next/link'
 const slides = [
   {
     id: 0,
-    bg: 'from-[#1a0a00] via-[#2d1200] to-[#1a0a00]',
-    accent: '#d97706',
-    title: 'Librum Market',
-    subtitle: 'Богословска литература',
+    photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1920&q=85',
+    overlay: 'from-black/80 via-black/50 to-black/70',
+    label: 'БИБЛИОТЕКА',
+    title: 'Книги с душа',
     quote: '„В началото бе Словото"',
     source: 'Йоан 1:1',
-    art: (
-      <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
-        {/* Cross */}
-        <rect x="88" y="20" width="24" height="160" rx="4" fill="#d97706"/>
-        <rect x="30" y="68" width="140" height="24" rx="4" fill="#d97706"/>
-        {/* Halo */}
-        <circle cx="100" cy="52" r="28" stroke="#d97706" strokeWidth="3" strokeDasharray="6 4"/>
-        {/* Decorative rays */}
-        {Array.from({length: 12}).map((_, i) => (
-          <line key={i} x1="100" y1="52" x2={100 + 55 * Math.cos(i * 30 * Math.PI / 180)} y2={52 + 55 * Math.sin(i * 30 * Math.PI / 180)} stroke="#d97706" strokeWidth="1.5" opacity="0.5"/>
-        ))}
-      </svg>
-    ),
   },
   {
     id: 1,
-    bg: 'from-[#0a0f1e] via-[#0f1e3a] to-[#0a0f1e]',
-    accent: '#93c5fd',
-    title: 'Патристика',
-    subtitle: 'Светоотеческо наследство',
+    photo: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=85',
+    overlay: 'from-black/75 via-black/40 to-black/65',
+    label: 'ПАТРИСТИКА',
+    title: 'Светоотеческо наследство',
     quote: '„Дайте ми думи на пустинниците"',
     source: 'Свети Йоан Лествичник',
-    art: (
-      <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
-        {/* Open book */}
-        <path d="M30 60 Q100 50 100 160 Q100 50 170 60 L170 150 Q100 140 100 160 Q100 140 30 150 Z" stroke="#93c5fd" strokeWidth="2" fill="#93c5fd" fillOpacity="0.05"/>
-        <line x1="100" y1="55" x2="100" y2="162" stroke="#93c5fd" strokeWidth="2"/>
-        {/* Lines suggesting text */}
-        {[75,85,95,105,115,125,135].map((y) => (
-          <g key={y}>
-            <line x1="40" y1={y} x2="90" y2={y - 2} stroke="#93c5fd" strokeWidth="1" opacity="0.5"/>
-            <line x1="110" y1={y} x2="160" y2={y - 2} stroke="#93c5fd" strokeWidth="1" opacity="0.5"/>
-          </g>
-        ))}
-        {/* Quill */}
-        <path d="M140 30 C160 50 155 80 130 90" stroke="#93c5fd" strokeWidth="2"/>
-        <path d="M140 30 C120 50 125 80 130 90" stroke="#93c5fd" strokeWidth="1.5" opacity="0.6"/>
-      </svg>
-    ),
   },
   {
     id: 2,
-    bg: 'from-[#0f0800] via-[#1e1000] to-[#0f0800]',
-    accent: '#fbbf24',
-    title: 'Иконография',
-    subtitle: 'Прозорец към вечността',
-    quote: '„Иконата е видимо слово"',
-    source: 'Свети Теодор Студит',
-    art: (
-      <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
-        {/* Icon frame */}
-        <rect x="45" y="25" width="110" height="150" rx="8" stroke="#fbbf24" strokeWidth="3"/>
-        <rect x="52" y="32" width="96" height="136" rx="5" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="4 3"/>
-        {/* Mandorla / halo */}
-        <ellipse cx="100" cy="85" rx="32" ry="38" stroke="#fbbf24" strokeWidth="2"/>
-        <circle cx="100" cy="70" r="18" stroke="#fbbf24" strokeWidth="2"/>
-        {/* Crown/nimbus rays */}
-        {Array.from({length: 8}).map((_, i) => (
-          <line key={i}
-            x1={100 + 20 * Math.cos(i * 45 * Math.PI / 180)}
-            y1={70 + 20 * Math.sin(i * 45 * Math.PI / 180)}
-            x2={100 + 30 * Math.cos(i * 45 * Math.PI / 180)}
-            y2={70 + 30 * Math.sin(i * 45 * Math.PI / 180)}
-            stroke="#fbbf24" strokeWidth="2"/>
-        ))}
-        {/* Decorative bottom ornament */}
-        <path d="M60 145 Q100 135 140 145" stroke="#fbbf24" strokeWidth="1.5"/>
-        <path d="M70 155 Q100 148 130 155" stroke="#fbbf24" strokeWidth="1"/>
-      </svg>
-    ),
+    photo: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=85',
+    overlay: 'from-black/80 via-black/45 to-black/70',
+    label: 'БОГОСЛОВИЕ',
+    title: 'Вечната мъдрост',
+    quote: '„Търсете и ще намерите"',
+    source: 'Матей 7:7',
   },
   {
     id: 3,
-    bg: 'from-[#050e05] via-[#0a1a0a] to-[#050e05]',
-    accent: '#86efac',
-    title: 'Духовност',
-    subtitle: 'Молитва и аскетика',
+    photo: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1920&q=85',
+    overlay: 'from-black/80 via-black/50 to-black/70',
+    label: 'ДУХОВНОСТ',
+    title: 'Молитва и аскетика',
     quote: '„Молитвата е дъхът на душата"',
     source: 'Свети Теофан Затворник',
-    art: (
-      <svg viewBox="0 0 200 200" className="w-full h-full opacity-20" fill="none">
-        {/* Candle flame */}
-        <path d="M100 30 C110 45 115 55 108 68 C105 75 95 75 92 68 C85 55 90 45 100 30Z" stroke="#86efac" strokeWidth="2" fill="#86efac" fillOpacity="0.15"/>
-        {/* Candle body */}
-        <rect x="88" y="68" width="24" height="90" rx="3" stroke="#86efac" strokeWidth="2" fill="#86efac" fillOpacity="0.05"/>
-        {/* Candlestick */}
-        <path d="M75 158 Q100 152 125 158 L130 170 Q100 165 70 170 Z" stroke="#86efac" strokeWidth="2" fill="#86efac" fillOpacity="0.1"/>
-        {/* Light rays */}
-        {Array.from({length: 8}).map((_, i) => {
-          const angle = (i * 45 - 22.5) * Math.PI / 180
-          return <line key={i} x1={100 + 18 * Math.cos(angle)} y1={50 + 18 * Math.sin(angle)} x2={100 + 38 * Math.cos(angle)} y2={50 + 38 * Math.sin(angle)} stroke="#86efac" strokeWidth="1" opacity="0.4"/>
-        })}
-        {/* Decorative arch above */}
-        <path d="M50 165 Q100 30 150 165" stroke="#86efac" strokeWidth="1" strokeDasharray="5 4" opacity="0.3"/>
-      </svg>
-    ),
   },
 ]
 
@@ -120,99 +51,110 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
       setTimeout(() => {
         setCurrent((c) => (c + 1) % slides.length)
         setFading(false)
-      }, 600)
-    }, 5000)
+      }, 700)
+    }, 5500)
     return () => clearInterval(timer)
   }, [])
 
   function goTo(i: number) {
     if (i === current) return
     setFading(true)
-    setTimeout(() => { setCurrent(i); setFading(false) }, 600)
+    setTimeout(() => { setCurrent(i); setFading(false) }, 700)
   }
 
   const slide = slides[current]
 
   return (
-    <section className={`relative overflow-hidden bg-gradient-to-br ${slide.bg} text-white min-h-[520px] flex items-center transition-all duration-700`}>
-      {/* Background art */}
-      <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}>
-        <div className="w-96 h-96 max-w-full">
-          {slide.art}
-        </div>
-      </div>
+    <section className="relative overflow-hidden min-h-[580px] md:min-h-[680px] flex items-center bg-stone-950">
 
-      {/* Vignette overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+      {/* Background photo */}
+      <div
+        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}
+        style={{ backgroundImage: `url(${slide.photo})` }}
+      />
+
+      {/* Overlay */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${slide.overlay}`} />
+
+      {/* Subtle grain texture overlay */}
+      <div className="absolute inset-0 opacity-20" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`
+      }} />
 
       {/* Content */}
-      <div className={`relative z-10 max-w-7xl mx-auto px-4 py-20 w-full transition-all duration-700 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+      <div className={`relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-24 w-full transition-all duration-700 ${fading ? 'opacity-0 translate-y-3' : 'opacity-100 translate-y-0'}`}>
         <div className="max-w-2xl">
-          {/* Category badge */}
-          <span className="inline-block text-xs font-semibold uppercase tracking-widest mb-4 px-3 py-1 rounded-full border"
-            style={{ color: slide.accent, borderColor: slide.accent + '60', backgroundColor: slide.accent + '15' }}>
-            {slide.subtitle}
-          </span>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight" style={{ color: slide.accent }}>
+          {/* Category label */}
+          <p className="text-xs font-bold tracking-[0.3em] text-stone-400 mb-5 uppercase">
+            {slide.label}
+          </p>
+
+          {/* Title */}
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
             {slide.title}
           </h1>
 
+          {/* Divider */}
+          <div className="w-12 h-px bg-amber-500/60 mb-6" />
+
           {/* Quote */}
-          <blockquote className="mb-2 text-lg md:text-xl text-stone-300 italic leading-relaxed">
+          <blockquote className="text-lg md:text-xl text-stone-300 italic leading-relaxed mb-1">
             {slide.quote}
           </blockquote>
-          <p className="text-sm mb-8" style={{ color: slide.accent + 'cc' }}>— {slide.source}</p>
+          <p className="text-sm text-stone-500 mb-10">— {slide.source}</p>
 
+          {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/books">
-              <button className="px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:scale-105 active:scale-95"
-                style={{ backgroundColor: slide.accent, color: '#111' }}>
+              <button className="px-7 py-3.5 bg-white text-stone-900 rounded-lg font-semibold text-sm tracking-wide hover:bg-stone-100 transition-all hover:scale-105 active:scale-95">
                 Разгледайте книгите
               </button>
             </Link>
             <Link href="/register">
-              <button className="px-6 py-3 rounded-xl font-semibold text-sm border transition-all hover:bg-white/10"
-                style={{ borderColor: slide.accent + '80', color: slide.accent }}>
+              <button className="px-7 py-3.5 border border-white/30 text-white rounded-lg font-semibold text-sm tracking-wide hover:bg-white/10 transition-all">
                 Станете продавач
               </button>
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="mt-10 flex gap-8">
+          <div className="mt-12 flex gap-10">
             <div>
-              <div className="text-2xl font-bold" style={{ color: slide.accent }}>{booksCount}</div>
-              <div className="text-xs text-stone-500">активни обяви</div>
+              <div className="text-2xl font-bold text-white">{booksCount}</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">ОБЯВИ</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold" style={{ color: slide.accent }}>{usersCount}</div>
-              <div className="text-xs text-stone-500">читатели</div>
+            <div className="border-l border-white/10 pl-10">
+              <div className="text-2xl font-bold text-white">{usersCount}</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">ЧИТАТЕЛИ</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold" style={{ color: slide.accent }}>10%</div>
-              <div className="text-xs text-stone-500">комисионна</div>
+            <div className="border-l border-white/10 pl-10">
+              <div className="text-2xl font-bold text-white">10%</div>
+              <div className="text-xs text-stone-500 tracking-wide mt-0.5">КОМИСИОННА</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Slide dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      {/* Slide indicators */}
+      <div className="absolute bottom-8 left-6 md:left-12 flex items-center gap-3 z-10">
         {slides.map((s, i) => (
           <button
             key={s.id}
             onClick={() => goTo(i)}
-            className={`rounded-full transition-all duration-300 ${i === current ? 'w-6 h-2' : 'w-2 h-2 opacity-40 hover:opacity-70'}`}
-            style={{ backgroundColor: i === current ? slide.accent : '#fff' }}
+            className={`rounded-full transition-all duration-400 ${
+              i === current
+                ? 'w-8 h-1.5 bg-white'
+                : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/50'
+            }`}
           />
         ))}
       </div>
 
-      {/* Arrow navigation */}
+      {/* Arrow nav */}
       <button
         onClick={() => goTo((current - 1 + slides.length) % slides.length)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors backdrop-blur-sm"
+        className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 border border-white/10 flex items-center justify-center transition-all backdrop-blur-sm"
       >
         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -220,7 +162,7 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
       </button>
       <button
         onClick={() => goTo((current + 1) % slides.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors backdrop-blur-sm"
+        className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 border border-white/10 flex items-center justify-center transition-all backdrop-blur-sm"
       >
         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

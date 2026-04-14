@@ -34,10 +34,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <span className="text-xl text-amber-400">✝</span>
-            <span className="font-bold text-amber-400 text-xl tracking-wide group-hover:text-amber-300 transition-colors">
-              Librum Market
+          <Link href="/" className="flex items-center group shrink-0">
+            <span className="font-bold text-white text-xl tracking-widest group-hover:text-stone-200 transition-colors">
+              LIBRUM
+            </span>
+            <span className="font-light text-stone-400 text-xl tracking-wide ml-1.5 group-hover:text-stone-300 transition-colors">
+              Market
             </span>
           </Link>
 
