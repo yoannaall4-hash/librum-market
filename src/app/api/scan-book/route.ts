@@ -73,8 +73,12 @@ If you cannot identify a field, use null. The description MUST be in Bulgarian. 
     const bookData = JSON.parse(jsonMatch[0])
 
     return NextResponse.json({ book: bookData })
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('scan-book error:', err)
-    return NextResponse.json({ error: 'Failed to analyze image' }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    if (message.includes('API key') || message.includes('auth') || message.includes('401')) {
+      return NextResponse.json({ error: 'Липсва Anthropic API ключ — добавете ANTHROPIC_API_KEY в настройките на Vercel' }, { status: 500 })
+    }
+    return NextResponse.json({ error: `Грешка при анализ: ${message}` }, { status: 500 })
   }
 }
