@@ -71,7 +71,7 @@ export default async function AdminBooksPage({ searchParams }: { searchParams: P
         </div>
       ) : (
         <div className="space-y-3">
-          {books.map(book => (
+          {books.map((book: typeof books[0]) => (
             <div key={book.id} className="bg-white rounded-xl border border-stone-200 p-5">
               <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
