@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLocale } from '@/contexts/LocaleContext'
+import EditableText from '@/components/EditableText'
 
 // Book and monastery editorial photos — no people
 const slidePhotos = [
@@ -27,15 +28,29 @@ const slidePhotos = [
   },
 ]
 
-export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: number; usersCount: number }) {
+interface HeroSlideshowProps {
+  booksCount: number
+  usersCount: number
+  dbOverrides?: Record<string, string>
+}
+
+export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {} }: HeroSlideshowProps) {
   const { t } = useLocale()
+
+  function ct(key: string): string {
+    return dbOverrides[key] || (t as (k: string) => string)(key)
+  }
 
   const slides = slidePhotos.map((s) => ({
     ...s,
-    label: t(`hero.slide${s.id}_label`),
-    title: t(`hero.slide${s.id}_title`),
-    quote: t(`hero.slide${s.id}_quote`),
-    source: t(`hero.slide${s.id}_source`),
+    labelKey: `hero.slide${s.id}_label`,
+    titleKey: `hero.slide${s.id}_title`,
+    quoteKey: `hero.slide${s.id}_quote`,
+    sourceKey: `hero.slide${s.id}_source`,
+    label: ct(`hero.slide${s.id}_label`),
+    title: ct(`hero.slide${s.id}_title`),
+    quote: ct(`hero.slide${s.id}_quote`),
+    source: ct(`hero.slide${s.id}_source`),
   }))
   const [current, setCurrent] = useState(0)
   const [fading, setFading] = useState(false)
@@ -79,12 +94,20 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
 
           {/* Section label */}
           <p className="text-[11px] font-bold tracking-[0.25em] text-white/60 mb-3 uppercase">
-            {slide.label}
+            <EditableText
+              contentKey={slide.labelKey}
+              defaultValue={slide.label}
+              className="text-[11px] font-bold tracking-[0.25em] text-white/80"
+            />
           </p>
 
           {/* Title */}
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight tracking-tight">
-            {slide.title}
+            <EditableText
+              contentKey={slide.titleKey}
+              defaultValue={slide.title}
+              className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight"
+            />
           </h1>
 
           {/* Thin accent line — off-white */}
@@ -92,20 +115,31 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
 
           {/* Quote */}
           <blockquote className="text-sm md:text-base text-white/75 italic leading-relaxed mb-1">
-            {slide.quote}
+            <EditableText
+              contentKey={slide.quoteKey}
+              defaultValue={slide.quote}
+              className="text-sm md:text-base text-white/90 italic"
+              multiline
+            />
           </blockquote>
-          <p className="text-xs text-white/40 mb-7">— {slide.source}</p>
+          <p className="text-xs text-white/40 mb-7">
+            — <EditableText
+              contentKey={slide.sourceKey}
+              defaultValue={slide.source}
+              className="text-xs text-white/60"
+            />
+          </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-2.5">
             <Link href="/books">
               <button className="px-6 py-2.5 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-stone-100 transition-all hover:scale-[1.02] active:scale-95 shadow-sm">
-                {t('hero.browse')}
+                <EditableText contentKey="hero.browse" defaultValue={ct('hero.browse')} />
               </button>
             </Link>
             <Link href="/register">
               <button className="px-6 py-2.5 border border-white/30 text-white rounded-lg font-semibold text-sm hover:bg-white/10 transition-all backdrop-blur-sm">
-                {t('hero.become_seller')}
+                <EditableText contentKey="hero.become_seller" defaultValue={ct('hero.become_seller')} />
               </button>
             </Link>
           </div>
@@ -114,15 +148,21 @@ export default function HeroSlideshow({ booksCount, usersCount }: { booksCount: 
           <div className="mt-8 flex gap-6">
             <div>
               <div className="text-xl font-bold text-white">{booksCount.toLocaleString()}</div>
-              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_listings')}</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_listings" defaultValue={ct('hero.stat_listings')} className="text-[10px] text-white/60 tracking-wide uppercase" />
+              </div>
             </div>
             <div className="border-l border-white/15 pl-6">
               <div className="text-xl font-bold text-white">{usersCount.toLocaleString()}</div>
-              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_readers')}</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_readers" defaultValue={ct('hero.stat_readers')} className="text-[10px] text-white/60 tracking-wide uppercase" />
+              </div>
             </div>
             <div className="border-l border-white/15 pl-6">
               <div className="text-xl font-bold text-white">10%</div>
-              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">{t('hero.stat_commission')}</div>
+              <div className="text-[10px] text-white/45 tracking-wide mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_commission" defaultValue={ct('hero.stat_commission')} className="text-[10px] text-white/60 tracking-wide uppercase" />
+              </div>
             </div>
           </div>
         </div>

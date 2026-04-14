@@ -131,7 +131,7 @@ export default async function HomePage() {
 
   return (
     <div className="bg-white">
-      <HeroSlideshow booksCount={stats.books} usersCount={stats.users} />
+      <HeroSlideshow booksCount={stats.books} usersCount={stats.users} dbOverrides={db} />
 
       {/* Upload-a-book promo bar */}
       <div className="bg-stone-800 hidden md:block">
