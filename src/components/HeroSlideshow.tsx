@@ -137,11 +137,6 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
                 <EditableText contentKey="hero.browse" defaultValue={ct('hero.browse')} />
               </button>
             </Link>
-            <Link href="/register">
-              <button className="px-6 py-2.5 border border-white/30 text-white rounded-lg font-semibold text-sm hover:bg-white/10 transition-all backdrop-blur-sm">
-                <EditableText contentKey="hero.become_seller" defaultValue={ct('hero.become_seller')} />
-              </button>
-            </Link>
           </div>
 
           {/* Stats */}
