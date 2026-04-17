@@ -282,11 +282,6 @@ export default async function HomePage() {
                 <EditableText contentKey="hero.browse" defaultValue={ct('hero.browse')} />
               </button>
             </Link>
-            <Link href="/register">
-              <button className="px-7 py-3 border border-stone-600 text-stone-300 rounded-lg font-semibold text-sm hover:bg-stone-800 transition-colors">
-                <EditableText contentKey="hero.become_seller" defaultValue={ct('hero.become_seller')} />
-              </button>
-            </Link>
           </div>
         </div>
       </section>

@@ -233,9 +233,9 @@ export default function Navbar() {
                     {t('nav.login')}
                   </Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/books/new">
                   <Button size="sm" className="bg-stone-800 hover:bg-stone-900 text-white border-0 font-medium">
-                    {t('nav.register')}
+                    Качи обява
                   </Button>
                 </Link>
               </>
