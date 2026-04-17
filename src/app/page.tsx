@@ -7,6 +7,12 @@ import BookCard from '@/components/BookCard'
 import HeroSlideshow from '@/components/HeroSlideshow'
 import { getT } from '@/lib/getT'
 import EditableText from '@/components/EditableText'
+import {
+  Landmark, BookOpen, Baby, Library, Leaf, TrendingUp,
+  Building2, Music, GraduationCap, Scale, Brain, Microscope,
+  Map, FileText, Lightbulb, PenLine, BookMarked,
+  type LucideIcon,
+} from 'lucide-react'
 
 async function getSiteContent(locale: string) {
   try {
@@ -60,32 +66,23 @@ async function getCategories() {
   return prisma.category.findMany({ orderBy: { name: 'asc' } })
 }
 
-const CATEGORY_ICONS: Record<string, string> = {
-  archaeology:      '🏛️',
-  theology:         '🙏',
-  children:         '🎈',
-  encyclopedias:    '📖',
-  health:           '🌿',
-  economics:        '📊',
-  history:          '🗺️',
-  music:            '🎵',
-  pedagogy:         '🏫',
-  law:              '⚖️',
-  psychology:       '🧠',
-  'exact-sciences': '🔬',
-  tourism:          '✈️',
-  textbooks:        '📐',
-  philosophy:       '💭',
-  fiction:          '✍️',
-}
-
-const CATEGORY_COLORS: Record<string, string> = {
-  theology:         'bg-stone-900 text-white',
-  history:          'bg-stone-700 text-white',
-  philosophy:       'bg-stone-600 text-white',
-  fiction:          'bg-stone-500 text-white',
-  archaeology:      'bg-stone-800 text-white',
-  law:              'bg-stone-700 text-white',
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  archaeology:      Landmark,
+  theology:         BookOpen,
+  children:         Baby,
+  encyclopedias:    Library,
+  health:           Leaf,
+  economics:        TrendingUp,
+  history:          Building2,
+  music:            Music,
+  pedagogy:         GraduationCap,
+  law:              Scale,
+  psychology:       Brain,
+  'exact-sciences': Microscope,
+  tourism:          Map,
+  textbooks:        FileText,
+  philosophy:       Lightbulb,
+  fiction:          PenLine,
 }
 
 // SVG icons for "how it works" steps
@@ -172,20 +169,17 @@ export default async function HomePage() {
                 <EditableText contentKey="home.categories_title" defaultValue={ct('home.categories_title') || 'Разгледай по категория'} />
               </h2>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3">
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-2">
               {categories.map((cat) => {
-                const iconColorClass = CATEGORY_COLORS[cat.slug] || 'bg-stone-100 text-stone-700'
+                const Icon = CATEGORY_ICONS[cat.slug] ?? BookMarked
                 return (
                   <Link
                     key={cat.slug}
                     href={`/books?category=${cat.slug}`}
-                    className="flex flex-col items-center py-5 px-2 rounded-2xl bg-white border border-stone-150 hover:border-stone-300 hover:shadow-md transition-all group"
-                    style={{ borderColor: '#ede8e3' }}
+                    className="flex flex-col items-center py-4 px-2 rounded-xl bg-white border border-stone-100 hover:border-amber-300 hover:shadow-sm transition-all group"
                   >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 text-2xl transition-all group-hover:scale-110 ${iconColorClass}`}>
-                      {CATEGORY_ICONS[cat.slug] || '📚'}
-                    </div>
-                    <span className="text-xs font-semibold text-stone-600 group-hover:text-stone-900 text-center leading-tight">
+                    <Icon size={18} strokeWidth={1.25} className="text-stone-400 group-hover:text-amber-700 transition-colors mb-2.5" />
+                    <span className="text-[10px] font-semibold tracking-wider uppercase text-stone-400 text-center group-hover:text-amber-700 leading-tight transition-colors">
                       <EditableText
                         contentKey={`category.${cat.slug}`}
                         defaultValue={db[`category.${cat.slug}`] || cat.name}
