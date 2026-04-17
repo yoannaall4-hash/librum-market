@@ -170,11 +170,7 @@ export default function Navbar() {
 
             {user ? (
               <>
-                <Link href="/books/new" className="hidden md:block">
-                  <Button size="sm" variant="primary" className="bg-stone-800 hover:bg-stone-900 border-0 text-white text-xs px-4">
-                    + {t('nav.addListing')}
-                  </Button>
-                </Link>
+
                 <div className="relative">
                   <button
                     onClick={() => setMenuOpen(!menuOpen)}

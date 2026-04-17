@@ -130,35 +130,6 @@ export default async function HomePage() {
     <div className="bg-white">
       <HeroSlideshow booksCount={stats.books} usersCount={stats.users} dbOverrides={db} />
 
-      {/* Upload-a-book promo bar */}
-      <div className="bg-stone-800 hidden md:block">
-        <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-6">
-          <p className="text-stone-100 text-sm font-medium">
-            <EditableText contentKey="home.banner_desktop" defaultValue={ct('home.banner_desktop')} className="text-stone-100 text-sm font-medium" />
-            <EditableText contentKey="home.banner_desktop_sub" defaultValue={ct('home.banner_desktop_sub')} className="text-stone-400 ml-2 font-normal" />
-          </p>
-          <Link href="/books/new" className="shrink-0 px-5 py-1.5 bg-stone-100 text-stone-800 text-sm font-semibold rounded-lg hover:bg-white transition-colors whitespace-nowrap">
-            {t('home.banner_upload')}
-          </Link>
-        </div>
-      </div>
-      {/* Mobile promo bar */}
-      <div className="md:hidden bg-stone-800">
-        <Link href="/books/new" className="flex items-center gap-3 px-4 py-3">
-          <div className="flex-1">
-            <p className="text-stone-100 font-semibold text-sm leading-tight">
-              <EditableText contentKey="home.banner_mobile" defaultValue={ct('home.banner_mobile')} />
-            </p>
-            <p className="text-stone-400 text-xs mt-0.5">
-              <EditableText contentKey="home.banner_mobile_sub" defaultValue={ct('home.banner_mobile_sub')} />
-            </p>
-          </div>
-          <svg className="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
-      </div>
-
       {/* Categories */}
       {categories.length > 0 && (
         <section className="py-12 bg-white border-b border-stone-100">
