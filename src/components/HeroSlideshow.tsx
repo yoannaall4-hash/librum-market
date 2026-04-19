@@ -75,10 +75,10 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
   const slide = slides[current]
 
   return (
-    <section className="flex bg-white overflow-hidden" style={{ minHeight: '400px', maxHeight: '520px' }}>
+    <section className="flex flex-col md:flex-row bg-white" style={{ minHeight: '400px', maxHeight: '520px' }}>
 
-      {/* LEFT — white content panel (~40%) */}
-      <div className="flex flex-col justify-center px-8 md:px-14 py-12 shrink-0 w-[42%] md:w-[38%]">
+      {/* LEFT — white content panel */}
+      <div className="flex flex-col justify-center px-8 md:px-14 py-10 md:py-12 md:shrink-0 md:w-[38%]">
         <div className={`transition-all duration-500 ${fading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
 
           {/* Label */}
@@ -139,12 +139,19 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
         </div>
       </div>
 
-      {/* RIGHT — photo (~60%), rounded left edge */}
-      <div className="relative flex-1 overflow-hidden" style={{ borderRadius: '1.5rem 0 0 1.5rem' }}>
+      {/* RIGHT — photo (~60%), rounded left edge, mobile: padded + rounded */}
+      <div className="relative flex-1 overflow-hidden mx-3 mb-3 md:mx-0 md:mb-0" style={{ borderRadius: '1.5rem', minHeight: '220px' }}>
         <div
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-600 ${fading ? 'opacity-0' : 'opacity-100'}`}
           style={{ backgroundImage: `url(${slide.photo})` }}
         />
+
+        {/* Announcement bar — bottom of image only */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 py-2 px-4" style={{ background: 'rgba(139,26,26,0.92)' }}>
+          <p className="text-center text-white text-xs font-semibold tracking-wide">
+            Купи или продай книги втора употреба или нови!
+          </p>
+        </div>
 
         {/* Slide indicators */}
         <div className="absolute bottom-4 left-5 flex items-center gap-2 z-10">
