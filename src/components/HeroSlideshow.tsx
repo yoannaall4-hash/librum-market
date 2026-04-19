@@ -104,7 +104,7 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
             <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm italic" multiline />
           </p>
           <Link href="/books">
-            <button className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white border border-white/60 hover:bg-white hover:text-stone-900 transition-all active:scale-95 backdrop-blur-sm" style={{ background: 'rgba(255,255,255,0.12)' }}>
+            <button className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white border border-white/60 transition-all active:scale-95 backdrop-blur-sm" style={{ background: 'rgba(255,255,255,0.12)' }} onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#8B1A1A'; (e.currentTarget as HTMLButtonElement).style.borderColor = '#8B1A1A' }} onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.12)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.6)' }}>
               Разгледай книгите
             </button>
           </Link>
