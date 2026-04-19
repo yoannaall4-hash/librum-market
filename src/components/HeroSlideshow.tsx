@@ -8,22 +8,22 @@ import EditableText from '@/components/EditableText'
 const slidePhotos = [
   {
     id: 0,
-    photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1920&q=90',
+    photo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1400&q=85',
     overlay: 'from-stone-900/50 via-stone-900/20 to-transparent',
   },
   {
     id: 1,
-    photo: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=90',
+    photo: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1400&q=85',
     overlay: 'from-stone-900/55 via-stone-900/20 to-transparent',
   },
   {
     id: 2,
-    photo: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1920&q=90',
+    photo: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1400&q=85',
     overlay: 'from-stone-900/50 via-stone-900/20 to-transparent',
   },
   {
     id: 3,
-    photo: 'https://images.unsplash.com/photo-1474932430478-367b591be0b4?auto=format&fit=crop&w=1920&q=90',
+    photo: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1400&q=85',
     overlay: 'from-stone-900/50 via-stone-800/20 to-transparent',
   },
 ]
