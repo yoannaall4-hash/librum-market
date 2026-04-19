@@ -75,54 +75,44 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
   const slide = slides[current]
 
   return (
-    <section className="flex flex-row w-full overflow-hidden" style={{ minHeight: '460px', maxHeight: '560px' }}>
-
-      {/* LEFT — dark panel with text */}
+    <section className="bg-white px-5 md:px-8 py-5">
       <div
-        className="flex flex-col justify-center px-8 md:px-14 py-10 shrink-0"
-        style={{ width: '38%', background: '#2d2016' }}
+        className="relative overflow-hidden mx-auto"
+        style={{ borderRadius: '1.25rem', height: '420px', maxWidth: '1200px' }}
       >
-        <div className={`transition-all duration-500 ${fading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
-
-          {/* Label */}
-          <p className="text-[9px] font-bold tracking-[0.3em] uppercase mb-3" style={{ color: '#c0a060' }}>
-            <EditableText contentKey={slide.labelKey} defaultValue={slide.label} className="text-[9px] font-bold tracking-[0.3em]" />
-          </p>
-
-          {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight tracking-tight">
-            <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-2xl md:text-3xl font-bold text-white leading-tight" />
-          </h1>
-
-          {/* Quote as subtitle */}
-          <p className="text-sm text-stone-400 leading-relaxed mb-6 italic">
-            <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm text-stone-400 italic" multiline />
-          </p>
-
-          {/* CTA */}
-          <Link href="/books">
-            <button className="px-5 py-2 rounded border border-white/70 text-white text-sm font-semibold tracking-wide hover:bg-white hover:text-stone-900 transition-all active:scale-95">
-              Разгледай книгите
-            </button>
-          </Link>
-        </div>
-      </div>
-
-      {/* RIGHT — photo */}
-      <div className="relative flex-1 overflow-hidden">
+        {/* Background image */}
         <div
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-600 ${fading ? 'opacity-0' : 'opacity-100'}`}
           style={{ backgroundImage: `url(${slide.photo})` }}
         />
 
+        {/* Left gradient for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent" />
+
+        {/* Text — inside image, left side */}
+        <div
+          className={`absolute top-0 left-0 bottom-0 flex flex-col justify-center pl-10 md:pl-14 pr-10 z-10 transition-all duration-500 ${fading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}
+          style={{ width: '52%' }}
+        >
+          <p className="text-[9px] font-bold tracking-[0.35em] uppercase mb-3" style={{ color: '#d4a85a' }}>
+            <EditableText contentKey={slide.labelKey} defaultValue={slide.label} className="text-[9px] font-bold tracking-[0.35em]" />
+          </p>
+          <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 drop-shadow-md">
+            <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-2xl md:text-4xl font-bold text-white leading-tight" />
+          </h1>
+          <p className="text-sm text-white/70 italic leading-relaxed drop-shadow-sm">
+            <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm italic" multiline />
+          </p>
+        </div>
+
         {/* Slide indicators */}
-        <div className="absolute bottom-3 right-4 flex items-center gap-1.5 z-10">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
           {slides.map((s, i) => (
             <button
               key={s.id}
               onClick={() => goTo(i)}
               style={i === current ? { background: 'white' } : {}}
-              className={`rounded-full transition-all duration-300 ${i === current ? 'w-4 h-1' : 'w-1 h-1 bg-white/40 hover:bg-white/70'}`}
+              className={`rounded-full transition-all duration-300 ${i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/70'}`}
             />
           ))}
         </div>
@@ -130,19 +120,19 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
         {/* Arrow nav */}
         <button
           onClick={() => goTo((current - 1 + slides.length) % slides.length)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 border border-white/20 flex items-center justify-center transition-all"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
           aria-label="Previous"
         >
-          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <button
           onClick={() => goTo((current + 1) % slides.length)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-black/25 hover:bg-black/45 border border-white/20 flex items-center justify-center transition-all"
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
           aria-label="Next"
         >
-          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
