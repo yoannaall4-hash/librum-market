@@ -5,6 +5,12 @@ export default function SplashScreen() {
   const [phase, setPhase] = useState<'idle' | 'show' | 'fadeout' | 'hidden'>('idle')
 
   useEffect(() => {
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches
+      || (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    if (!isPWA) {
+      setPhase('hidden')
+      return
+    }
     if (sessionStorage.getItem('splashShown')) {
       setPhase('hidden')
       return
