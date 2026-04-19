@@ -110,7 +110,7 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
             <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight" />
           </h1>
 
-          <div className="w-8 h-px bg-white/25 mb-4" />
+          <div className="w-8 h-px mb-4" style={{ background: '#8B1A1A' }} />
 
           {/* Quote */}
           <blockquote className="text-sm text-white/70 italic leading-relaxed mb-1">
@@ -157,7 +157,8 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
           <button
             key={s.id}
             onClick={() => goTo(i)}
-            className={`rounded-full transition-all duration-300 ${i === current ? 'w-5 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`}
+            style={i === current ? { background: '#8B1A1A' } : {}}
+            className={`rounded-full transition-all duration-300 ${i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`}
           />
         ))}
       </div>

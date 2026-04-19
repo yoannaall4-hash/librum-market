@@ -84,7 +84,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {/* Brand + Social */}
               <div className="col-span-1">
                 <div className="flex items-center mb-4">
-                  <span className="text-white font-bold text-lg tracking-widest">LIBRUM</span>
+                  <span className="font-bold text-lg tracking-widest" style={{ color: '#8B1A1A' }}>LIBRUM</span>
                   <span className="text-stone-500 font-light text-lg ml-1.5">Market</span>
                 </div>
                 <p className="text-sm text-stone-500 leading-relaxed mb-5">
@@ -154,7 +154,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Mobile footer (compact) */}
         <footer className="md:hidden bg-stone-950 text-stone-500 py-5 px-4 mb-16 mt-8">
           <div className="text-center mb-3">
-            <span className="text-white font-bold text-sm tracking-widest">LIBRUM</span>
+            <span className="font-bold text-sm tracking-widest" style={{ color: '#8B1A1A' }}>LIBRUM</span>
             <span className="text-stone-500 font-light text-sm ml-1">Market</span>
           </div>
           <div className="flex justify-center gap-4 mb-3 text-xs">
