@@ -48,10 +48,14 @@ export default async function BookCard({ book }: BookCardProps) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={imageUrl} alt={book.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-stone-200">
-              <svg className="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={0.9}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-              </svg>
+            <div className="w-full h-full relative overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=400&q=60"
+                alt=""
+                className="w-full h-full object-cover opacity-60"
+              />
+              <div className="absolute inset-0 bg-stone-800/40" />
             </div>
           )}
           {book.isFeatured && (
