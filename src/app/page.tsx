@@ -130,6 +130,13 @@ export default async function HomePage() {
     <div className="bg-white">
       <HeroSlideshow booksCount={stats.books} usersCount={stats.users} dbOverrides={db} />
 
+      {/* Announcement bar */}
+      <div style={{ background: '#8B1A1A' }} className="py-2.5 px-4">
+        <p className="text-center text-white text-sm font-semibold tracking-wide">
+          📣 Купи или продай книги втора употреба или нови!
+        </p>
+      </div>
+
       {/* Categories */}
       {categories.length > 0 && (
         <section className="py-12 bg-white border-b border-stone-100">
