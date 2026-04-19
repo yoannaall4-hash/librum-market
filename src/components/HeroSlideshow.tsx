@@ -100,9 +100,14 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
           <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight tracking-tight mb-4 drop-shadow-md">
             <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-2xl md:text-4xl font-bold text-white leading-tight" />
           </h1>
-          <p className="text-sm text-white/70 italic leading-relaxed drop-shadow-sm">
+          <p className="text-sm text-white/70 italic leading-relaxed drop-shadow-sm mb-6">
             <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm italic" multiline />
           </p>
+          <Link href="/books">
+            <button className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white border border-white/60 hover:bg-white hover:text-stone-900 transition-all active:scale-95 backdrop-blur-sm" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              Разгледай книгите
+            </button>
+          </Link>
         </div>
 
         {/* Slide indicators */}
@@ -136,6 +141,13 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
+      </div>
+
+      {/* Announcement bar — below image */}
+      <div className="mx-auto mt-2 px-4 py-2 rounded-lg" style={{ maxWidth: '1200px' }}>
+        <p className="text-center text-stone-500 text-xs font-medium tracking-wide">
+          Купи или продай книги втора употреба или нови!
+        </p>
       </div>
     </section>
   )
