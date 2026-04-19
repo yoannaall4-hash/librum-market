@@ -101,20 +101,12 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
             — <EditableText contentKey={slide.sourceKey} defaultValue={slide.source} className="text-xs text-stone-400" />
           </p>
 
-          {/* CTAs */}
-          <div className="flex items-center gap-4">
-            <Link href="/books">
-              <button className="px-5 py-2 rounded-lg font-semibold text-sm text-white transition-all active:scale-95 hover:opacity-90" style={{ background: '#8B1A1A' }}>
-                Разгледай книгите
-              </button>
-            </Link>
-            <Link href="/about" className="flex items-center gap-1 text-sm text-stone-400 hover:text-stone-700 transition-colors font-medium">
-              За нас
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
+          {/* CTA */}
+          <Link href="/books">
+            <button className="px-6 py-2.5 rounded-lg font-semibold text-base text-white transition-all active:scale-95 hover:opacity-90" style={{ background: '#8B1A1A' }}>
+              Разгледай книгите
+            </button>
+          </Link>
 
           {/* Stats */}
           <div className="mt-8 flex gap-5 border-t border-stone-100 pt-5">

@@ -111,7 +111,12 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="flex-1" />
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-0.5 flex-1 ml-6">
+            <Link href="/about" className="px-3 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors">
+              {t('nav.about')}
+            </Link>
+          </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
