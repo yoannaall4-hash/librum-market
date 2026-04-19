@@ -143,9 +143,9 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
         </button>
       </div>
 
-      {/* Announcement bar — below image */}
-      <div className="mx-auto mt-2 px-4 py-2 rounded-lg" style={{ maxWidth: '1200px' }}>
-        <p className="text-center text-stone-500 text-xs font-medium tracking-wide">
+      {/* Announcement bar — full width of image, below it */}
+      <div className="mx-auto mt-2" style={{ maxWidth: '1200px', background: '#e5e3e0', borderRadius: '0.5rem' }}>
+        <p className="text-center text-stone-600 text-xs font-medium tracking-wide py-2 px-4">
           Купи или продай книги втора употреба или нови!
         </p>
       </div>
