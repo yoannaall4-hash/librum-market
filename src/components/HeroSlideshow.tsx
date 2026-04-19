@@ -147,7 +147,7 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
         />
 
         {/* Announcement bar — bottom of image only */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 py-2 px-4" style={{ background: 'rgba(139,26,26,0.92)' }}>
+        <div className="absolute bottom-0 left-0 right-0 z-10 py-2 px-4" style={{ background: 'rgba(40,38,36,0.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
           <p className="text-center text-white text-xs font-semibold tracking-wide">
             Купи или продай книги втора употреба или нови!
           </p>
