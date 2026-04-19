@@ -75,7 +75,7 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
   const slide = slides[current]
 
   return (
-    <section className="flex flex-col md:flex-row bg-white" style={{ minHeight: '440px', maxHeight: '560px' }}>
+    <section className="flex flex-col md:flex-row bg-white" style={{ minHeight: '520px', maxHeight: '640px' }}>
 
       {/* LEFT — white content panel */}
       <div className="flex flex-col justify-center px-8 md:px-14 py-10 md:py-12 md:shrink-0 md:w-[44%]">
