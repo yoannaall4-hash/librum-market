@@ -140,7 +140,7 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
       </div>
 
       {/* RIGHT — photo (~60%), rounded left edge, mobile: padded + rounded */}
-      <div className="relative flex-1 overflow-hidden mx-3 mb-3 md:mx-0 md:mb-0" style={{ borderRadius: '1.5rem', minHeight: '220px' }}>
+      <div className="relative flex-1 overflow-hidden mx-4 mb-4 md:mx-0 md:mb-0" style={{ borderRadius: '1.5rem', minHeight: '300px' }}>
         <div
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-600 ${fading ? 'opacity-0' : 'opacity-100'}`}
           style={{ backgroundImage: `url(${slide.photo})` }}
