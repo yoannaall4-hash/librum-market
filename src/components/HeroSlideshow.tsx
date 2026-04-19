@@ -75,113 +75,109 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
   const slide = slides[current]
 
   return (
-    <section className="relative overflow-hidden bg-stone-900" style={{ minHeight: '420px', maxHeight: '560px' }}>
+    <section className="flex bg-white overflow-hidden" style={{ minHeight: '400px', maxHeight: '520px' }}>
 
-      {/* Full-screen background photo */}
-      <div
-        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-600 ${fading ? 'opacity-0' : 'opacity-100'}`}
-        style={{ backgroundImage: `url(${slide.photo})` }}
-      />
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/40" />
+      {/* LEFT — white content panel (~40%) */}
+      <div className="flex flex-col justify-center px-8 md:px-14 py-12 shrink-0 w-[42%] md:w-[38%]">
+        <div className={`transition-all duration-500 ${fading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
 
-      {/* Content — frosted glass card */}
-      <div className="relative z-10 flex items-center justify-start h-full max-w-7xl mx-auto px-6 md:px-12 py-14 md:py-20">
-        <div
-          className={`transition-all duration-500 ${fading ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
-          style={{
-            background: 'rgba(10, 9, 8, 0.55)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '1.25rem',
-            padding: '2rem 2.25rem',
-            maxWidth: '420px',
-            width: '100%',
-          }}
-        >
           {/* Label */}
-          <p className="text-[10px] font-bold tracking-[0.3em] text-white/50 mb-3 uppercase">
-            <EditableText contentKey={slide.labelKey} defaultValue={slide.label} className="text-[10px] font-bold tracking-[0.3em] text-white/60" />
+          <p className="text-[9px] font-bold tracking-[0.35em] uppercase mb-3" style={{ color: '#8B1A1A' }}>
+            <EditableText contentKey={slide.labelKey} defaultValue={slide.label} className="text-[9px] font-bold tracking-[0.35em]" />
           </p>
 
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight tracking-tight">
-            <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight" />
+          <h1 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3 leading-tight tracking-tight">
+            <EditableText contentKey={slide.titleKey} defaultValue={slide.title} className="text-2xl md:text-3xl font-bold text-stone-900 leading-tight tracking-tight" />
           </h1>
 
-          <div className="w-8 h-px mb-4" style={{ background: '#8B1A1A' }} />
+          <div className="w-7 h-px mb-4" style={{ background: '#8B1A1A' }} />
 
           {/* Quote */}
-          <blockquote className="text-sm text-white/70 italic leading-relaxed mb-1">
-            <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm text-white/80 italic" multiline />
+          <blockquote className="text-sm text-stone-500 italic leading-relaxed mb-1">
+            <EditableText contentKey={slide.quoteKey} defaultValue={slide.quote} className="text-sm text-stone-500 italic" multiline />
           </blockquote>
-          <p className="text-xs text-white/35 mb-7">
-            — <EditableText contentKey={slide.sourceKey} defaultValue={slide.source} className="text-xs text-white/50" />
+          <p className="text-xs text-stone-400 mb-8">
+            — <EditableText contentKey={slide.sourceKey} defaultValue={slide.source} className="text-xs text-stone-400" />
           </p>
 
-          {/* CTA */}
-          <Link href="/books">
-            <button className="px-6 py-2.5 bg-white text-stone-900 rounded-lg font-semibold text-sm hover:bg-stone-100 transition-all active:scale-95 shadow-sm">
-              <EditableText contentKey="hero.browse" defaultValue={ct('hero.browse')} />
-            </button>
-          </Link>
+          {/* CTAs */}
+          <div className="flex flex-col gap-2.5">
+            <Link href="/books">
+              <button className="w-full px-5 py-2.5 rounded-lg font-semibold text-sm text-white transition-all active:scale-95" style={{ background: '#8B1A1A' }}>
+                Разгледай книгите
+              </button>
+            </Link>
+            <Link href="/about">
+              <button className="w-full px-5 py-2.5 rounded-lg font-medium text-sm text-stone-500 border border-stone-200 hover:border-stone-400 hover:text-stone-700 transition-all bg-white">
+                За нас
+              </button>
+            </Link>
+          </div>
 
           {/* Stats */}
-          <div className="mt-7 flex gap-5">
+          <div className="mt-8 flex gap-5 border-t border-stone-100 pt-5">
             <div>
-              <div className="text-lg font-bold text-white">{booksCount.toLocaleString()}</div>
-              <div className="text-[10px] text-white/40 tracking-wide mt-0.5 uppercase">
-                <EditableText contentKey="hero.stat_listings" defaultValue={ct('hero.stat_listings')} className="text-[10px] text-white/50 tracking-wide uppercase" />
+              <div className="text-base font-bold text-stone-900">{booksCount.toLocaleString()}</div>
+              <div className="text-[9px] text-stone-400 tracking-wider mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_listings" defaultValue={ct('hero.stat_listings')} className="text-[9px] text-stone-400 tracking-wider uppercase" />
               </div>
             </div>
-            <div className="border-l border-white/10 pl-5">
-              <div className="text-lg font-bold text-white">{usersCount.toLocaleString()}</div>
-              <div className="text-[10px] text-white/40 tracking-wide mt-0.5 uppercase">
-                <EditableText contentKey="hero.stat_readers" defaultValue={ct('hero.stat_readers')} className="text-[10px] text-white/50 tracking-wide uppercase" />
+            <div className="border-l border-stone-100 pl-5">
+              <div className="text-base font-bold text-stone-900">{usersCount.toLocaleString()}</div>
+              <div className="text-[9px] text-stone-400 tracking-wider mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_readers" defaultValue={ct('hero.stat_readers')} className="text-[9px] text-stone-400 tracking-wider uppercase" />
               </div>
             </div>
-            <div className="border-l border-white/10 pl-5">
-              <div className="text-lg font-bold text-white">10%</div>
-              <div className="text-[10px] text-white/40 tracking-wide mt-0.5 uppercase">
-                <EditableText contentKey="hero.stat_commission" defaultValue={ct('hero.stat_commission')} className="text-[10px] text-white/50 tracking-wide uppercase" />
+            <div className="border-l border-stone-100 pl-5">
+              <div className="text-base font-bold text-stone-900">10%</div>
+              <div className="text-[9px] text-stone-400 tracking-wider mt-0.5 uppercase">
+                <EditableText contentKey="hero.stat_commission" defaultValue={ct('hero.stat_commission')} className="text-[9px] text-stone-400 tracking-wider uppercase" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Slide indicators */}
-      <div className="absolute bottom-5 left-6 md:left-12 flex items-center gap-2 z-10">
-        {slides.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => goTo(i)}
-            style={i === current ? { background: '#8B1A1A' } : {}}
-            className={`rounded-full transition-all duration-300 ${i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`}
-          />
-        ))}
-      </div>
+      {/* RIGHT — photo (~60%), rounded left edge */}
+      <div className="relative flex-1 overflow-hidden" style={{ borderRadius: '1.5rem 0 0 1.5rem' }}>
+        <div
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-600 ${fading ? 'opacity-0' : 'opacity-100'}`}
+          style={{ backgroundImage: `url(${slide.photo})` }}
+        />
 
-      {/* Arrow nav */}
-      <button
-        onClick={() => goTo((current - 1 + slides.length) % slides.length)}
-        className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/15 flex items-center justify-center transition-all backdrop-blur-sm"
-        aria-label="Previous"
-      >
-        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        onClick={() => goTo((current + 1) % slides.length)}
-        className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/15 flex items-center justify-center transition-all backdrop-blur-sm"
-        aria-label="Next"
-      >
-        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+        {/* Slide indicators */}
+        <div className="absolute bottom-4 left-5 flex items-center gap-2 z-10">
+          {slides.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => goTo(i)}
+              style={i === current ? { background: '#8B1A1A' } : {}}
+              className={`rounded-full transition-all duration-300 ${i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5 bg-white/50 hover:bg-white/80'}`}
+            />
+          ))}
+        </div>
+
+        {/* Arrow nav */}
+        <button
+          onClick={() => goTo((current - 1 + slides.length) % slides.length)}
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
+          aria-label="Previous"
+        >
+          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => goTo((current + 1) % slides.length)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 border border-white/20 flex items-center justify-center transition-all backdrop-blur-sm"
+          aria-label="Next"
+        >
+          <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </section>
   )
 }
