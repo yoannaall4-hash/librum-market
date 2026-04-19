@@ -75,12 +75,12 @@ export default function HeroSlideshow({ booksCount, usersCount, dbOverrides = {}
   const slide = slides[current]
 
   return (
-    <section className="flex flex-row w-full overflow-hidden" style={{ minHeight: '280px', maxHeight: '340px' }}>
+    <section className="flex flex-row w-full overflow-hidden" style={{ minHeight: '460px', maxHeight: '560px' }}>
 
       {/* LEFT — dark panel with text */}
       <div
         className="flex flex-col justify-center px-8 md:px-14 py-10 shrink-0"
-        style={{ width: '40%', background: '#1c1917' }}
+        style={{ width: '38%', background: '#2d2016' }}
       >
         <div className={`transition-all duration-500 ${fading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
 
